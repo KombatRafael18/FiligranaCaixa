@@ -7,7 +7,7 @@ function Home() {
     return (
         <div className='flex h-screen'>
             <SideDrawer isOpen={true} />
-            <div className='flex-1 flex flex-col ml-[250px]'>
+            <div className='flex flex-col ml-[250px] '>
                 <div className='flex-grow p-4'>
                     <div className='py-10 px-12'>
                         <h1>BEM VINDO AO CAIXA DA FILIGRANA</h1>
@@ -23,3 +23,4 @@ function Home() {
 }
 
 export default Home;
+    

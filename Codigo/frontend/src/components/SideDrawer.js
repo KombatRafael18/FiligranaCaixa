@@ -7,7 +7,7 @@ const SideDrawer = ({ isOpen, toggleDrawer }) => {
       <div className={`fixed top-0 left-0 h-full w-64 bg-[#f6b9b6] transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out z-50`}>
         <div className="flex flex-col h-full justify-between p-10">
           <div className="flex flex-col gap-8">
-            <h1 className="text-2xl font-bold mb-8 text-[#7d4b5f]">FILIGRANA</h1>
+            <h3 className="mb-8 text-[#7d4b5f]">FILIGRANA</h3>
             <nav>
               <ul className="space-y-4">
                 <li><Link to="/nova-venda" className="block hover:text-[#9b5c6f]">NOVA VENDA</Link></li>

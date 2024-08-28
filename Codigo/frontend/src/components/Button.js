@@ -1,7 +1,7 @@
 import React from 'react';
 
 const sizeClasses = {
-  big: 'text-[40px] px-6 py-3',
+  big: 'text-[40px] px-12 py-3',
   default: 'text-[15px] px-4 py-2',
   small: 'text-[13px] px-2 py-1',
 };
