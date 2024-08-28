@@ -18,7 +18,7 @@ const SideDrawer = ({ isOpen, toggleDrawer }) => {
             </nav>
           </div>
           <div>
-            <ul className="space-y-4">
+            <ul className="space-y-4 py-12">
               <li><Link to="/sair" className="block hover:text-gray-700">SAIR</Link></li>
               <li><Link to="/ajuda" className="block hover:text-gray-700">AJUDA</Link></li>
             </ul>
