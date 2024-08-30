@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 import Input from '../components/Input';
 
 function Login() {
     const [usuario, setUsuario] = useState('');
     const [senha, setSenha] = useState('');
+    const navigate = useNavigate();
+
+    const handleLogin = () => {
+       
+        navigate('/home');
+    };
 
     return (
         <div className='flex justify-center items-center h-screen'>
@@ -12,7 +19,7 @@ function Login() {
                 <div className='bg-[#9b5c6f] p-4 text-center'>
                     <h1 className='text-white text-2xl font-bold'>FILIGRANA</h1>
                 </div>
-                <div className='bg-[#f6b9b6] p-4 flex flex-col items-center'>
+                <div className='bg-[#f6b9b6] p-4 flex flex-col items-center '>
                     <Input 
                         label="USUÁRIO:" 
                         name="usuario" 
@@ -28,7 +35,8 @@ function Login() {
                         onChange={(e) => setSenha(e.target.value)} 
                         fullWidth={true}
                     />
-                    <Button className="mt-4" fullWidth={true}>Logar</Button>
+                  
+                    <Button className="mt-4" fullWidth={true} onClick={handleLogin}>Logar</Button>
                 </div>
             </div>
         </div>

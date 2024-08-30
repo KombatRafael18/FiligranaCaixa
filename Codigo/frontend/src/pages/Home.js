@@ -1,8 +1,14 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import SideDrawer from '../components/SideDrawer';
 import Button from '../components/Button';
 
 function Home() {
+    const navigate = useNavigate();
+
+    const handleVenderClick = () => {
+        navigate('/venda');
+    };
 
     return (
         <div className='flex h-screen'>
@@ -15,7 +21,7 @@ function Home() {
                     </div>
                 </div>
                 <div className='p-20'>
-                    <Button size='big'>VENDER</Button>
+                    <Button size='big' onClick={handleVenderClick}>VENDER</Button>
                 </div>
             </div>
         </div>
@@ -23,4 +29,3 @@ function Home() {
 }
 
 export default Home;
-    
