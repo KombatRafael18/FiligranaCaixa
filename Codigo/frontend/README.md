@@ -19,5 +19,5 @@ O projeto está estruturado da seguinte forma:
 ### Diretório components:
 Diretório onde estão os componentes que são reutilizados na aplicação, como botões, inputs, menus, etc
 
-## Diretório pages: 
+### Diretório pages: 
 Diretório onde estão as páginas da aplicação.
