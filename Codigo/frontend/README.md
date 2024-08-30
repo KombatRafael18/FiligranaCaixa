@@ -4,7 +4,7 @@ Esse projeto foi feito utilizando os frameworks React e Tailwind CSS
 
 ## Instalação de dependências e execução
 
-Após clonar o repositório, execute os seguintes comando no terminal:
+Após clonar o repositório navegue até o diretório Codigo\frontend\src e execute os seguintes comandos no terminal:
 
 ### `npm install`
 ### `npm start`
