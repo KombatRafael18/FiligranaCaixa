@@ -1,19 +1,21 @@
 # Filigrana
 
-[Escreva um ou dois  parágrafo resumindo o objetivo do seu projeto.]
+O Filigrana é um sistema desenvolvido para facilitar o fechamento de caixa na loja de semijoias e bijuterias. Ele visa proporcionar uma gestão eficiente e precisa das transações diárias, permitindo que os lojistas acompanhem o fluxo de caixa de forma organizada e sem complicações.
 
 ## Alunos integrantes da equipe
 
-* Samuel Lincoln de Oliveira Gomes
-* Rafael Ferraz
 * Guilherme Cantoni
 * Guilherme Rodriguez
+* Isabelle Cristine
 * Pedro Barcelos
+* Rafael Ferraz
+* Samuel Lincoln 
 
 ## Professores responsáveis
 
-* [Nome completo do professor 1]
-* [Nome completo do professor 2]
+* Joyce Christina de Paiva Carvalho
+* Soraia Lúcia da Silva
+
 
 ## Instruções de utilização
 
