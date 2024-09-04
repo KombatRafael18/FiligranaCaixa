@@ -16,16 +16,16 @@ authors:
     given-names:
   - name-suffix: Professor
     affiliation: PUC Minas
-    family-names: 
-    given-names: 
+    family-names: de Paiva Carvalho
+    given-names: Joyce Christina
   - name-suffix: Professor
     affiliation: PUC Minas
-    family-names: 
-    given-names: 
+    family-names: da Silva
+    given-names: Soraia Lúcia
 keywords:
-  - 
-  - 
-repository-code: 
+  - Gestão de negócios
+  - Vendas
+repository-code: https://github.com/ICEI-PUC-Minas-PPLES-TI/plf-es-2024-2-ti4-1254100-filigrana
 license: CC-BY-4.0
 version: 1.0.0
-date-released: 2022-07-14
+date-released: 2024-12-18
