@@ -5,7 +5,7 @@ O Filigrana é um sistema desenvolvido para facilitar o fechamento de caixa na l
 ## Alunos integrantes da equipe
 
 * Guilherme Cantoni
-* Guilherme Rodriguez
+* Guilherme Felipe Costa Rodrigues
 * Isabelle Cristine
 * Pedro Barcelos
 * Rafael Ferraz
