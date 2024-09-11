@@ -1,0 +1,16 @@
+services:
+  mysql:
+    image: mysql:8.4.2-oraclelinux9
+    restart: "no"
+    ports:
+      - "13306:3306"
+    volumes:
+      - mysqldata:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=my-secret-pw-root
+      - MYSQL_DATABASE=filigrana
+      - MYSQL_USER=filigranadev
+      - MYSQL_PASSWORD=my-secret-pw-dev
+
+volumes:
+  mysqldata:
