@@ -9,12 +9,13 @@ const app = express();
 app.use(bodyParser.json());
 
 // MySQL connection
-const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',  // Use your MySQL username
-    password: 'root',  // Use your MySQL password
-    database: 'client_db'
-});
+const db = mysql.createConnection(
+    process.env.MYSQL_CONNECTION_URI || {
+        host: 'localhost',
+        user: 'root',  // Use your MySQL username
+        password: 'root',  // Use your MySQL password
+        database: 'client_db'
+    });
 
 // Connect to MySQL
 db.connect((err) => {
