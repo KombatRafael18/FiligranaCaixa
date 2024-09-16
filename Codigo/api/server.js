@@ -1,6 +1,7 @@
 const express = require('express');
 const mysql = require('mysql2');
 const bodyParser = require('body-parser');
+const docsRouter = require('./router/docs');
 const productsRouter = require('./router/products');
 
 // Initialize express app
@@ -9,6 +10,7 @@ const app = express();
 // Middleware to parse JSON
 app.use(bodyParser.json());
 
+app.use('/api/docs', docsRouter);
 app.use('/api/products', productsRouter);
 
 // MySQL connection

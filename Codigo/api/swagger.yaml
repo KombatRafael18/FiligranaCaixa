@@ -1,0 +1,167 @@
+openapi: 3.0.0
+
+info:
+  title: Filigrana API
+  description: Sistema para fechamento de caixa em lojas de semijoias e bijuterias.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+    description: Servidor local
+
+tags:
+  - name: products
+    description: Operações com produtos
+
+paths:
+  /api/products:
+    get:
+      summary: Retorna os produtos cadastrados
+      tags:
+        - products
+      responses:
+        "200":
+          description: Sucesso, retorna uma lista de produtos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+    post:
+      summary: Cadastra um novo produto
+      tags:
+        - products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductCreate"
+      responses:
+        "201":
+          description: Sucesso, retorna o produto cadastrado
+          headers:
+            Location:
+              description: URL do novo produto criado
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+
+  /api/products/{id}:
+    get:
+      summary: Retorna um produto específico
+      tags:
+        - products
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do produto
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Sucesso, retorna o produto
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+    put:
+      summary: Atualiza um produto específico
+      tags:
+        - products
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do produto
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductUpdate"
+      responses:
+        "200":
+          description: Sucesso, retorna o produto atualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+    delete:
+      summary: Deleta um produto específico
+      tags:
+        - products
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do produto
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Sucesso, sem conteúdo
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+
+    ProductCreate:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+
+    ProductUpdate:
+      allOf:
+        - $ref: "#/components/schemas/ProductCreate"
+
+    ApiError:
+      type: object
+      properties:
+        error:
+          type: string
+
+  responses:
+    BadRequestResponse:
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiError"
+
+    NotFoundResponse:
+      description: Recurso não encontrado
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiError"
