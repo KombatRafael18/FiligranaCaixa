@@ -1,0 +1,14 @@
+@startuml
+actor "Usuário" as User
+
+usecase "Cadastrar Cliente" as UC_CadastrarCliente
+usecase "Editar Cliente" as UC_EditarCliente
+usecase "Excluir Cliente" as UC_ExcluirCliente
+usecase "Listar Clientes" as UC_ListarClientes
+
+User --> UC_CadastrarCliente
+User --> UC_EditarCliente
+User --> UC_ExcluirCliente
+User --> UC_ListarClientes
+
+@enduml
