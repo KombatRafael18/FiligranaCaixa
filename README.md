@@ -2,6 +2,8 @@
 
 O Filigrana é um sistema desenvolvido para facilitar o fechamento de caixa na loja de semijoias e bijuterias. Ele visa proporcionar uma gestão eficiente e precisa das transações diárias, permitindo que os lojistas acompanhem o fluxo de caixa de forma organizada e sem complicações.
 
+![Imagem de capa](./assets/capa.jpg)
+
 ## Alunos integrantes da equipe
 
 * Guilherme Cantoni
