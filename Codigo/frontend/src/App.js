@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Venda from './pages/Venda';
 import CadastrarCliente from './pages/CadastrarCliente';
 import Caixa from './pages/Caixa';
+import FechamentoVenda from './pages/FechamentoVenda';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/venda" element={<Venda />} />
           <Route path="/cadastrar-cliente" element={<CadastrarCliente />} />
           <Route path="/caixa" element={<Caixa />} />
+          <Route path="/fechamento-venda" element={<FechamentoVenda />} />
         </Routes>
       </div>
     </Router>
