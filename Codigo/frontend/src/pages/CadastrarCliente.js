@@ -9,10 +9,15 @@ function CadastrarCliente() {
   const [editingClient, setEditingClient] = useState(null);
 
   useEffect(() => {
-    // Fetch clients from API
-    fetch('/api/clients')
-      .then(response => response.json())
-      .then(data => setClients(data));
+    fetch('http://localhost:3000/clients')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => setClients(data))
+      .catch(error => console.error('Error fetching clients:', error));
   }, []);
 
   const handleSubmit = (e) => {
@@ -20,33 +25,48 @@ function CadastrarCliente() {
     const client = { name, email, address, phone };
 
     const method = editingClient ? 'PUT' : 'POST';
-    const url = editingClient ? `/api/clients/${editingClient.id}` : '/api/clients';
+    const url = editingClient ? `http://localhost:3000/clients/${editingClient.id}` : 'http://localhost:3000/clients';
 
     fetch(url, {
       method,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(client),
     })
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
       .then(() => {
         setName('');
         setEmail('');
         setAddress('');
         setPhone('');
         setEditingClient(null);
-        fetch('/api/clients')
-          .then(response => response.json())
-          .then(data => setClients(data));
-      });
+        return fetch('http://localhost:3000/clients');
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => setClients(data))
+      .catch(error => console.error('Error handling submit:', error));
   };
 
   const handleDelete = (id) => {
-    fetch(`/api/clients/${id}`, {
-      method: 'DELETE'
+    fetch(`http://localhost:3000/clients/${id}`, {
+      method: 'DELETE',
     })
-      .then(() => {
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
         setClients(clients.filter(client => client.id !== id));
-      });
+      })
+      .catch(error => console.error('Error deleting client:', error));
   };
 
   const handleEdit = (client) => {
