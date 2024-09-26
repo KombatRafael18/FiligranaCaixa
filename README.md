@@ -39,16 +39,37 @@ Após a execução do comando com sucesso, o banco de dados estará disponível 
 
 **Inicialização do Banco de Dados**
 
+Para conectar no Banco de Dados insira todas as informações que está no compose.yaml e quando for conectar no MySQL provavelmente vai ter que adicionar uma nova propriedade no Driver Properties:
+- Nome: allowPublicKeyRetrieval
+- Valor: true
+
 Com o banco de dados disponível, crie as tabelas e popule o banco com dados iniciais. Utilize uma ferramenta de gerenciamento de banco de dados (como MySQL Workbench ou DBeaver) e execute os scripts SQL disponíveis na pasta `Codigo/db` na ordem em que estão numerados.
 
 **Execução da API**
 
 Para executar a API, é necessário ter o Node.js na versão especificada no arquivo `Codigo/api/.nvmrc` instalada (v20.16.0). Recomenda-se o uso de um gerenciador de versões Node.js como **nvm**. Com o Node.js instalado, basta abrir um terminal, navegar até a pasta `Codigo/api`, instalar as dependências do projeto, especificar as variáveis de ambiente e executar o arquivo `server.js`:
 
+### Passo 1
 ```bash
 cd Codigo/api
 npm install
+```
+### Passo 2
+
+- Linux e macOS
+```bash
 export MYSQL_CONNECTION_URI="mysql://filigranadev:my-secret-pw-dev@localhost:13306/filigrana"
+```
+- Windows PowerShell
+```bash
+$env:MYSQL_CONNECTION_URI="mysql://filigranadev:my-secret-pw-dev@localhost:13306/filigrana"
+```
+- Windows CMD
+```bash
+set MYSQL_CONNECTION_URI=mysql://filigranadev:my-secret-pw-dev@localhost:13306/filigrana
+```
+### Passo 3
+```bash
 node server.js
 ```
 
