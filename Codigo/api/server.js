@@ -7,9 +7,8 @@ const clientsRouter = require("./router/clients");
 
 const app = express();
 
-// Middleware to parse JSON and handle CORS
 app.use(bodyParser.json());
-app.use(cors()); // Use CORS
+app.use(cors()); 
 
 app.use("/api/docs", docsRouter);
 app.use("/api/products", productsRouter);
