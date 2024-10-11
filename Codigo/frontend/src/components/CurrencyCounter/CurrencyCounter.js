@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 // Imagens das cédulas e moedas
 import bill100 from "./assets/currency-images/100_back.jpg";
@@ -16,19 +16,58 @@ import coin5 from "./assets/currency-images/moeda-5-centavos.png";
 import coin50 from "./assets/currency-images/moeda-50-centavos.png";
 
 const currencyImages = {
-  bill2,
-  bill5,
-  bill10,
-  bill20,
-  bill50,
-  bill200,
-  bill100,
-  coin1,
-  coin5,
-  coin10,
-  coin25,
-  coin50,
-  coin1real,
+  bill2: {
+    image: bill2,
+    value: 2.0,
+  },
+  bill5: {
+    image: bill5,
+    value: 5.0,
+  },
+  bill10: {
+    image: bill10,
+    value: 10.0,
+  },
+  bill20: {
+    image: bill20,
+    value: 20.0,
+  },
+  bill50: {
+    image: bill50,
+    value: 50.0,
+  },
+  bill100: {
+    image: bill100,
+    value: 100.0,
+  },
+  bill200: {
+    image: bill200,
+    value: 200.0,
+  },
+  coin1: {
+    image: coin1,
+    value: 0.01,
+  },
+  coin5: {
+    image: coin5,
+    value: 0.05,
+  },
+  coin10: {
+    image: coin10,
+    value: 0.1,
+  },
+  coin25: {
+    image: coin25,
+    value: 0.25,
+  },
+  coin50: {
+    image: coin50,
+    value: 0.5,
+  },
+  coin1real: {
+    image: coin1real,
+    value: 1.0,
+  },
 };
 
 const intlCurrency = new Intl.NumberFormat("pt-BR", {
@@ -36,7 +75,7 @@ const intlCurrency = new Intl.NumberFormat("pt-BR", {
   currency: "BRL",
 });
 
-function getCurrencyImage(currencyName) {
+function getCurrencyByName(currencyName) {
   const cNameNorm = currencyName.toLowerCase().replaceAll("_", "");
   const cImg = currencyImages[cNameNorm];
   if (!cImg) {
@@ -45,15 +84,33 @@ function getCurrencyImage(currencyName) {
   return cImg;
 }
 
-console.debug({ currencyImages });
-
 export default function CurrencyCounter({
   denominationName,
   counterValue,
   onCounterValueChange,
+  onTotalValueChange,
 }) {
-  const currencyImage = getCurrencyImage(denominationName);
-  const totalValue = 999.0;
+  const currencyData = getCurrencyByName(denominationName);
+  const currencyImage = currencyData.image;
+  const totalValue = currencyData.value * (counterValue || 0);
+
+  function handleDecrement() {
+    onCounterValueChange((v) => (v - 1 >= 0 ? v - 1 : 0));
+  }
+
+  function handleIncrement() {
+    onCounterValueChange((v) => v + 1);
+  }
+
+  function handleCounterChange(event) {
+    const newValue = Number(event.target.value);
+    onCounterValueChange(newValue);
+  }
+
+  useEffect(() => {
+    onTotalValueChange?.(totalValue);
+  }, [totalValue, onTotalValueChange]);
+
   return (
     <div>
       <img
@@ -65,9 +122,18 @@ export default function CurrencyCounter({
         alt={denominationName}
       />
       {"×"}
-      <button type="button">{"−"}</button>
-      <input type="number" value={counterValue} />
-      <button type="button">{"+"}</button>
+      <button type="button" onClick={handleDecrement}>
+        {"−"}
+      </button>
+      <input
+        type="number"
+        min="0"
+        value={counterValue}
+        onChange={handleCounterChange}
+      />
+      <button type="button" onClick={handleIncrement}>
+        {"+"}
+      </button>
       {"="}
       <span>{intlCurrency.format(totalValue)}</span>
     </div>

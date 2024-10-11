@@ -17,6 +17,8 @@ function nowLocalISODateOnly() {
 function FechamentoDeCaixa() {
   const [referenceDate, setReferenceDate] = useState(nowLocalISODateOnly());
 
+  const [bill2value, setBill2Value] = useState(0);
+
   const isReferenceDateToday = referenceDate === nowLocalISODateOnly();
 
   return (
@@ -85,7 +87,12 @@ function FechamentoDeCaixa() {
 
           {/* TODO: Contadores de cédulas e moedas */}
           <div>
-            <CurrencyCounter denominationName="BILL_2" />
+            <CurrencyCounter
+              denominationName="BILL_2"
+              counterValue={bill2value}
+              onCounterValueChange={setBill2Value}
+              onTotalValueChange={(v) => console.log("BILL_2", v)}
+            />
             <CurrencyCounter denominationName="BILL_5" />
             <CurrencyCounter denominationName="BILL_10" />
             <CurrencyCounter denominationName="BILL_20" />
