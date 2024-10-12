@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Button from "../components/Button";
-import CurrencyCounter from "../components/CurrencyCounter";
+import MoneyCounter from "../components/CurrencyCounter/MoneyCounter";
 import SideDrawer from "../components/SideDrawer";
 
 /**
@@ -86,28 +86,7 @@ function FechamentoDeCaixa() {
           <h2 className="text-base font-bold">Contagem do caixa</h2>
 
           {/* TODO: Contadores de cédulas e moedas */}
-          <div>
-            <CurrencyCounter
-              denominationName="BILL_2"
-              counterValue={bill2value}
-              onCounterValueChange={setBill2Value}
-              onTotalValueChange={(v) => console.log("BILL_2", v)}
-            />
-            <CurrencyCounter denominationName="BILL_5" />
-            <CurrencyCounter denominationName="BILL_10" />
-            <CurrencyCounter denominationName="BILL_20" />
-            <CurrencyCounter denominationName="BILL_50" />
-            <CurrencyCounter denominationName="BILL_100" />
-            <CurrencyCounter denominationName="BILL_200" />
-          </div>
-          <div>
-            <CurrencyCounter denominationName="COIN_1" />
-            <CurrencyCounter denominationName="COIN_5" />
-            <CurrencyCounter denominationName="COIN_10" />
-            <CurrencyCounter denominationName="COIN_25" />
-            <CurrencyCounter denominationName="COIN_50" />
-            <CurrencyCounter denominationName="COIN_1_REAL" />
-          </div>
+          <MoneyCounter />
         </section>
 
         <section className="mt-6">

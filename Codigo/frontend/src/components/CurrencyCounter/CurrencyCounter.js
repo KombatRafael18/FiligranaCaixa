@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 // Imagens das cédulas e moedas
 import bill100 from "./assets/currency-images/100_back.jpg";
@@ -112,7 +112,6 @@ export default function CurrencyCounter({
   denominationName,
   counterValue,
   onCounterValueChange,
-  onTotalValueChange,
 }) {
   const currencyData = getCurrencyByName(denominationName);
   const currencyImage = currencyData.image;
@@ -120,21 +119,24 @@ export default function CurrencyCounter({
   const totalValue = currencyData.value * (counterValue || 0);
 
   function handleDecrement() {
-    onCounterValueChange((v) => (v - 1 >= 0 ? v - 1 : 0));
+    const v = counterValue;
+    const newV = v - 1 >= 0 ? v - 1 : 0;
+    const newTotal = currencyData.value * newV;
+    onCounterValueChange(newV, newTotal);
   }
 
   function handleIncrement() {
-    onCounterValueChange((v) => v + 1);
+    const v = counterValue;
+    const newV = v + 1;
+    const newTotal = currencyData.value * newV;
+    onCounterValueChange(newV, newTotal);
   }
 
   function handleCounterChange(event) {
     const newValue = Number(event.target.value);
-    onCounterValueChange(newValue);
+    const newTotal = currencyData.value * newValue;
+    onCounterValueChange(newValue, newTotal);
   }
-
-  useEffect(() => {
-    onTotalValueChange?.(totalValue);
-  }, [totalValue, onTotalValueChange]);
 
   return (
     <div className="flex items-center gap-2">
