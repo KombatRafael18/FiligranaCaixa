@@ -122,16 +122,17 @@ export default function CurrencyCounter({
         alt={denominationName}
       />
       {"×"}
-      <button type="button" onClick={handleDecrement}>
+      <button type="button" onClick={handleDecrement} tabIndex="-1">
         {"−"}
       </button>
       <input
         type="number"
         min="0"
-        value={counterValue}
+        inputMode="numeric"
+        value={counterValue?.toString()}
         onChange={handleCounterChange}
       />
-      <button type="button" onClick={handleIncrement}>
+      <button type="button" onClick={handleIncrement} tabIndex="-1">
         {"+"}
       </button>
       {"="}
