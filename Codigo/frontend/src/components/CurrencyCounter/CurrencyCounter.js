@@ -141,7 +141,7 @@ export default function CurrencyCounter({
   return (
     <div className="flex items-center gap-2">
       <img
-        className={`${isCoin ? "w-10" : "w-20"} h-10 object-contain`}
+        className={`${isCoin ? "w-10" : "w-20"} h-10 object-contain flex-none`}
         src={currencyImage}
         alt={denominationName}
       />
@@ -162,7 +162,9 @@ export default function CurrencyCounter({
         {"+"}
       </ButtonSmall>
       {"="}
-      <span>{intlCurrency.format(totalValue)}</span>
+      <span className="inline-block min-w-24 flex-none">
+        {intlCurrency.format(totalValue)}
+      </span>
     </div>
   );
 }
