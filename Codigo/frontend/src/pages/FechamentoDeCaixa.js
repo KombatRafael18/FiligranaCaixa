@@ -17,7 +17,60 @@ function nowLocalISODateOnly() {
 function FechamentoDeCaixa() {
   const [referenceDate, setReferenceDate] = useState(nowLocalISODateOnly());
 
-  const [bill2value, setBill2Value] = useState(0);
+  const [moneyCounter, setMoneyCounter] = useState({
+    BILL_2: {
+      count: 0,
+      total: 0,
+    },
+    BILL_5: {
+      count: 0,
+      total: 0,
+    },
+    BILL_10: {
+      count: 0,
+      total: 0,
+    },
+    BILL_20: {
+      count: 0,
+      total: 0,
+    },
+    BILL_50: {
+      count: 0,
+      total: 0,
+    },
+    BILL_100: {
+      count: 0,
+      total: 0,
+    },
+    BILL_200: {
+      count: 0,
+      total: 0,
+    },
+    COIN_1: {
+      count: 0,
+      total: 0,
+    },
+    COIN_5: {
+      count: 0,
+      total: 0,
+    },
+    COIN_10: {
+      count: 0,
+      total: 0,
+    },
+    COIN_25: {
+      count: 0,
+      total: 0,
+    },
+    COIN_50: {
+      count: 0,
+      total: 0,
+    },
+    COIN_1_REAL: {
+      count: 0,
+      total: 0,
+    },
+  });
 
   const isReferenceDateToday = referenceDate === nowLocalISODateOnly();
 
@@ -86,7 +139,10 @@ function FechamentoDeCaixa() {
           <h2 className="text-base font-bold">Contagem do caixa</h2>
 
           {/* TODO: Contadores de cédulas e moedas */}
-          <MoneyCounter />
+          <MoneyCounter
+            moneyCounter={moneyCounter}
+            setMoneyCounter={setMoneyCounter}
+          />
         </section>
 
         <section className="mt-6">

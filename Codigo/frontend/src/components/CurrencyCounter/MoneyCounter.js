@@ -26,62 +26,7 @@ const intlCurrency = new Intl.NumberFormat("pt-BR", {
   currency: "BRL",
 });
 
-export default function MoneyCounter({}) {
-  const [moneyCounter, setMoneyCounter] = useState({
-    BILL_2: {
-      count: 0,
-      total: 0,
-    },
-    BILL_5: {
-      count: 0,
-      total: 0,
-    },
-    BILL_10: {
-      count: 0,
-      total: 0,
-    },
-    BILL_20: {
-      count: 0,
-      total: 0,
-    },
-    BILL_50: {
-      count: 0,
-      total: 0,
-    },
-    BILL_100: {
-      count: 0,
-      total: 0,
-    },
-    BILL_200: {
-      count: 0,
-      total: 0,
-    },
-    COIN_1: {
-      count: 0,
-      total: 0,
-    },
-    COIN_5: {
-      count: 0,
-      total: 0,
-    },
-    COIN_10: {
-      count: 0,
-      total: 0,
-    },
-    COIN_25: {
-      count: 0,
-      total: 0,
-    },
-    COIN_50: {
-      count: 0,
-      total: 0,
-    },
-    COIN_1_REAL: {
-      count: 0,
-      total: 0,
-    },
-  });
-
+export default function MoneyCounter({ moneyCounter, setMoneyCounter }) {
   const sum = Object.values(moneyCounter).reduce(
     (acc, value) => acc + value.total,
     0
