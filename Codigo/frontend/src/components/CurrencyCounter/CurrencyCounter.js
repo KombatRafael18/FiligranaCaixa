@@ -19,54 +19,67 @@ const currencyImages = {
   bill2: {
     image: bill2,
     value: 2.0,
+    type: "BILL",
   },
   bill5: {
     image: bill5,
     value: 5.0,
+    type: "BILL",
   },
   bill10: {
     image: bill10,
     value: 10.0,
+    type: "BILL",
   },
   bill20: {
     image: bill20,
     value: 20.0,
+    type: "BILL",
   },
   bill50: {
     image: bill50,
     value: 50.0,
+    type: "BILL",
   },
   bill100: {
     image: bill100,
     value: 100.0,
+    type: "BILL",
   },
   bill200: {
     image: bill200,
     value: 200.0,
+    type: "BILL",
   },
   coin1: {
     image: coin1,
     value: 0.01,
+    type: "COIN",
   },
   coin5: {
     image: coin5,
     value: 0.05,
+    type: "COIN",
   },
   coin10: {
     image: coin10,
     value: 0.1,
+    type: "COIN",
   },
   coin25: {
     image: coin25,
     value: 0.25,
+    type: "COIN",
   },
   coin50: {
     image: coin50,
     value: 0.5,
+    type: "COIN",
   },
   coin1real: {
     image: coin1real,
     value: 1.0,
+    type: "COIN",
   },
 };
 
@@ -84,6 +97,17 @@ function getCurrencyByName(currencyName) {
   return cImg;
 }
 
+function ButtonSmall({ children, ...props }) {
+  return (
+    <button
+      className="inline-flex justify-center items-center py-1 px-2 border border-solid border-current rounded"
+      {...props}
+    >
+      {children}
+    </button>
+  );
+}
+
 export default function CurrencyCounter({
   denominationName,
   counterValue,
@@ -92,6 +116,7 @@ export default function CurrencyCounter({
 }) {
   const currencyData = getCurrencyByName(denominationName);
   const currencyImage = currencyData.image;
+  const isCoin = currencyData.type === "COIN";
   const totalValue = currencyData.value * (counterValue || 0);
 
   function handleDecrement() {
@@ -112,29 +137,28 @@ export default function CurrencyCounter({
   }, [totalValue, onTotalValueChange]);
 
   return (
-    <div>
+    <div className="flex items-center gap-2">
       <img
-        style={{
-          maxWidth: "80px",
-          maxHeight: "40px",
-        }}
+        className={`${isCoin ? "w-10" : "w-20"} h-10 object-contain`}
         src={currencyImage}
         alt={denominationName}
       />
       {"×"}
-      <button type="button" onClick={handleDecrement} tabIndex="-1">
+      <ButtonSmall type="button" onClick={handleDecrement} tabIndex="-1">
         {"−"}
-      </button>
+      </ButtonSmall>
       <input
+        className="py-1 px-2 w-16 text-center bg-transparent border border-solid border-inherit rounded no-spinner"
+        title="Quantidade"
         type="number"
         min="0"
         inputMode="numeric"
         value={counterValue?.toString()}
         onChange={handleCounterChange}
       />
-      <button type="button" onClick={handleIncrement} tabIndex="-1">
+      <ButtonSmall type="button" onClick={handleIncrement} tabIndex="-1">
         {"+"}
-      </button>
+      </ButtonSmall>
       {"="}
       <span>{intlCurrency.format(totalValue)}</span>
     </div>
