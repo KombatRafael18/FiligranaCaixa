@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "../components/Button";
 import MoneyCounter from "../components/CurrencyCounter/MoneyCounter";
 import SalesTable from "../components/SalesTable";
 import SideDrawer from "../components/SideDrawer";
+import { getFechamentoCaixaResumoDia } from "../services/filigranaapi";
 
 /**
  * Retorna a data atual no formato ISO (YYYY-MM-DD) sem a parte do tempo.
@@ -74,6 +75,21 @@ function FechamentoDeCaixa() {
   });
 
   const isReferenceDateToday = referenceDate === nowLocalISODateOnly();
+
+  async function getDailySummary() {
+    // TODO: loading hook
+    try {
+      const resumoDia = await getFechamentoCaixaResumoDia(referenceDate);
+      console.debug("Resumo do dia", resumoDia);
+    } catch (error) {
+      console.debug("Erro ao buscar resumo do dia", error);
+    }
+  }
+
+  useEffect(() => {
+    console.debug("Referência de data alterada", referenceDate);
+    getDailySummary();
+  }, [referenceDate]);
 
   return (
     <>
