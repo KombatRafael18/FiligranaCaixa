@@ -113,9 +113,10 @@ function FechamentoDeCaixa() {
             </section>
 
             <section className="mt-6">
-              <h2 className="text-base font-bold">Resumo vendas em DINHEIRO</h2>
+              <h2 className="text-base font-bold">Resumo das vendas</h2>
               {/* TODO: Total de vendas em dinheiro */}
-              <p>Total: R$ 999,00</p>
+              <p>Caixa anterior: R$536,00</p>
+              <p>Total no caixa hoje: R$5.079,50</p>
             </section>
 
             <section className="mt-6">
@@ -123,7 +124,7 @@ function FechamentoDeCaixa() {
               {/* TODO: Permitir retirar dinheiro do caixa */}
               <div>
                 <p>Insira o valor a retirar: | 0,00 |</p>
-                <p>Fechamento de hoje: R$735,00</p>
+                <p>Próximo caixa: R$735,00</p>
               </div>
             </section>
           </div>
