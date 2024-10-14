@@ -115,7 +115,6 @@ export default function CurrencyCounter({
 }) {
   const currencyData = getCurrencyByName(denominationName);
   const currencyImage = currencyData.image;
-  const isCoin = currencyData.type === "COIN";
   const totalValue = currencyData.value * (counterValue || 0);
 
   function handleDecrement() {
@@ -141,7 +140,7 @@ export default function CurrencyCounter({
   return (
     <div className="flex items-center gap-2">
       <img
-        className={`${isCoin ? "w-10" : "w-20"} h-10 object-contain flex-none`}
+        className="w-20 h-10 object-contain flex-none"
         src={currencyImage}
         alt={denominationName}
       />
