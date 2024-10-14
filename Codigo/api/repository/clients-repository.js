@@ -3,9 +3,9 @@ const mysqlClient = require("./mysql-client");
 const db = mysqlClient.pool;
 
 async function createClient(client) {
-  const query = "INSERT INTO CLIENTS (name, email, address, phone) VALUES (?, ?, ?, ?)";
-  const [result] = await db.execute(query, [client.name, client.email, client.address, client.phone]);
-  return { id: result.insertId, ...client };
+  const query = "INSERT INTO CLIENTS (cpf, name, email, address, phone) VALUES (?, ?, ?, ?, ?)";
+  const [result] = await db.execute(query, [client.cpf, client.name, client.email, client.address, client.phone]);
+  return { id: result.insertId, ...client };  
 }
 
 async function getClients() {
@@ -20,9 +20,15 @@ async function getClientById(id) {
   return rows[0] || null;
 }
 
+async function getClientByCpf(cpf) {
+  const query = "SELECT * FROM CLIENTS WHERE cpf = ?";
+  const [rows] = await db.execute(query, [cpf]);
+  return rows[0] || null;
+}
+
 async function updateClient(id, client) {
-  const query = "UPDATE CLIENTS SET name = ?, email = ?, address = ?, phone = ? WHERE id = ?";
-  const [result] = await db.execute(query, [client.name, client.email, client.address, client.phone, id]);
+  const query = "UPDATE CLIENTS SET cpf = ?, name = ?, email = ?, address = ?, phone = ? WHERE id = ?";
+  const [result] = await db.execute(query, [client.cpf, client.name, client.email, client.address, client.phone, id]);
   if (result.affectedRows === 0) {
     const error = new Error("Client not found");
     error.name = "ClientNotFoundError";
@@ -45,6 +51,7 @@ module.exports = {
   createClient,
   getClients,
   getClientById,
+  getClientByCpf,
   updateClient,
   deleteClient,
 };

@@ -11,6 +11,7 @@ function GetClients(req) {
 
 function CreateClient(client) {
   const schema = joi.object().keys({
+    cpf: joi.string().length(11).pattern(/^[0-9]+$/).required(), 
     name: joi.string().min(3).max(50).required(),
     email: joi.string().email().required(),
     address: joi.string().min(5).max(255).required(),
@@ -22,11 +23,12 @@ function CreateClient(client) {
 
 function UpdateClient(client) {
   const schema = joi.object().keys({
+    cpf: joi.string().length(11).pattern(/^[0-9]+$/),  
     name: joi.string().min(3).max(50),
     email: joi.string().email(),
     address: joi.string().min(5).max(255),
     phone: joi.string().min(10).max(15),
-  }).or('name', 'email', 'address', 'phone'); 
+  }).or('cpf', 'name', 'email', 'address', 'phone'); 
 
   return schema.validate(client);
 }
