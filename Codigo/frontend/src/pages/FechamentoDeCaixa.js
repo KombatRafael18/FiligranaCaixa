@@ -4,7 +4,11 @@ import MoneyCounter from "../components/CurrencyCounter/MoneyCounter";
 import SalesTable from "../components/SalesTable";
 import SideDrawer from "../components/SideDrawer";
 import { useLoading } from "../hooks/loading-hook";
-import { getFechamentoCaixaResumoDia } from "../services/filigranaapi";
+import {
+  getFechamentoCaixaResumoDia,
+  postFechamentoCaixaDia,
+} from "../services/filigranaapi";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Retorna a data atual no formato ISO (YYYY-MM-DD) sem a parte do tempo.
@@ -75,6 +79,7 @@ function FechamentoDeCaixa() {
     },
   });
 
+  const navigate = useNavigate();
   const { isLoading, startLoading, stopLoading } = useLoading();
 
   const isReferenceDateToday = referenceDate === nowLocalISODateOnly();
@@ -90,6 +95,31 @@ function FechamentoDeCaixa() {
     } finally {
       stopLoading();
     }
+  }
+
+  async function handleConfirmarFechamento() {
+    // TODO: Mostar modal para confirmar fechamento
+
+    const data = {
+      moneyCounter,
+      cashRegisterWithdrawal: 0,
+    };
+
+    console.debug("Confirmar fechamento", referenceDate, data);
+
+    try {
+      startLoading();
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await postFechamentoCaixaDia(referenceDate, data);
+      console.debug("Fechamento confirmado");
+    } catch (error) {
+      console.debug("Erro ao confirmar fechamento", error);
+      return;
+    } finally {
+      stopLoading();
+    }
+
+    navigate("/home");
   }
 
   useEffect(() => {
@@ -169,7 +199,9 @@ function FechamentoDeCaixa() {
         </div>
 
         <div className="mt-6">
-          <Button type="button">Confirmar fechamento</Button>
+          <Button type="button" onClick={handleConfirmarFechamento}>
+            Confirmar fechamento
+          </Button>
         </div>
       </section>
     </>
