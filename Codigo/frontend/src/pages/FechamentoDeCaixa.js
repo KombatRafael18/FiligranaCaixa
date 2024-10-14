@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Button from "../components/Button";
 import MoneyCounter from "../components/CurrencyCounter/MoneyCounter";
+import SalesTable from "../components/SalesTable";
 import SideDrawer from "../components/SideDrawer";
 
 /**
@@ -76,9 +77,10 @@ function FechamentoDeCaixa() {
 
   return (
     <>
-      <SideDrawer isOpen={true} />
+      {/* <SideDrawer isOpen={true} /> */}
 
-      <section className="ml-[250px] p-10 max-w-screen-lg">
+      {/* <section className="ml-[250px] p-10 max-w-screen-lg"> */}
+      <section className="p-10 max-w-screen-lg">
         <header>
           <h1 className="text-3xl font-bold">Fechamento de caixa</h1>
           <p className="text-xl font-light">
@@ -104,28 +106,9 @@ function FechamentoDeCaixa() {
           <h2 className="text-base font-bold">Vendas</h2>
 
           {/* TODO: Tabela de vendas */}
-          <table className="mt-3">
-            <thead>
-              {/* ID Venda Data/Hora Modalidade Pagamento Total */}
-              <tr>
-                <th>ID Venda</th>
-                <th>Data/Hora</th>
-                <th>Modalidade</th>
-                <th>Pagamento</th>
-                <th>Total</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr>
-                <td>121</td>
-                <td>07/10/24 13:32</td>
-                <td>Varejo</td>
-                <td>DINHEIRO</td>
-                <td>R$ 210,00</td>
-              </tr>
-            </tbody>
-          </table>
+          <div className="mt-3">
+            <SalesTable maxHeigth="250px" />
+          </div>
         </section>
 
         <section className="mt-6">
