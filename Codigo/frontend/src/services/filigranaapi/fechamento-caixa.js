@@ -15,6 +15,62 @@ export async function getFechamentoCaixaResumoDia(date) {
       { paymentMethod: "Promissoria", amount: 720.0 },
     ],
     previousDayCashBalance: 0,
+    moneyCounter: {
+      BILL_2: {
+        count: 0,
+        total: 0,
+      },
+      BILL_5: {
+        count: 0,
+        total: 0,
+      },
+      BILL_10: {
+        count: 0,
+        total: 0,
+      },
+      BILL_20: {
+        count: 0,
+        total: 0,
+      },
+      BILL_50: {
+        count: 0,
+        total: 0,
+      },
+      BILL_100: {
+        count: 0,
+        total: 0,
+      },
+      BILL_200: {
+        count: 0,
+        total: 0,
+      },
+      COIN_1: {
+        count: 0,
+        total: 0,
+      },
+      COIN_5: {
+        count: 0,
+        total: 0,
+      },
+      COIN_10: {
+        count: 0,
+        total: 0,
+      },
+      COIN_25: {
+        count: 0,
+        total: 0,
+      },
+      COIN_50: {
+        count: 0,
+        total: 0,
+      },
+      COIN_1_REAL: {
+        count: 0,
+        total: 0,
+      },
+    },
+    cashRegisterWithdrawal: 0,
+    cashBalance: 0,
   };
 }
 
