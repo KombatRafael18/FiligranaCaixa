@@ -102,53 +102,44 @@ function FechamentoDeCaixa() {
           )}
         </section>
 
-        <section className="mt-6">
-          <h2 className="text-base font-bold">Vendas</h2>
-
-          {/* TODO: Tabela de vendas */}
-          <div className="mt-3">
-            <SalesTable maxHeigth="250px" />
-          </div>
-        </section>
-
-        <section className="mt-6">
-          <h2 className="text-base font-bold">Resumo vendas em DINHEIRO</h2>
-
-          {/* TODO: Total de vendas em dinheiro */}
-          <p>Total: R$ 999,00</p>
-        </section>
-
-        <section className="mt-6">
-          <h2 className="text-base font-bold">Contagem do caixa</h2>
-
-          {/* TODO: Contadores de cédulas e moedas */}
-          <MoneyCounter
-            moneyCounter={moneyCounter}
-            setMoneyCounter={setMoneyCounter}
-          />
-        </section>
-
-        <section className="mt-6">
-          <h2 className="text-base font-bold">Variação do caixa</h2>
-
-          {/* TODO: Diferença entre o fechamento de ontem e o total no caixa hoje */}
+        <div className="flex gap-12">
           <div>
-            <p>Fechamento de ontem: R$735,00</p>
-            <p>Total de vendas em dinheiro: R$ 115,00</p>
-            <p>Total no caixa hoje: R$ 950,00</p>
-            <p>Diferença: R$ 0,00</p>
+            <section className="mt-6">
+              <h2 className="text-base font-bold">Vendas</h2>
+              {/* TODO: Tabela de vendas */}
+              <div className="mt-3">
+                <SalesTable maxHeigth="250px" />
+              </div>
+            </section>
+
+            <section className="mt-6">
+              <h2 className="text-base font-bold">Resumo vendas em DINHEIRO</h2>
+              {/* TODO: Total de vendas em dinheiro */}
+              <p>Total: R$ 999,00</p>
+            </section>
+
+            <section className="mt-6">
+              <h2 className="text-base font-bold">Retirar do caixa</h2>
+              {/* TODO: Permitir retirar dinheiro do caixa */}
+              <div>
+                <p>Insira o valor a retirar: | 0,00 |</p>
+                <p>Fechamento de hoje: R$735,00</p>
+              </div>
+            </section>
           </div>
-        </section>
 
-        <section className="mt-6">
-          <h2 className="text-base font-bold">Retirar do caixa</h2>
-
-          {/* TODO: Permitir retirar dinheiro do caixa */}
           <div>
-            <p>Insira o valor a retirar: | 0,00 |</p>
-            <p>Fechamento de hoje: R$735,00</p>
+            <section className="mt-6">
+              <h2 className="text-base font-bold">Contagem do caixa</h2>
+
+              {/* TODO: Contadores de cédulas e moedas */}
+              <MoneyCounter
+                moneyCounter={moneyCounter}
+                setMoneyCounter={setMoneyCounter}
+              />
+            </section>
           </div>
-        </section>
+        </div>
 
         <div className="mt-6">
           <Button type="button">Confirmar fechamento</Button>

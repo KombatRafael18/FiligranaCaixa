@@ -2,23 +2,25 @@ import { useState } from "react";
 import CurrencyCounter from "./CurrencyCounter";
 
 const bills = [
-  "BILL_2",
-  "BILL_5",
-  "BILL_10",
+  // "BILL_200",
+  // "BILL_100",
+  // "BILL_50",
   "BILL_20",
-  "BILL_50",
-  "BILL_100",
-  "BILL_200",
+  "BILL_10",
+  "BILL_5",
+  "BILL_2",
 ];
 
 const coins = [
-  "COIN_1",
-  "COIN_5",
-  "COIN_10",
-  "COIN_25",
-  "COIN_50",
   "COIN_1_REAL",
+  "COIN_50",
+  "COIN_25",
+  "COIN_10",
+  "COIN_5",
+  // "COIN_1",
 ];
+
+const currencyUnits = [...bills, ...coins];
 
 // TODO: Cria módulo de formatação de moeda
 const intlCurrency = new Intl.NumberFormat("pt-BR", {
@@ -43,32 +45,18 @@ export default function MoneyCounter({ moneyCounter, setMoneyCounter }) {
   }
 
   return (
-    <div className="flex gap-x-8">
-      <div className="flex flex-col gap-y-2">
-        {bills.map((denominationName) => (
-          <CurrencyCounter
-            key={denominationName}
-            denominationName={denominationName}
-            counterValue={moneyCounter[denominationName].count}
-            onCounterValueChange={(cv, tv) =>
-              handleCounterValueChange(denominationName, cv, tv)
-            }
-          />
-        ))}
-      </div>
-      <div className="flex flex-col gap-y-2">
-        {coins.map((denominationName) => (
-          <CurrencyCounter
-            key={denominationName}
-            denominationName={denominationName}
-            counterValue={moneyCounter[denominationName].count}
-            onCounterValueChange={(cv, tv) =>
-              handleCounterValueChange(denominationName, cv, tv)
-            }
-          />
-        ))}
-        Total: {intlCurrency.format(sum)}
-      </div>
+    <div className="flex flex-col gap-y-2">
+      {currencyUnits.map((denominationName) => (
+        <CurrencyCounter
+          key={denominationName}
+          denominationName={denominationName}
+          counterValue={moneyCounter[denominationName].count}
+          onCounterValueChange={(cv, tv) =>
+            handleCounterValueChange(denominationName, cv, tv)
+          }
+        />
+      ))}
+      Total: {intlCurrency.format(sum)}
     </div>
   );
 }
