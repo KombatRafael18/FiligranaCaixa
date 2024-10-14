@@ -3,6 +3,7 @@ import Button from "../components/Button";
 import MoneyCounter from "../components/CurrencyCounter/MoneyCounter";
 import SalesTable from "../components/SalesTable";
 import SideDrawer from "../components/SideDrawer";
+import { useLoading } from "../hooks/loading-hook";
 import { getFechamentoCaixaResumoDia } from "../services/filigranaapi";
 
 /**
@@ -74,15 +75,20 @@ function FechamentoDeCaixa() {
     },
   });
 
+  const { isLoading, startLoading, stopLoading } = useLoading();
+
   const isReferenceDateToday = referenceDate === nowLocalISODateOnly();
 
   async function getDailySummary() {
-    // TODO: loading hook
     try {
+      startLoading();
+      await new Promise((resolve) => setTimeout(resolve, 2500));
       const resumoDia = await getFechamentoCaixaResumoDia(referenceDate);
       console.debug("Resumo do dia", resumoDia);
     } catch (error) {
       console.debug("Erro ao buscar resumo do dia", error);
+    } finally {
+      stopLoading();
     }
   }
 
@@ -90,6 +96,10 @@ function FechamentoDeCaixa() {
     console.debug("Referência de data alterada", referenceDate);
     getDailySummary();
   }, [referenceDate]);
+
+  if (isLoading) {
+    return <p>Carregando informações do dia {referenceDate}...</p>;
+  }
 
   return (
     <>
