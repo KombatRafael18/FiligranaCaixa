@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import MoneyCounter from "../components/CurrencyCounter/MoneyCounter";
 import SalesTable from "../components/SalesTable";
@@ -8,7 +9,7 @@ import {
   getFechamentoCaixaResumoDia,
   postFechamentoCaixaDia,
 } from "../services/filigranaapi";
-import { useNavigate } from "react-router-dom";
+import { fireWarningConfirm } from "../utils/alerts";
 
 /**
  * Retorna a data atual no formato ISO (YYYY-MM-DD) sem a parte do tempo.
@@ -98,7 +99,12 @@ function FechamentoDeCaixa() {
   }
 
   async function handleConfirmarFechamento() {
-    // TODO: Mostar modal para confirmar fechamento
+    const { isConfirmed } = await fireWarningConfirm(
+      "Confirme sua intenção de fechar o caixa"
+    );
+    if (!isConfirmed) {
+      return;
+    }
 
     const data = {
       moneyCounter,
