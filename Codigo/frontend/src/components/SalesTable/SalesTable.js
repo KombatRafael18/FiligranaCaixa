@@ -1,33 +1,29 @@
-import styles from "./SalesTable.module.css";
+import { formatBrazilianCurrency } from "../../utils/currencyFormatter";
 
-export default function SalesTable({ maxHeigth = undefined }) {
+const mockData = [
+  { paymentMethod: "Dinheiro", amount: 1439.5 },
+  { paymentMethod: "Pix", amount: 180.0 },
+  { paymentMethod: "Qr pix", amount: 330.0 },
+  { paymentMethod: "Débito", amount: 210.0 },
+  { paymentMethod: "Credito", amount: 2200.0 },
+  { paymentMethod: "Promissoria", amount: 720.0 },
+];
+
+export default function SalesTable({}) {
   return (
-    <table
-      className={`${
-        maxHeigth ? styles["scroll-table"] : ""
-      } w-full text-xs md:text-base text-center bg-neutral-100 border border-neutral-300`}
-      style={{
-        ["--table-max-height"]: maxHeigth,
-      }}
-    >
+    <table className="w-full text-xs md:text-base text-center bg-neutral-100 border border-neutral-300">
       <thead className="text-white bg-[#7D4B5F]">
         <tr>
-          <th>ID Venda</th>
-          <th>Data/Hora</th>
-          <th>Modalidade</th>
           <th>Pagamento</th>
           <th>Total</th>
         </tr>
       </thead>
 
       <tbody>
-        {Array.from({ length: 40 }).map((_, index) => (
+        {mockData.map((row, index) => (
           <tr key={index} className="border border-neutral-300">
-            <td>121</td>
-            <td>07/10/24 13:32</td>
-            <td>Varejo</td>
-            <td>DINHEIRO</td>
-            <td>R$ 210,00</td>
+            <td className="uppercase">{row.paymentMethod}</td>
+            <td>{formatBrazilianCurrency(row.amount)}</td>
           </tr>
         ))}
       </tbody>
