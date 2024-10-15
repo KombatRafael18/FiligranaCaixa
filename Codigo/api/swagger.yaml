@@ -8,6 +8,10 @@ info:
 servers:
   - url: http://localhost:3000
     description: Servidor local
+  - url: http://localhost:8030
+    description: Servidor local no docker
+  - url: http://ec2-54-166-180-33.compute-1.amazonaws.com:8030
+    description: Servidor de produção
 
 tags:
   - name: products
