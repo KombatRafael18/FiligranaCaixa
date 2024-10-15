@@ -3,6 +3,7 @@ const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const docsRouter = require('./router/docs');
 const productsRouter = require('./router/products');
+const cashClosureRouter = require('./router/cash-closure');
 
 // Initialize express app
 const app = express();
@@ -12,6 +13,7 @@ app.use(bodyParser.json());
 
 app.use('/api/docs', docsRouter);
 app.use('/api/products', productsRouter);
+app.use('/api/cash-closure', cashClosureRouter);
 
 // MySQL connection
 const db = mysql.createConnection(

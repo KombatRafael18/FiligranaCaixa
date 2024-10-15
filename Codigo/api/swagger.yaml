@@ -116,6 +116,54 @@ paths:
           description: Sucesso, sem conteúdo
         "404":
           $ref: "#/components/responses/NotFoundResponse"
+  
+  /api/cash-closure/daily-summary/{date}:
+    get:
+      summary: Retorna o resumo diário de vendas
+      tags:
+        - cash-closure
+      parameters:
+        - name: date
+          in: path
+          required: true
+          description: Data no formato YYYY-MM-DD
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: Sucesso, retorna o resumo diário
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DailySummary"
+
+  /api/cash-closure/close-day:
+    post:
+      summary: Fecha o caixa do dia
+      tags:
+        - cash-closure
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date
+                moneyCounter:
+                  $ref: "#/components/schemas/MoneyCounter"
+                cashRegisterWithdrawal:
+                  type: number
+      responses:
+        "204":
+          description: Sucesso, caixa fechado
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "409":
+          $ref: "#/components/responses/ConflictResponse"
 
 components:
   schemas:
@@ -145,6 +193,66 @@ components:
       allOf:
         - $ref: "#/components/schemas/ProductCreate"
 
+    MoneyCounterItem:
+      type: object
+      properties:
+        count:
+          type: integer
+        total:
+          type: number
+    
+    MoneyCounter:
+      type: object
+      properties:
+        BILL_2:
+          $ref: "#/components/schemas/MoneyCounterItem"
+        BILL_5:
+          $ref: "#/components/schemas/MoneyCounterItem"
+        BILL_10:
+          $ref: "#/components/schemas/MoneyCounterItem"
+        BILL_20:
+          $ref: "#/components/schemas/MoneyCounterItem"
+        BILL_50:
+          $ref: "#/components/schemas/MoneyCounterItem"
+        BILL_100:
+          $ref: "#/components/schemas/MoneyCounterItem"
+        BILL_200:
+          $ref: "#/components/schemas/MoneyCounterItem"
+        COIN_1:
+          $ref: "#/components/schemas/MoneyCounterItem"
+        COIN_5:
+          $ref: "#/components/schemas/MoneyCounterItem"
+        COIN_10:
+          $ref: "#/components/schemas/MoneyCounterItem"
+        COIN_25:
+          $ref: "#/components/schemas/MoneyCounterItem"
+        COIN_50:
+          $ref: "#/components/schemas/MoneyCounterItem"
+        COIN_1_REAL:
+          $ref: "#/components/schemas/MoneyCounterItem"
+
+    DailySummary:
+      type: object
+      properties:
+        payments:
+          type: array
+          items:
+            type: object
+            properties:
+              paymentMethod:
+                type: string
+              amount:
+                type: number
+        previousDayCashBalance:
+          type: number
+        moneyCounter:
+          $ref: "#/components/schemas/MoneyCounter"
+        cashRegisterWithdrawal:
+          type: number
+        cashBalance:
+          type: number
+
+
     ApiError:
       type: object
       properties:
@@ -161,6 +269,13 @@ components:
 
     NotFoundResponse:
       description: Recurso não encontrado
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiError"
+    
+    ConflictResponse:
+      description: Conflito
       content:
         application/json:
           schema:
