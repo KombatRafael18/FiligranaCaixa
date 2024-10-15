@@ -270,6 +270,11 @@ components:
     DailySummary:
       type: object
       properties:
+        id:
+          type: integer
+        date:
+          type: string
+          format: date
         payments:
           type: array
           items:
@@ -280,13 +285,21 @@ components:
               amount:
                 type: number
         previousDayCashBalance:
-          type: number
+          type: object
+          properties:
+            date:
+              type: string
+              format: date
+            cashBalance:
+              type: number
         moneyCounter:
           $ref: "#/components/schemas/MoneyCounter"
         cashRegisterWithdrawal:
           type: number
         cashBalance:
           type: number
+        cashAlreadyClosed:
+          type: boolean
 
 
     ApiError:
