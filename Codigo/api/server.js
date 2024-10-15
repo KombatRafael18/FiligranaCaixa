@@ -1,5 +1,6 @@
 const express = require('express');
 const mysql = require('mysql2');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const docsRouter = require('./router/docs');
 const productsRouter = require('./router/products');
@@ -7,6 +8,8 @@ const cashClosureRouter = require('./router/cash-closure');
 
 // Initialize express app
 const app = express();
+
+app.use(cors());
 
 // Middleware to parse JSON
 app.use(bodyParser.json());
