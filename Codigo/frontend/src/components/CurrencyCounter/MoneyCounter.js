@@ -2,22 +2,22 @@ import { useState } from "react";
 import CurrencyCounter from "./CurrencyCounter";
 
 const bills = [
-  // "BILL_200",
-  // "BILL_100",
-  // "BILL_50",
-  "BILL_20",
-  "BILL_10",
-  "BILL_5",
-  "BILL_2",
+  // "bill200",
+  // "bill100",
+  // "bill50",
+  "bill20",
+  "bill10",
+  "bill5",
+  "bill2",
 ];
 
 const coins = [
-  "COIN_1_REAL",
-  "COIN_50",
-  "COIN_25",
-  "COIN_10",
-  "COIN_5",
-  // "COIN_1",
+  "coin1Real",
+  "coin50",
+  "coin25",
+  "coin10",
+  "coin5",
+  // "coin1",
 ];
 
 const currencyUnits = [...bills, ...coins];

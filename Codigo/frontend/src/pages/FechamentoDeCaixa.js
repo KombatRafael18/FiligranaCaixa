@@ -26,55 +26,55 @@ function FechamentoDeCaixa() {
   const [referenceDate, setReferenceDate] = useState(nowLocalISODateOnly());
 
   const [moneyCounter, setMoneyCounter] = useState({
-    BILL_2: {
+    bill2: {
       count: 0,
       total: 0,
     },
-    BILL_5: {
+    bill5: {
       count: 0,
       total: 0,
     },
-    BILL_10: {
+    bill10: {
       count: 0,
       total: 0,
     },
-    BILL_20: {
+    bill20: {
       count: 0,
       total: 0,
     },
-    BILL_50: {
+    bill50: {
       count: 0,
       total: 0,
     },
-    BILL_100: {
+    Bill100: {
       count: 0,
       total: 0,
     },
-    BILL_200: {
+    bill200: {
       count: 0,
       total: 0,
     },
-    COIN_1: {
+    coin1: {
       count: 0,
       total: 0,
     },
-    COIN_5: {
+    coin5: {
       count: 0,
       total: 0,
     },
-    COIN_10: {
+    coin10: {
       count: 0,
       total: 0,
     },
-    COIN_25: {
+    coin25: {
       count: 0,
       total: 0,
     },
-    COIN_50: {
+    coin50: {
       count: 0,
       total: 0,
     },
-    COIN_1_REAL: {
+    coin1Real: {
       count: 0,
       total: 0,
     },
@@ -88,9 +88,10 @@ function FechamentoDeCaixa() {
   async function getDailySummary() {
     try {
       startLoading();
-      await new Promise((resolve) => setTimeout(resolve, 2500));
-      const resumoDia = await getFechamentoCaixaResumoDia(referenceDate);
-      console.debug("Resumo do dia", resumoDia);
+      const dailySummary = await getFechamentoCaixaResumoDia(referenceDate);
+      console.debug("Resumo do dia", dailySummary);
+
+      setMoneyCounter(dailySummary.moneyCounter);
     } catch (error) {
       console.debug("Erro ao buscar resumo do dia", error);
     } finally {
@@ -106,17 +107,25 @@ function FechamentoDeCaixa() {
       return;
     }
 
+    const moneyCounterCount = Object.entries(moneyCounter).reduce(
+      (acc, [key, value]) => {
+        acc[key] = { count: value.count };
+        return acc;
+      },
+      {}
+    );
+
     const data = {
-      moneyCounter,
+      date: referenceDate,
+      moneyCounter: moneyCounterCount,
       cashRegisterWithdrawal: 0,
     };
 
-    console.debug("Confirmar fechamento", referenceDate, data);
+    console.debug("Confirmar fechamento", data);
 
     try {
       startLoading();
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      await postFechamentoCaixaDia(referenceDate, data);
+      await postFechamentoCaixaDia(data);
       console.debug("Fechamento confirmado");
     } catch (error) {
       console.debug("Erro ao confirmar fechamento", error);
