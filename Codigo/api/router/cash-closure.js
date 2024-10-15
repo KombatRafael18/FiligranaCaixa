@@ -1,4 +1,5 @@
 const express = require("express");
+const cashClosureRepo = require("../repository/cash-closure-repository");
 
 const router = express.Router();
 
@@ -16,55 +17,55 @@ router.get("/daily-summary/:date", async (req, res) => {
     ],
     previousDayCashBalance: 0,
     moneyCounter: {
-      BILL_2: {
+      bill2: {
         count: 0,
         total: 0,
       },
-      BILL_5: {
+      bill5: {
         count: 0,
         total: 0,
       },
-      BILL_10: {
+      bill10: {
         count: 0,
         total: 0,
       },
-      BILL_20: {
+      bill20: {
         count: 0,
         total: 0,
       },
-      BILL_50: {
+      bill50: {
         count: 0,
         total: 0,
       },
-      BILL_100: {
+      bill100: {
         count: 0,
         total: 0,
       },
-      BILL_200: {
+      bill200: {
         count: 0,
         total: 0,
       },
-      COIN_1: {
+      coin1: {
         count: 0,
         total: 0,
       },
-      COIN_5: {
+      coin5: {
         count: 0,
         total: 0,
       },
-      COIN_10: {
+      coin10: {
         count: 0,
         total: 0,
       },
-      COIN_25: {
+      coin25: {
         count: 0,
         total: 0,
       },
-      COIN_50: {
+      coin50: {
         count: 0,
         total: 0,
       },
-      COIN_1_REAL: {
+      coin1Real: {
         count: 0,
         total: 0,
       },
@@ -84,13 +85,28 @@ router.post("/close-day", async (req, res) => {
     return;
   }
 
-  const closeDate = {
+  const cashClosure = {
     date,
     moneyCounter,
     cashRegisterWithdrawal,
   };
 
-  res.status(204).end();
+  let result;
+  try {
+    result = await cashClosureRepo.createCashClosure(cashClosure);
+  } catch (error) {
+    if (error.name === "CashAlreadyClosedError") {
+      res.status(409).json({ error: error.message });
+      return;
+    }
+    throw error;
+  }
+
+  const cashClosureBaseUrl = req.originalUrl.replace(/\/close-day.*/gi, "");
+  res
+    .header("Location", `${cashClosureBaseUrl}/daily-summary/${result.date}`)
+    .status(201)
+    .json(result);
 });
 
 module.exports = router;

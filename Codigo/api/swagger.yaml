@@ -154,7 +154,7 @@ paths:
                   type: string
                   format: date
                 moneyCounter:
-                  $ref: "#/components/schemas/MoneyCounter"
+                  $ref: "#/components/schemas/MoneyCounterCount"
                 cashRegisterWithdrawal:
                   type: number
       responses:
@@ -204,32 +204,68 @@ components:
     MoneyCounter:
       type: object
       properties:
-        BILL_2:
+        bill2:
           $ref: "#/components/schemas/MoneyCounterItem"
-        BILL_5:
+        bill5:
           $ref: "#/components/schemas/MoneyCounterItem"
-        BILL_10:
+        bill10:
           $ref: "#/components/schemas/MoneyCounterItem"
-        BILL_20:
+        bill20:
           $ref: "#/components/schemas/MoneyCounterItem"
-        BILL_50:
+        bill50:
           $ref: "#/components/schemas/MoneyCounterItem"
-        BILL_100:
+        bill100:
           $ref: "#/components/schemas/MoneyCounterItem"
-        BILL_200:
+        bill200:
           $ref: "#/components/schemas/MoneyCounterItem"
-        COIN_1:
+        coin1:
           $ref: "#/components/schemas/MoneyCounterItem"
-        COIN_5:
+        coin5:
           $ref: "#/components/schemas/MoneyCounterItem"
-        COIN_10:
+        coin10:
           $ref: "#/components/schemas/MoneyCounterItem"
-        COIN_25:
+        coin25:
           $ref: "#/components/schemas/MoneyCounterItem"
-        COIN_50:
+        coin50:
           $ref: "#/components/schemas/MoneyCounterItem"
-        COIN_1_REAL:
+        coin1Real:
           $ref: "#/components/schemas/MoneyCounterItem"
+    
+    MoneyCounterCountItem:
+      type: object
+      properties:
+        count:
+          type: integer
+    
+    MoneyCounterCount:
+      type: object
+      properties:
+        bill2:
+          $ref: "#/components/schemas/MoneyCounterCountItem"
+        bill5:
+          $ref: "#/components/schemas/MoneyCounterCountItem"
+        bill10:
+          $ref: "#/components/schemas/MoneyCounterCountItem"
+        bill20:
+          $ref: "#/components/schemas/MoneyCounterCountItem"
+        bill50:
+          $ref: "#/components/schemas/MoneyCounterCountItem"
+        bill100:
+          $ref: "#/components/schemas/MoneyCounterCountItem"
+        bill200:
+          $ref: "#/components/schemas/MoneyCounterCountItem"
+        coin1:
+          $ref: "#/components/schemas/MoneyCounterCountItem"
+        coin5:
+          $ref: "#/components/schemas/MoneyCounterCountItem"
+        coin10:
+          $ref: "#/components/schemas/MoneyCounterCountItem"
+        coin25:
+          $ref: "#/components/schemas/MoneyCounterCountItem"
+        coin50:
+          $ref: "#/components/schemas/MoneyCounterCountItem"
+        coin1Real:
+          $ref: "#/components/schemas/MoneyCounterCountItem"
 
     DailySummary:
       type: object
