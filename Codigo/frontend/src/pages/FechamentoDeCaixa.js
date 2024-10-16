@@ -9,7 +9,8 @@ import {
   getFechamentoCaixaResumoDia,
   postFechamentoCaixaDia,
 } from "../services/filigranaapi";
-import { fireWarningConfirm } from "../utils/alerts";
+import { fireSuccess, fireWarningConfirm } from "../utils/alerts";
+import { formatBrazilianCurrency } from "../utils/currencyFormatter";
 
 /**
  * Retorna a data atual no formato ISO (YYYY-MM-DD) sem a parte do tempo.
@@ -80,10 +81,22 @@ function FechamentoDeCaixa() {
     },
   });
 
+  const [previousDayCashBalance, setPreviousDayCashBalance] = useState(0);
+  const [cashRegisterWithdrawal, setCashRegisterWithdrawal] = useState(0);
+  const [cashAlreadyClosed, setCashAlreadyClosed] = useState(false);
+  const [payments, setPayments] = useState([]);
+
   const navigate = useNavigate();
   const { isLoading, startLoading, stopLoading } = useLoading();
 
   const isReferenceDateToday = referenceDate === nowLocalISODateOnly();
+
+  const totalMoneyCounter = Object.values(moneyCounter).reduce(
+    (acc, { total }) => acc + total,
+    0
+  );
+
+  const cashBalance = totalMoneyCounter - cashRegisterWithdrawal;
 
   async function getDailySummary() {
     try {
@@ -92,6 +105,12 @@ function FechamentoDeCaixa() {
       console.debug("Resumo do dia", dailySummary);
 
       setMoneyCounter(dailySummary.moneyCounter);
+      setCashRegisterWithdrawal(dailySummary.cashRegisterWithdrawal);
+      setPreviousDayCashBalance(
+        dailySummary.previousDayCashBalance.cashBalance
+      );
+      setCashAlreadyClosed(dailySummary.cashAlreadyClosed);
+      setPayments(dailySummary.payments);
     } catch (error) {
       console.debug("Erro ao buscar resumo do dia", error);
     } finally {
@@ -99,7 +118,33 @@ function FechamentoDeCaixa() {
     }
   }
 
+  async function handleCashRegisterWithdrawalChange(event) {
+    if (totalMoneyCounter === 0) {
+      fireWarningConfirm("Não há dinheiro no caixa para retirar");
+      return;
+    }
+
+    const value = event.target.value == "" ? 0 : parseFloat(event.target.value);
+    if (isNaN(value)) {
+      return;
+    }
+
+    let newValue = value;
+    if (totalMoneyCounter - value < 0) {
+      newValue = totalMoneyCounter;
+    }
+
+    setCashRegisterWithdrawal(newValue);
+  }
+
   async function handleConfirmarFechamento() {
+    if (cashBalance < 0) {
+      fireWarningConfirm(
+        "O caixa está negativo. Verifique o valor a ser retirado"
+      );
+      return;
+    }
+
     const { isConfirmed } = await fireWarningConfirm(
       "Confirme sua intenção de fechar o caixa"
     );
@@ -118,7 +163,7 @@ function FechamentoDeCaixa() {
     const data = {
       date: referenceDate,
       moneyCounter: moneyCounterCount,
-      cashRegisterWithdrawal: 0,
+      cashRegisterWithdrawal,
     };
 
     console.debug("Confirmar fechamento", data);
@@ -134,6 +179,7 @@ function FechamentoDeCaixa() {
       stopLoading();
     }
 
+    fireSuccess("Caixa fechado com sucesso");
     navigate("/home");
   }
 
@@ -184,17 +230,34 @@ function FechamentoDeCaixa() {
 
             <section className="mt-6">
               <h2 className="text-base font-bold">Resumo das vendas</h2>
-              {/* TODO: Total de vendas em dinheiro */}
-              <p>Caixa anterior: R$536,00</p>
-              <p>Total no caixa hoje: R$5.079,50</p>
+              <p>
+                Caixa anterior:
+                {formatBrazilianCurrency(previousDayCashBalance)}
+              </p>
+              <p>
+                Total no caixa hoje:
+                {formatBrazilianCurrency(totalMoneyCounter)}
+              </p>
             </section>
 
             <section className="mt-6">
               <h2 className="text-base font-bold">Retirar do caixa</h2>
-              {/* TODO: Permitir retirar dinheiro do caixa */}
               <div>
-                <p>Insira o valor a retirar: | 0,00 |</p>
-                <p>Próximo caixa: R$735,00</p>
+                <p>
+                  Insira o valor a retirar: R$
+                  <input
+                    title="Valor a ser retirado do caixa"
+                    type="number"
+                    min="0"
+                    inputMode="numeric"
+                    value={cashRegisterWithdrawal.toString()}
+                    onChange={handleCashRegisterWithdrawalChange}
+                  />
+                </p>
+                <p>
+                  Próximo caixa:
+                  {formatBrazilianCurrency(cashBalance)}
+                </p>
               </div>
             </section>
           </div>
@@ -213,9 +276,13 @@ function FechamentoDeCaixa() {
         </div>
 
         <div className="mt-6">
-          <Button type="button" onClick={handleConfirmarFechamento}>
-            Confirmar fechamento
-          </Button>
+          {cashAlreadyClosed ? (
+            <span>Caixa já fechado</span>
+          ) : (
+            <Button type="button" onClick={handleConfirmarFechamento}>
+              Confirmar fechamento
+            </Button>
+          )}
         </div>
       </section>
     </>
