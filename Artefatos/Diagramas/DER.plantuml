@@ -1,9 +1,33 @@
-@startchen
-
-entity PRODUTO {
-  Nome
-  Descrição
-  Preço
+@startuml
+entity "Produto" {
+    + ID : int [PK]
+    + Nome : varchar(255)
+    + Descricao : text
+    + Preco : decimal(10,2)
+    + Categoria_ID : int [FK]
+    + Codigo de Barras : varchar(13) [UK]
+    + Estoque : int
+    + Data de Cadastro : timestamp
+    + Fornecedor : varchar(255)
+    + Status : enum('Ativo', 'Inativo')
 }
 
-@endchen
+entity "Categoria" {
+    + ID : int [PK]
+    + Nome : varchar(100)
+    + Descricao : text
+}
+
+entity "Venda" {
+    + ID : int [PK]
+    + Data : timestamp
+    + Cliente_ID : int [FK]
+    + Total : decimal(10,2)
+    + Tipo de Venda : enum('Atacado', 'Varejo')
+}
+
+' Relacionamentos
+Produto ||--o{ Venda : inclui
+Produto }o--|| Categoria : pertence_a
+
+@enduml
