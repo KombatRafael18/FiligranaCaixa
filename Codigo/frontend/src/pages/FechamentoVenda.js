@@ -87,7 +87,14 @@ function FechamentoVenda() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ total: valorTotal, metodoPagamento }),
+                body: JSON.stringify({ 
+                    total: valorTotal, 
+                    metodoPagamento,
+                    valores: codigos.map((codigo, index) => ({
+                        codigo,
+                        valor: valores[index],
+                    })),
+                }),
             });
 
             if (response.ok) {
@@ -122,7 +129,8 @@ function FechamentoVenda() {
                                     className='mx-2 border-b' 
                                     value={codigos[index]}
                                     onChange={(e) => handleCodigoChange(index, e.target.value)}
-                                    placeholder={`Código`} 
+                                    placeholder="Código"
+
                                 />
                                 <input 
                                     type="text" 
@@ -159,12 +167,12 @@ function FechamentoVenda() {
                 </div>
                 <div className='mt-10'>
                     <div className='flex mt-4'>
-                        <Button 
-                            className={`mr-2 ${metodoPagamento === 'DINHEIRO' ? 'bg-blue-500' : ''}`} 
-                            onClick={() => handleMetodoPagamento('DINHEIRO')}
-                        >
-                            DINHEIRO
-                        </Button>
+                    <Button 
+                        className={`mr-2 ${metodoPagamento === 'DINHEIRO' ? 'bg-blue-500' : ''}`} 
+                        onClick={() => handleMetodoPagamento('DINHEIRO')}
+                    >
+                        DINHEIRO
+                    </Button>
                         <Button 
                             className={`mr-2 ${metodoPagamento === 'PIX' ? 'bg-blue-500' : ''}`} 
                             onClick={() => handleMetodoPagamento('PIX')}
@@ -181,12 +189,19 @@ function FechamentoVenda() {
                     <h2 className='mt-4'>VALOR TOTAL: {valorTotal}</h2>
                     <div className='flex mt-4'>
                         <Button className='mr-2' onClick={handleCancel}>CANCELAR</Button>
-                        <Button onClick={handleFinalizarCompra}>FINALIZAR COMPRA</Button>
+                        <Button onClick={handleFinalizarCompra} className='bg-green-500 text-white'>FINALIZAR COMPRA</Button>
                     </div>
                 </div>
             </div>
         </div>
     );
 }
+const handleFinalizarCompra = async () => {
+    // Simulando uma chamada ao back-end
+    setTimeout(() => {
+        alert('Compra finalizada com sucesso!');
+        navigate('/home');
+    }, 1000); // Simulando um atraso de 1 segundo
+};
 
 export default FechamentoVenda;

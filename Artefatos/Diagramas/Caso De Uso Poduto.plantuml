@@ -1,0 +1,28 @@
+@startuml
+left to right direction
+
+actor "Usuário" as User
+actor "Administrador" as Admin
+
+rectangle "Filigrana" {
+  usecase "Listar Produtos" as UC_ListarProdutos
+  usecase "Cadastrar Produto" as UC_CadastrarProduto
+  usecase "Consultar Produto" as UC_ConsultarProduto
+  usecase "Atualizar Produto" as UC_AtualizarProduto
+  usecase "Deletar Produto" as UC_DeletarProduto
+  usecase "Pesquisar Produto" as UC_PesquisarProduto
+  usecase "Gerar Relatório de Produtos" as UC_GerarRelatorioProdutos
+  usecase "Atualizar Estoque" as UC_AtualizarEstoque
+}
+
+User --> UC_ListarProdutos
+User --> UC_ConsultarProduto
+User --> UC_PesquisarProduto
+
+Admin --> UC_CadastrarProduto
+Admin --> UC_AtualizarProduto
+Admin --> UC_DeletarProduto
+Admin --> UC_GerarRelatorioProdutos
+Admin --> UC_AtualizarEstoque
+
+@enduml

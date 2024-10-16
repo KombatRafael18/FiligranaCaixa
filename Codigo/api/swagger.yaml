@@ -16,6 +16,8 @@ servers:
 tags:
   - name: products
     description: Operações com produtos
+  - name: clients
+    description: Operações com clientes
 
 paths:
   /api/products:
@@ -169,6 +171,124 @@ paths:
         "409":
           $ref: "#/components/responses/ConflictResponse"
 
+  /api/clients:
+    get:
+      summary: Retorna os clientes cadastrados
+      tags:
+        - clients
+      parameters:
+        - name: pagina
+          in: query
+          required: false
+          description: Número da página para paginação
+          schema:
+            type: integer
+            minimum: 1
+        - name: quantidade
+          in: query
+          required: false
+          description: Quantidade de registros por página (máx. 20)
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 20
+      responses:
+        "200":
+          description: Sucesso, retorna uma lista de clientes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Client"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+
+    post:
+      summary: Cadastra um novo cliente
+      tags:
+        - clients
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClientCreate"
+      responses:
+        "201":
+          description: Sucesso, retorna o cliente cadastrado
+          headers:
+            Location:
+              description: URL do novo cliente criado
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Client"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+
+  /api/clients/{id}:
+    get:
+      summary: Retorna um cliente específico
+      tags:
+        - clients
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do cliente
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Sucesso, retorna o cliente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Client"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+    put:
+      summary: Atualiza um cliente específico
+      tags:
+        - clients
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do cliente
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClientUpdate"
+      responses:
+        "204":
+          description: Sucesso, sem conteúdo
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+    delete:
+      summary: Deleta um cliente específico
+      tags:
+        - clients
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do cliente
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Sucesso, sem conteúdo
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
 components:
   schemas:
     Product:
@@ -305,6 +425,52 @@ components:
         cashAlreadyClosed:
           type: boolean
 
+    Client:
+      type: object
+      properties:
+        id:
+          type: integer
+        cpf:
+          type: string
+          description: CPF do cliente
+        name:
+          type: string
+        email:
+          type: string
+        address:
+          type: string
+        phone:
+          type: string
+
+    ClientCreate:
+      type: object
+      properties:
+        cpf:
+          type: string
+          description: CPF do cliente
+        name:
+          type: string
+        email:
+          type: string
+        address:
+          type: string
+        phone:
+          type: string
+
+    ClientUpdate:
+      type: object
+      properties:
+        cpf:
+          type: string
+          description: CPF do cliente
+        name:
+          type: string
+        email:
+          type: string
+        address:
+          type: string
+        phone:
+          type: string
 
     ApiError:
       type: object

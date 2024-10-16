@@ -1,13 +1,19 @@
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import './index.css';
-import './App.css';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
+import "./index.css";
+import "./App.css";
 
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Venda from './pages/Venda';
-import CadastrarCliente from './pages/CadastrarCliente';
-import FechamentoDeCaixa from './pages/FechamentoDeCaixa';
-import FechamentoVenda from './pages/FechamentoVenda';
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Venda from "./pages/Venda";
+import CadastrarCliente from "./pages/CadastrarCliente";
+import FechamentoDeCaixa from "./pages/FechamentoDeCaixa";
+import FechamentoVenda from "./pages/FechamentoVenda";
 
 function App() {
   return (
