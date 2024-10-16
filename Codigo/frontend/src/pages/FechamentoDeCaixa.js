@@ -148,10 +148,9 @@ function FechamentoDeCaixa() {
 
   return (
     <>
-      {/* <SideDrawer isOpen={true} /> */}
+      <SideDrawer isOpen={true} />
 
-      {/* <section className="ml-[250px] p-10 max-w-screen-lg"> */}
-      <section className="p-10 max-w-screen-lg">
+      <section className="ml-[250px] p-10 max-w-screen-lg">
         <header>
           <h1 className="text-3xl font-bold">Fechamento de caixa</h1>
           <p className="text-xl font-light">
