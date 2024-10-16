@@ -203,9 +203,9 @@ function FechamentoVenda() {
     const valor = parseFloat(valorString);
     
     if (!codigo || isNaN(valor) || valor <= 0) {
-        alert('Por favor, insira um código válido e um preço positivo.');
-        return;
-      }
+      alert('Por favor, insira um código válido e um preço positivo.');
+      return;
+    }
     
     const produto = {
       name: codigo,
@@ -223,7 +223,18 @@ function FechamentoVenda() {
   
       if (response.ok) {
         alert('Produto adicionado com sucesso!');
-        // Opcional: Atualize a interface para refletir que o produto foi adicionado
+  
+        // Atualizar o valor e manter os produtos existentes
+        const newValores = [...valores]; // Crie uma nova cópia do estado valores
+        newValores[index] = formatCurrency(valor * 100); // Atualiza o valor do produto adicionado
+        setValores(newValores); // Atualiza o estado com os novos valores
+  
+        const newCodigos = [...codigos]; // Crie uma nova cópia do estado codigos
+        newCodigos[index] = codigo; // Assegura que o código seja mantido
+        setCodigos(newCodigos); // Atualiza o estado com os novos códigos
+  
+        // Você pode querer chamar outras funções para atualizar o estado, se necessário
+        updateCodigoEncontrado(index, true); // Atualiza o status de encontrado
       } else {
         const errorData = await response.json();
         alert(`Erro ao adicionar produto: ${errorData.error || 'Erro desconhecido.'}`);
