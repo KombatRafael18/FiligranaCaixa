@@ -200,7 +200,7 @@ const handleFinalizarCompra = async () => {
     // Simulando uma chamada ao back-end
     setTimeout(() => {
         alert('Compra finalizada com sucesso!');
-        navigate('/home');
+        // navigate('/home');
     }, 1000); // Simulando um atraso de 1 segundo
 };
 
