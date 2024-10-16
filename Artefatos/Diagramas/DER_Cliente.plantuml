@@ -1,10 +1,47 @@
 @startuml
 entity "Cliente" {
     + ID : int [PK]
-    + Nome : varchar
-    + Email : varchar
-    + Endereco : varchar
-    + Telefone : varchar
+    + Nome : varchar(255)
+    + Email : varchar(255)
+    + Endereco : varchar(255)
+    + Telefone : varchar(20)
+    + Data de Nascimento : date
+    + CPF : varchar(11) [UK]
+    + Status : varchar(15)
+    + Data de Cadastro : timestamp
+    + Limite de Crédito : decimal(10,2)
+    + Tipo de Cliente : enum('Atacado', 'Varejo')
 }
+
+entity "Produto" {
+    + ID : int [PK]
+    + Nome : varchar(255)
+    + Descricao : text
+    + Preco : decimal(10,2)
+    + Categoria : varchar(100)
+    + Codigo de Barras : varchar(13) [UK]
+    + Estoque : int
+}
+
+entity "Venda" {
+    + ID : int [PK]
+    + Data : timestamp
+    + Cliente_ID : int [FK]
+    + Total : decimal(10,2)
+    + Tipo de Venda : enum('Atacado', 'Varejo')
+}
+
+entity "Pagamento" {
+    + ID : int [PK]
+    + Venda_ID : int [FK]
+    + Data : timestamp
+    + Valor : decimal(10,2)
+    + Forma de Pagamento : enum('Dinheiro', 'Cartão', 'Pix')
+}
+
+' Relacionamentos
+Cliente ||--o{ Venda : realiza
+Venda ||--o{ Pagamento : gera
+Venda ||--o{ Produto : inclui
 
 @enduml
