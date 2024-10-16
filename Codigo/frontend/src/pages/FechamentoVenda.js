@@ -1,5 +1,3 @@
-// FechamentoVenda.jsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SideDrawer from '../components/SideDrawer';
@@ -225,7 +223,6 @@ function FechamentoVenda() {
   
       if (response.ok) {
         alert('Produto adicionado com sucesso!');
-        fetchProducts();
         // Opcional: Atualize a interface para refletir que o produto foi adicionado
       } else {
         const errorData = await response.json();
@@ -234,33 +231,6 @@ function FechamentoVenda() {
     } catch (error) {
       console.error('Erro:', error);
       alert('Erro ao conectar com o servidor.');
-    }
-  };
-
-  const fetchProducts = async () => {
-    try {
-      const response = await fetch('http://localhost:3000/api/products');
-      if (!response.ok) {
-        throw new Error('Erro ao buscar produtos');
-      }
-      const produtos = await response.json();
-  
-      // Atualizar os valores e códigos com os dados mais recentes, mantendo os campos vazios
-      const novosValores = [...valores]; // Copia o estado atual
-      const novosCodigos = [...codigos]; // Copia o estado atual
-  
-      produtos.forEach((produto, index) => {
-        if (novosCodigos[index] !== '') { // Mantém o que já está preenchido
-          novosValores[index] = formatCurrency(produto.price * 100);
-          novosCodigos[index] = produto.name;
-        }
-      });
-  
-      setValores(novosValores);
-      setCodigos(novosCodigos);
-    } catch (error) {
-      console.error('Erro ao buscar produtos:', error);
-      alert('Erro ao buscar produtos.');
     }
   };
 
