@@ -11,6 +11,11 @@ services:
       - MYSQL_DATABASE=filigrana
       - MYSQL_USER=filigranadev
       - MYSQL_PASSWORD=my-secret-pw-dev
+    deploy:
+      resources:
+        limits:
+          cpus: '0.75'
+          memory: 512M
 
 volumes:
   mysqldata:
