@@ -222,9 +222,8 @@ function FechamentoDeCaixa() {
           <div>
             <section className="mt-6">
               <h2 className="text-base font-bold">Vendas</h2>
-              {/* TODO: Tabela de vendas */}
               <div className="mt-3">
-                <SalesTable maxHeigth="250px" />
+                <SalesTable payments={payments} />
               </div>
             </section>
 
@@ -266,7 +265,6 @@ function FechamentoDeCaixa() {
             <section className="mt-6">
               <h2 className="text-base font-bold">Contagem do caixa</h2>
 
-              {/* TODO: Contadores de cédulas e moedas */}
               <MoneyCounter
                 moneyCounter={moneyCounter}
                 setMoneyCounter={setMoneyCounter}
