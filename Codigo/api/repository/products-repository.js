@@ -4,11 +4,10 @@ const db = mysqlClient.pool;
 
 async function createProduct(product) {
   const query =
-    "INSERT INTO PRODUCTS (NAME, DESCRIPTION, PRICE) VALUES (?, ?, ?)";
+    "INSERT INTO PRODUCTS (NAME, PRICE) VALUES (?, ?, ?)";
 
   const [result, fields] = await db.execute(query, [
     product.name,
-    product.description,
     product.price,
   ]);
 
@@ -19,22 +18,38 @@ async function createProduct(product) {
 
 async function getProducts() {
   const sql =
-    "SELECT ID, NAME, DESCRIPTION, PRICE FROM PRODUCTS ORDER BY NAME, ID";
+    "SELECT ID, NAME, PRICE FROM PRODUCTS ORDER BY NAME, ID";
 
   const [rows, fields] = await db.execute(sql);
 
   const products = rows.map((row) => ({
     id: row.ID,
     name: row.NAME,
-    description: row.DESCRIPTION,
     price: parseFloat(row.PRICE),
   }));
 
   return products;
 }
 
+async function getProductByName(name) {
+  const sql = "SELECT ID, NAME, PRICE FROM PRODUCTS WHERE NAME = ?";
+
+  const [rows, fields] = await db.execute(sql, [name]);
+
+  const row = rows[0];
+  if (!row) {
+    return null;
+  }
+
+  return {
+    id: row.ID,
+    name: row.NAME,
+    price: parseFloat(row.PRICE),
+  };
+}
+
 async function getProductById(id) {
-  const sql = "SELECT ID, NAME, DESCRIPTION, PRICE FROM PRODUCTS WHERE ID = ?";
+  const sql = "SELECT ID, NAME, PRICE FROM PRODUCTS WHERE ID = ?";
 
   const [rows, fields] = await db.execute(sql, [id]);
 
@@ -46,18 +61,16 @@ async function getProductById(id) {
   return {
     id: row.ID,
     name: row.NAME,
-    description: row.DESCRIPTION,
     price: parseFloat(row.PRICE),
   };
 }
 
 async function updateProduct(id, product) {
   const sql =
-    "UPDATE PRODUCTS SET NAME = ?, DESCRIPTION = ?, PRICE = ? WHERE ID = ?";
+    "UPDATE PRODUCTS SET NAME = ?, PRICE = ? WHERE ID = ?";
 
   const [result, fields] = await db.execute(sql, [
     product.name,
-    product.description,
     product.price,
     id,
   ]);
@@ -86,6 +99,7 @@ async function deleteProduct(id) {
 module.exports = {
   createProduct,
   getProducts,
+  getProductByName,
   getProductById,
   updateProduct,
   deleteProduct,

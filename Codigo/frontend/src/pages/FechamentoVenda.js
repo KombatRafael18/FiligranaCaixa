@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import SideDrawer from '../components/SideDrawer';
 import Button from '../components/Button';
 import Input from '../components/Input';
+import { PlusIcon } from '@heroicons/react/solid';
 
 function FechamentoVenda() {
     const [valores, setValores] = useState(Array(9).fill('R$00,00'));
     const [codigos, setCodigos] = useState(Array(9).fill(''));
+    const [codigoEncontrado, setCodigoEncontrado] = useState(Array(9).fill(true));
     const [desconto, setDesconto] = useState('');
     const [cashback, setCashback] = useState('');
     const [valorTotal, setValorTotal] = useState('R$00,00');
@@ -28,10 +30,38 @@ function FechamentoVenda() {
         }
     };
 
-    const handleCodigoChange = (index, value) => {
+    const handleCodigoChange = async (index, value) => {
+        const trimmedValue = value.trim();
         const newCodigos = [...codigos];
-        newCodigos[index] = value;
+        newCodigos[index] = value.trim();
         setCodigos(newCodigos);
+
+        if (value.trim() === "") {
+            updateValue(index, 'R$00,00');
+            return;
+          }
+
+          try {
+            const response = await fetch(`http://localhost:3000/api/products/name/${encodeURIComponent(value.trim())}`);
+        
+            if (response.ok) {
+              const product = await response.json();
+              updateValue(index, formatCurrency(product.price * 100));
+            } else if (response.status === 404) {
+              
+              const adicionar = window.confirm(`Código "${value.trim()}" não encontrado. Deseja adicionar um novo produto?`);
+              if (adicionar) {
+                
+                navigate('/adicionar-produto', { state: { name: value.trim() } });
+              }
+              updateValue(index, 'R$00,00');
+            } else {
+              alert('Erro ao verificar o código do produto.');
+            }
+          } catch (error) {
+            console.error('Erro:', error);
+            alert('Erro ao conectar com o servidor.');
+          }
     };
 
     const handleDescontoChange = (value) => {
@@ -131,7 +161,7 @@ function FechamentoVenda() {
                                     onChange={(e) => handleCodigoChange(index, e.target.value)}
                                     placeholder={`Código`}
                                     variant='custom'
-                                />
+                                    />
                                 <Input
                                     type="text"
                                     value={valor}
@@ -197,12 +227,5 @@ function FechamentoVenda() {
         </div>
     );
 }
-const handleFinalizarCompra = async () => {
-    // Simulando uma chamada ao back-end
-    setTimeout(() => {
-        alert('Compra finalizada com sucesso!');
-        // navigate('/home');
-    }, 1000); // Simulando um atraso de 1 segundo
-};
 
 export default FechamentoVenda;

@@ -4,21 +4,22 @@ const productsRepo = require("../repository/products-repository");
 const router = express.Router();
 
 router.post("/", async (req, res) => {
-  const { name, description, price } = req.body;
+  const { name, price } = req.body;
 
-  if (!name || !description) {
-    res.status(400).json({ error: "Parâmetros obrigatórios não informados" });
-    return;
-  }
-
-  if ((price ?? null) === null || price < 0) {
+  if (price === undefined || price < 0) {
     res.status(400).json({ error: "O preço deve ser um número positivo" });
     return;
   }
 
+  try {
+    const existingProduct = await productsRepo.getProductByName(name);
+    if (existingProduct) {
+      res.status(400).json({ error: "Código de produto já existe" });
+      return;
+    }
+
   const productCreate = {
     name,
-    description,
     price,
   };
 
@@ -28,6 +29,10 @@ router.post("/", async (req, res) => {
     .header("Location", req.originalUrl + "/" + result.id)
     .status(201)
     .json(result);
+  } catch (error) {
+    console.error('Erro ao criar produto:', error);
+    res.status(500).json({ error: "Erro interno do servidor" });
+  }
 });
 
 router.get("/", async (req, res) => {
@@ -51,12 +56,7 @@ router.get("/:id", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
-  const { name, description, price } = req.body;
-
-  if (!name || !description) {
-    res.status(400).json({ error: "Parâmetros obrigatórios não informados" });
-    return;
-  }
+  const { name, price } = req.body;
 
   if ((price ?? null) === null || price < 0) {
     res.status(400).json({ error: "O preço deve ser um número positivo" });
@@ -65,7 +65,6 @@ router.put("/:id", async (req, res) => {
 
   const productUpdate = {
     name,
-    description,
     price,
   };
 
@@ -99,5 +98,22 @@ router.delete("/:id", async (req, res) => {
 
   res.status(204).end();
 });
+
+  // products-router.js
+
+router.get("/name/:name", async (req, res) => {
+  const { name } = req.params;
+
+  const product = await productsRepo.getProductByName(name);
+
+  if (!product) {
+    res.status(404).json({ error: "Produto não encontrado" });
+    return;
+  }
+
+  res.status(200).json(product);
+});
+
+
 
 module.exports = router;
