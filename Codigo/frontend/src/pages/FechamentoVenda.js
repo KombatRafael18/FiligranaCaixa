@@ -128,7 +128,7 @@ function FechamentoVenda() {
                                 <Input
                                     type="text"
                                     value={codigos[index]}
-                                    onChange={(e) => handleCashbackChange(e.target.value)}
+                                    onChange={(e) => handleCodigoChange(index, e.target.value)}
                                     placeholder={`Código`}
                                     variant='custom'
                                 />
