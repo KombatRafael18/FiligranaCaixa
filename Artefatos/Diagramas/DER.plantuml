@@ -1,9 +1,0 @@
-@startchen
-
-entity PRODUTO {
-  Nome
-  Descrição
-  Preço
-}
-
-@endchen

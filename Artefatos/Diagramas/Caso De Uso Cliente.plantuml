@@ -1,0 +1,22 @@
+@startuml
+left to right direction
+
+actor "Usuário" as User
+actor "Cliente" as Client
+
+rectangle "Filigrana" {
+  usecase "Listar Produtos" as UC_ListarProdutos
+  usecase "Consultar Produto" as UC_ConsultarProduto
+  usecase "Registrar Venda" as UC_RegistrarVenda
+  usecase "Consultar Vendas" as UC_ConsultarVendas
+}
+
+User --> UC_ListarProdutos
+User --> UC_ConsultarProduto
+User --> UC_RegistrarVenda
+User --> UC_ConsultarVendas
+
+Client --> UC_ListarProdutos
+Client --> UC_ConsultarProduto
+
+@enduml
