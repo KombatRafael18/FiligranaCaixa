@@ -1,0 +1,37 @@
+@startuml
+entity "Cliente" {
+    + ID : int [PK]
+    + Nome : varchar
+    + Email : varchar
+    + Endereco : varchar
+    + Telefone : varchar
+}
+
+entity "Produto" {
+    + ID : int [PK]
+    + Nome : varchar
+    + Descricao : varchar
+    + Preco : decimal
+    + Estoque : int
+}
+
+entity "Venda" {
+    + ID : int [PK]
+    + Data : date
+    + ValorTotal : decimal
+    + ClienteID : int [FK]
+}
+
+entity "VendaProduto" {
+    + VendaID : int [FK]
+    + ProdutoID : int [FK]
+    + Quantidade : int
+    + PrecoUnitario : decimal
+}
+
+' Relacionamentos
+Cliente ||--o{ Venda : "Realiza"
+Venda ||--o{ VendaProduto : "Inclui"
+Produto ||--o{ VendaProduto : "Está em"
+
+@enduml
