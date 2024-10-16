@@ -5,16 +5,19 @@ const docsRouter = require("./router/docs");
 const productsRouter = require("./router/products");
 const clientsRouter = require("./router/clients");
 const salesRouter = require("./router/sales");
+const cashClosureRouter = require("./router/cash-closure");
 
 const app = express();
 
+// Middleware to parse JSON
 app.use(bodyParser.json());
-app.use(cors()); 
+app.use(cors());
 
 app.use("/api/docs", docsRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/clients", clientsRouter);
 app.use("/api/sales", salesRouter);
+app.use("/api/cash-closure", cashClosureRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

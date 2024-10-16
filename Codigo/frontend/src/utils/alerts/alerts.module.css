@@ -1,0 +1,130 @@
+.container {
+  z-index: 1300 !important;
+}
+
+.popup {
+  border-radius: 1.25rem !important;
+}
+
+.popup::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1rem;
+  z-index: 1;
+  border-radius: 1.25rem 1.25rem 0 0;
+}
+
+.popup--success::before {
+  background: #36b672;
+}
+
+.popup--warning::before {
+  background: #feb200;
+}
+
+.popup--danger::before {
+  background: #fc665d;
+}
+
+.popup--error::before {
+  background: #e72837;
+}
+
+.close-button {
+  color: #4a4a4a !important;
+  width: 2.25rem !important;
+  height: 3rem !important;
+  font-size: 1.75rem !important;
+  line-height: 1em !important;
+  justify-content: flex-start !important;
+  align-items: flex-end !important;
+}
+
+.icon {
+  margin: 4.5rem auto 1.25rem auto !important;
+  border: 0 !important;
+}
+
+.title {
+  padding: 0 !important;
+  font-family: "Raleway", Arial, Helvetica, sans-serif !important;
+  font-weight: 600 !important;
+  font-size: 2rem !important;
+  line-height: 1em !important;
+  color: #353434 !important;
+}
+
+.html-container {
+  font-family: "Raleway", Arial, Helvetica, sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 1.25rem !important;
+  line-height: 1.2em !important;
+
+  margin: 2.5rem !important;
+  justify-self: start !important;
+  color: #726f6f !important;
+  text-align: left !important;
+}
+
+.actions {
+  margin: 0 1.625rem 0 0 !important;
+  justify-content: end !important;
+}
+
+.confirm-button {
+  min-width: 9rem !important;
+  border-radius: 3.125rem !important;
+
+  font-family: "Raleway", Arial, Helvetica, sans-serif !important;
+  font-weight: 400 !important;
+  font-size: 1rem !important;
+  line-height: 1em !important;
+  text-transform: lowercase !important;
+}
+
+.confirm-button--success {
+  background: #36b672 !important;
+}
+
+.confirm-button--success:focus {
+  box-shadow: 0 0 0 0.25rem #36b67280 !important;
+}
+
+.confirm-button--warning {
+  background: #feb200 !important;
+}
+
+.confirm-button--warning:focus {
+  box-shadow: 0 0 0 0.25rem #feb20080 !important;
+}
+
+.confirm-button--danger {
+  background: #fc665d !important;
+}
+
+.confirm-button--danger:focus {
+  box-shadow: 0 0 0 0.25rem #fc665d80 !important;
+}
+
+.confirm-button--error {
+  background: #e72837 !important;
+}
+
+.confirm-button--error:focus {
+  box-shadow: 0 0 0 0.25rem #e7283780 !important;
+}
+
+.cancel-button {
+  background: none !important;
+  font-family: "Raleway", Arial, Helvetica, sans-serif !important;
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  line-height: 1em !important;
+  color: #8a8a8d !important;
+  text-decoration: underline;
+  text-transform: lowercase !important;
+}

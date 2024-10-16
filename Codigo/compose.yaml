@@ -1,0 +1,18 @@
+services:
+  frontend:
+    image: frontend:latest
+    build: ./frontend/
+    ports:
+      - "80:80"
+    restart: unless-stopped
+  
+  api:
+    image: api:latest
+    build: ./api/
+    ports:
+      - "8030:3000"
+    restart: unless-stopped
+    environment:
+      - MYSQL_CONNECTION_URI=mysql://filigranadev:my-secret-pw-dev@host.docker.internal:13306/filigrana
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

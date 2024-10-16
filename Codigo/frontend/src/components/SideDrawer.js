@@ -14,7 +14,7 @@ const SideDrawer = ({ isOpen }) => {
               <ul className="space-y-4">
                 <li><Link to="/venda" className="block hover:text-[#9b5c6f]">NOVA VENDA</Link></li>
                 <li><Link to="/clientes" className="block hover:text-[#9b5c6f]">CLIENTES</Link></li>
-                <li><Link to="/fechar-caixa" className="block hover:text-[#9b5c6f]">FECHAR CAIXA</Link></li>
+                <li><Link to="/fechamento-de-caixa" className="block hover:text-[#9b5c6f]">FECHAR CAIXA</Link></li>
                 <li><Link to="/painel-de-dados" className="block hover:text-[#9b5c6f]">PAINEL DE DADOS</Link></li>
               </ul>
             </nav>
