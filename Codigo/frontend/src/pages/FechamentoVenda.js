@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SideDrawer from '../components/SideDrawer';
 import Button from '../components/Button';
+import Input from '../components/Input';
 
 function FechamentoVenda() {
-    const [valores, setValores] = useState(Array(10).fill('R$00,00'));
-    const [codigos, setCodigos] = useState(Array(10).fill(''));
+    const [valores, setValores] = useState(Array(9).fill('R$00,00'));
+    const [codigos, setCodigos] = useState(Array(9).fill(''));
     const [desconto, setDesconto] = useState('');
     const [cashback, setCashback] = useState('');
     const [valorTotal, setValorTotal] = useState('R$00,00');
@@ -18,7 +19,7 @@ function FechamentoVenda() {
 
     const handleInputChange = (index, value) => {
         const numericValue = value.replace(/[^0-9]/g, '');
-        
+
         if (numericValue === '') {
             updateValue(index, 'R$00,00');
         } else {
@@ -55,8 +56,8 @@ function FechamentoVenda() {
 
     const formatCurrency = (value) => {
         const number = parseFloat(value) / 100;
-        return number.toLocaleString('pt-BR', { 
-            style: 'currency', 
+        return number.toLocaleString('pt-BR', {
+            style: 'currency',
             currency: 'BRL',
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
@@ -87,8 +88,8 @@ function FechamentoVenda() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ 
-                    total: valorTotal, 
+                body: JSON.stringify({
+                    total: valorTotal,
                     metodoPagamento,
                     valores: codigos.map((codigo, index) => ({
                         codigo,
@@ -122,72 +123,72 @@ function FechamentoVenda() {
                     <div className='flex-grow'>
                         <h2>PEÇAS:</h2>
                         {valores.map((valor, index) => (
-                            <div key={index} className='flex items-center mb-2'>
-                                <span>{index + 1}</span>
-                                <input 
-                                    type="text" 
-                                    className='mx-2 border-b' 
+                            <div key={index} className='flex items-center mb-2 gap-4'>
+                                <span className='text-lg'>{index + 1}</span>
+                                <Input
+                                    type="text"
                                     value={codigos[index]}
-                                    onChange={(e) => handleCodigoChange(index, e.target.value)}
-                                    placeholder="Código"
-
+                                    onChange={(e) => handleCashbackChange(e.target.value)}
+                                    placeholder={`Código`}
+                                    variant='custom'
                                 />
-                                <input 
-                                    type="text" 
-                                    className='ml-2 border-b w-24' 
+                                <Input
+                                    type="text"
                                     value={valor}
                                     onChange={(e) => handleInputChange(index, e.target.value)}
-                                    placeholder={`R$00,00`} 
+                                    placeholder={`R$00,00`}
+                                    variant='custom'
                                 />
                             </div>
                         ))}
                     </div>
                     <div className='ml-10'>
-                        <div className='mb-4'>
-                            <label>CASHBACK</label>
-                            <input 
-                                type="text" 
-                                className='border-b ml-2' 
+                        <div className='mb-4 flex items-center'>
+                            <label className='w-24'>CASHBACK</label>
+                            <Input
+                                type="text"
                                 value={cashback}
                                 onChange={(e) => handleCashbackChange(e.target.value)}
-                                placeholder={`R$00,00`} 
+                                placeholder={`R$00,00`}
+                                variant='custom'
+                            
                             />
                         </div>
-                        <div className='mb-4'>
-                            <label>DESCONTO (%)</label>
-                            <input 
-                                type="text" 
-                                className='border-b ml-2' 
+                        <div className='mb-4 flex items-center'>
+                            <label className='w-24'>DESCONTO (%)</label>
+                            <Input
+                                type="text"
                                 value={desconto}
                                 onChange={(e) => handleDescontoChange(e.target.value)}
-                                placeholder={`0%`} 
+                                placeholder={`0%`}
+                                variant='custom'
                             />
                         </div>
                     </div>
                 </div>
-                <div className='mt-10'>
+                <div>
                     <div className='flex mt-4'>
-                    <Button 
-                        className={`mr-2 ${metodoPagamento === 'DINHEIRO' ? 'bg-blue-500' : ''}`} 
-                        onClick={() => handleMetodoPagamento('DINHEIRO')}
-                    >
-                        DINHEIRO
-                    </Button>
-                        <Button 
-                            className={`mr-2 ${metodoPagamento === 'PIX' ? 'bg-blue-500' : ''}`} 
+                        <Button
+                            className={`mr-2 ${metodoPagamento === 'DINHEIRO' ? 'bg-blue-500' : ''}`}
+                            onClick={() => handleMetodoPagamento('DINHEIRO')}
+                        >
+                            DINHEIRO
+                        </Button>
+                        <Button
+                            className={`mr-2 ${metodoPagamento === 'PIX' ? 'bg-blue-500' : ''}`}
                             onClick={() => handleMetodoPagamento('PIX')}
                         >
                             PIX
                         </Button>
-                        <Button 
-                            className={`${metodoPagamento === 'CARTÃO' ? 'bg-blue-500' : ''}`} 
+                        <Button
+                            className={`${metodoPagamento === 'CARTÃO' ? 'bg-blue-500' : ''}`}
                             onClick={() => handleMetodoPagamento('CARTÃO')}
                         >
                             CARTÃO
                         </Button>
                     </div>
                     <h2 className='mt-4'>VALOR TOTAL: {valorTotal}</h2>
-                    <div className='flex mt-4'>
+                    <div className='flex mt-4 pb-8'>
                         <Button className='mr-2' onClick={handleCancel}>CANCELAR</Button>
                         <Button onClick={handleFinalizarCompra} className='bg-green-500 text-white'>FINALIZAR COMPRA</Button>
                     </div>
