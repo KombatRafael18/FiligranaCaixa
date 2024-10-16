@@ -58,7 +58,7 @@ router.put("/:id", async (req, res) => {
   const { id } = req.params;
   const { name, price } = req.body;
 
-  if ((price ?? null) === null || price < 0) {
+  if (price === undefined || price < 0) {
     res.status(400).json({ error: "O preço deve ser um número positivo" });
     return;
   }

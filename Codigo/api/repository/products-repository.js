@@ -4,7 +4,7 @@ const db = mysqlClient.pool;
 
 async function createProduct(product) {
   const query =
-    "INSERT INTO PRODUCTS (NAME, PRICE) VALUES (?, ?, ?)";
+    "INSERT INTO PRODUCTS (NAME, PRICE) VALUES (?, ?)";
 
   const [result, fields] = await db.execute(query, [
     product.name,
