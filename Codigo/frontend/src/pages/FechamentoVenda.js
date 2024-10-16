@@ -18,6 +18,40 @@ function FechamentoVenda() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const fetchProductValues = async () => {
+      const fetchPromises = codigos
+        .map((codigo, index) => {
+          if (codigo && codigo !== '0') { // Verifique se o código não é vazio ou zero
+            return fetch(`http://localhost:3000/api/products/name/${codigo}`)
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error(`Erro ao buscar produto com código ${codigo}`);
+                }
+                return response.json();
+              })
+              .then((product) => {
+                // Atualiza o valor correspondente ao código no estado
+                setValores((prevValores) => {
+                  const newValores = [...prevValores];
+                  newValores[index] = formatCurrency(product.price * 100); // Formate conforme necessário
+                  return newValores;
+                });
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+          }
+          return null; // Para códigos vazios ou zero, não faz nada
+        })
+        .filter(Boolean); // Remove os valores nulos
+
+      await Promise.all(fetchPromises);
+    };
+
+    fetchProductValues();
+}, [valores, desconto, cashback]);
+  
+  useEffect(() => {
     calcularValorTotal();
   }, [valores, desconto, cashback]);
 
