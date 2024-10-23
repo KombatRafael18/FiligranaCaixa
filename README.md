@@ -56,6 +56,8 @@ npm install
 ```
 ### Passo 2
 
+Execute no terminal o seguinte comando:
+
 - Linux e macOS
 ```bash
 export MYSQL_CONNECTION_URI="mysql://filigranadev:my-secret-pw-dev@localhost:13306/filigrana"
