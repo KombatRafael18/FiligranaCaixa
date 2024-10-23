@@ -79,4 +79,17 @@ Com a API em execução, o back-end estará disponível no endereço `http://loc
 
 ### Front-end
 
-[Assim que a primeira versão do sistema estiver disponível, deverá complementar com as instruções de utilização. Descreva como instalar eventuais dependências e como executar a aplicação.]
+# Instruções para rodar o frontend
+
+Esse projeto foi feito utilizando os frameworks React e Tailwind CSS
+
+## Instalação de dependências e execução
+
+Após clonar o repositório navegue até o diretório Codigo\frontend\src e execute os seguintes comandos no terminal:
+
+### `npm install`
+### `npm start`
+
+Isso vai executar o projeto localmente em modo de desenvolvimento.\
+Abra [http://localhost:3000](http://localhost:3000) para acessar pelo browser.
+
