@@ -1,0 +1,33 @@
+/* Clientes.css */
+
+.client-table {
+    width: 90%; /* Diminui a largura da tabela */
+    margin: 0 auto; /* Centraliza a tabela */
+    border-collapse: collapse;
+  }
+  
+  .client-table th, .client-table td {
+    padding: 6px; /* Diminui o padding das células */
+    font-size: 0.9rem; /* Diminui o tamanho da fonte */
+  }
+  
+  .client-table th {
+    background-color: #7d4b5f; /* Cor de fundo dos headers */
+    color: white;
+    text-align: left;
+  }
+  
+  .client-table td {
+    border: 1px solid #ddd; /* Adiciona borda às células */
+  }
+  
+  button {
+    padding: 5px 10px;
+    margin-right: 5px;
+    border-radius: 3px;
+  }
+  
+  button:hover {
+    opacity: 0.8;
+  }
+  

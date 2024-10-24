@@ -3,10 +3,24 @@ const mysqlClient = require("./mysql-client");
 const db = mysqlClient.pool;
 
 async function createClient(client) {
-  console.log("Dados recebidos para criação do cliente:", client);
-  const query = "INSERT INTO CLIENTS (cpf, name, email, address, phone, cashback) VALUES (?, ?, ?, ?, ?, ?)";
-  const [result] = await db.execute(query, [client.cpf, client.name, client.email, client.address, client.phone, 0]);
-  return { id: result.insertId, ...client, cashback: 0 };  
+  const query = `
+    INSERT INTO CLIENTS (cpf, name, email, address, phone, cashback) 
+    VALUES (?, ?, ?, ?, ?, COALESCE(?, 0))
+  `;
+  
+  try {
+    const [result] = await db.execute(query, [
+      client.cpf, client.name, client.email, client.address, client.phone, client.cashback || 0
+    ]);
+    return { id: result.insertId, ...client, cashback: client.cashback || 0 };
+  } catch (error) {
+    if (error.code === 'ER_DUP_ENTRY') {
+      const conflictError = new Error("CPF already exists");
+      conflictError.name = "DuplicateCPFError";
+      throw conflictError;
+    }
+    throw error;
+  }
 }
 
 async function getClients() {
@@ -28,19 +42,28 @@ async function getClientByCpf(cpf) {
 }
 
 async function updateClient(id, client) {
-  const query = "UPDATE CLIENTS SET cpf = ?, name = ?, email = ?, address = ?, phone = ? WHERE id = ?";
-  const [result] = await db.execute(query, [client.cpf, client.name, client.email, client.address, client.phone, id]);
+  const query = `
+    UPDATE CLIENTS 
+    SET cpf = ?, name = ?, email = ?, address = ?, phone = ?, cashback = ? 
+    WHERE id = ?
+  `;
+  const [result] = await db.execute(query, [
+    client.cpf, client.name, client.email, client.address, client.phone, client.cashback || 0, id
+  ]);
+  
   if (result.affectedRows === 0) {
     const error = new Error("Client not found");
     error.name = "ClientNotFoundError";
     throw error;
   }
+  
   return { id, ...client };
 }
 
 async function deleteClient(id) {
   const query = "DELETE FROM CLIENTS WHERE id = ?";
   const [result] = await db.execute(query, [id]);
+  
   if (result.affectedRows === 0) {
     const error = new Error("Client not found");
     error.name = "ClientNotFoundError";
