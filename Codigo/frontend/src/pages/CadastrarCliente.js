@@ -7,10 +7,23 @@ function CadastrarCliente() {
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
   const [phone, setPhone] = useState('');
+  const [errorMessage, setErrorMessage] = useState(''); 
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const client = { cpf, name, email, address, phone };
+
+    // Limpa o CPF removendo caracteres especiais
+    const cleanedCpf = cpf.replace(/[^\d]/g, '');
+
+    const client = { 
+      cpf: cleanedCpf, 
+      name, 
+      email, 
+      address, 
+      phone 
+    };
+
+    console.log("Dados enviados:", client);
 
     fetch('http://localhost:3000/api/clients', {
       method: 'POST',
@@ -19,6 +32,9 @@ function CadastrarCliente() {
     })
       .then(response => {
         if (!response.ok) {
+          if (response.status === 409) {
+            throw new Error("CPF já cadastrado.");
+          }
           throw new Error(`Erro ao cadastrar cliente: ${response.status} - ${response.statusText}`);
         }
         return response.json();
@@ -29,9 +45,13 @@ function CadastrarCliente() {
         setEmail('');
         setAddress('');
         setPhone('');
+        setErrorMessage(''); 
         alert("Cliente cadastrado com sucesso!");
       })
-      .catch(error => console.error('Erro ao cadastrar cliente:', error));
+      .catch(error => {
+        console.error('Erro ao cadastrar cliente:', error);
+        setErrorMessage(error.message); 
+      });
   };
 
   return (
@@ -41,6 +61,12 @@ function CadastrarCliente() {
       <div className="content ml-[250px] p-10"> 
         <h1 className="text-4xl font-bold mb-4 text-[#7d4b5f]">Cadastrar Cliente</h1>
         
+        {errorMessage && (
+          <div className="mb-4 text-red-500">
+            {errorMessage}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="mb-4">
           <div className="mb-4">
             <label className="block text-lg mb-2 text-[#7d4b5f]">CPF</label>
