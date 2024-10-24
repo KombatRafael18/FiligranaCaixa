@@ -3,9 +3,10 @@ const mysqlClient = require("./mysql-client");
 const db = mysqlClient.pool;
 
 async function createClient(client) {
-  const query = "INSERT INTO CLIENTS (cpf, name, email, address, phone) VALUES (?, ?, ?, ?, ?)";
-  const [result] = await db.execute(query, [client.cpf, client.name, client.email, client.address, client.phone]);
-  return { id: result.insertId, ...client };  
+  console.log("Dados recebidos para criação do cliente:", client);
+  const query = "INSERT INTO CLIENTS (cpf, name, email, address, phone, cashback) VALUES (?, ?, ?, ?, ?, ?)";
+  const [result] = await db.execute(query, [client.cpf, client.name, client.email, client.address, client.phone, 0]);
+  return { id: result.insertId, ...client, cashback: 0 };  
 }
 
 async function getClients() {
