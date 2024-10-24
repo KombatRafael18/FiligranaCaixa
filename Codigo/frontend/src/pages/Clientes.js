@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import SideDrawer from '../components/SideDrawer'; // Reutiliza o SideDrawer existente
-import './Clientes.css'; // Estilos adicionais
+import SideDrawer from '../components/SideDrawer'; 
+import './Clientes.css'; 
 
-const API_URL = "http://localhost:3000/api/clients"; // Alterar se necessário
+const API_URL = "http://localhost:3000/api/clients"; 
 
 function Clientes() {
   const [clients, setClients] = useState([]);
   const [editingClientId, setEditingClientId] = useState(null);
   const [editedClient, setEditedClient] = useState({});
 
-  // Função para buscar os clientes atualizados
   const fetchClients = async () => {
     try {
       const response = await fetch(API_URL);
@@ -20,12 +19,10 @@ function Clientes() {
     }
   };
 
-  // Busca a lista de clientes ao carregar o componente
   useEffect(() => {
     fetchClients();
   }, []);
 
-  // Lidar com mudanças no formulário de edição
   const handleEditChange = (e) => {
     const { name, value } = e.target;
     setEditedClient((prevState) => ({
@@ -34,26 +31,22 @@ function Clientes() {
     }));
   };
 
-  // Iniciar a edição de um cliente
   const startEditing = (client) => {
-    setEditingClientId(client.ID); // Define o ID do cliente que está sendo editado
-    setEditedClient(client); // Preenche o estado editedClient com os dados do cliente
+    setEditingClientId(client.ID); 
+    setEditedClient(client); 
   };
 
-  // Salvar alterações do cliente
   const saveClient = async (id) => {
     try {
-      // Prepara o cliente editado, removendo o campo ID e ajustando os tipos de dados
       const editedClientToSave = {
-        cpf: editedClient.CPF,         // Certifique-se de que as chaves estão minúsculas, conforme o backend espera
+        cpf: editedClient.CPF,         
         name: editedClient.NAME,
         email: editedClient.EMAIL,
         address: editedClient.ADDRESS,
         phone: editedClient.PHONE,
-        cashback: parseFloat(editedClient.CASHBACK) || 0,  // Certifique-se de que cashback é um número
+        cashback: parseFloat(editedClient.CASHBACK) || 0,  
       };
 
-      // Verifica o conteúdo de editedClientToSave antes de enviar
       console.log("Dados enviados ao backend:", editedClientToSave);
 
       const response = await fetch(`${API_URL}/${id}`, {
@@ -63,10 +56,9 @@ function Clientes() {
       });
 
       if (response.ok) {
-        // Buscar a lista de clientes atualizada
-        await fetchClients();  // Após salvar, busca os dados atualizados do backend
-        setEditingClientId(null); // Sai do modo de edição
-        setEditedClient({}); // Limpa o estado do cliente editado
+        await fetchClients();  
+        setEditingClientId(null);
+        setEditedClient({}); 
       } else {
         console.error("Erro ao salvar cliente:", response.statusText);
       }
@@ -75,7 +67,6 @@ function Clientes() {
     }
   };
 
-  // Excluir cliente
   const deleteClient = async (id) => {
     try {
       const response = await fetch(`${API_URL}/${id}`, {
@@ -94,7 +85,7 @@ function Clientes() {
 
   return (
     <div className="container">
-      <SideDrawer isOpen={true} /> {/* Reutiliza a sidebar existente */}
+      <SideDrawer isOpen={true} />
       <div className="content ml-[250px] p-10">
         <h1 className="text-3xl font-bold mb-4">Clientes</h1>
 
