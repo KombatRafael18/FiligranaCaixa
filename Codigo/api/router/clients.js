@@ -10,11 +10,17 @@ router.post("/", async (req, res) => {
     return res.status(400).json({ error: error.details[0].message });
   }
 
-  const { cpf, name, email, address, phone } = req.body;
-  const clientCreate = { cpf, name, email, address, phone };
-  const result = await clientsRepo.createClient(clientCreate);
-
-  res.header("Location", req.originalUrl + "/" + result.id).status(201).json(result);
+  const clientCreate = req.body;
+  
+  try {
+    const result = await clientsRepo.createClient(clientCreate);
+    res.header("Location", req.originalUrl + "/" + result.id).status(201).json(result);
+  } catch (error) {
+    if (error.name === "DuplicateCPFError") {
+      return res.status(409).json({ error: "CPF already exists" });
+    }
+    throw error;
+  }
 });
 
 router.get("/", async (req, res) => {
@@ -28,6 +34,11 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
+  const { error } = clientValidator.GetById(req.params);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+
   const { id } = req.params;
   const client = await clientsRepo.getClientById(id);
 
@@ -40,6 +51,11 @@ router.get("/:id", async (req, res) => {
 });
 
 router.get("/cpf/:cpf", async (req, res) => {
+  const { error } = clientValidator.GetByCpf(req.params);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+
   const { cpf } = req.params;
   const client = await clientsRepo.getClientByCpf(cpf);
 
@@ -52,19 +68,17 @@ router.get("/cpf/:cpf", async (req, res) => {
 });
 
 router.put("/:id", async (req, res) => {
-  // Validação dos dados de atualização do cliente
   const { error } = clientValidator.UpdateClient(req.body);
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
 
   const { id } = req.params;
-  const { cpf, name, email, address, phone } = req.body;
-
-  const clientUpdate = { cpf, name, email, address, phone };
+  const clientUpdate = req.body;
 
   try {
     await clientsRepo.updateClient(id, clientUpdate);
+    res.status(204).end();
   } catch (error) {
     if (error.name === "ClientNotFoundError") {
       res.status(404).json({ error: "Client not found" });
@@ -72,15 +86,19 @@ router.put("/:id", async (req, res) => {
     }
     throw error;
   }
-
-  res.status(204).end();
 });
 
 router.delete("/:id", async (req, res) => {
+  const { error } = clientValidator.GetById(req.params);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+
   const { id } = req.params;
 
   try {
     await clientsRepo.deleteClient(id);
+    res.status(204).end();
   } catch (error) {
     if (error.name === "ClientNotFoundError") {
       res.status(404).json({ error: "Client not found" });

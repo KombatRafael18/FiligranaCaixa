@@ -15,6 +15,7 @@ import CadastrarCliente from "./pages/CadastrarCliente";
 import FechamentoDeCaixa from "./pages/FechamentoDeCaixa";
 import FechamentoVenda from "./pages/FechamentoVenda";
 import NotFound from "./pages/NotFound";
+import Clientes from "./pages/Clientes";  
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/fechamento-de-caixa" element={<FechamentoDeCaixa />} />
           <Route path="/fechamento-venda" element={<FechamentoVenda />} />
           <Route path="*" element={<NotFound />} />
+          <Route path="/clientes" element={<Clientes />} />  
         </Routes>
       </div>
     </Router>
