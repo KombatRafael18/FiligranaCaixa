@@ -23,9 +23,9 @@ async function createClient(client) {
   }
 }
 
-async function getClients() {
-  const query = "SELECT * FROM CLIENTS";
-  const [rows] = await db.execute(query);
+async function getClients(limit = 10, offset = 0) {
+  const query = "SELECT * FROM CLIENTS LIMIT ? OFFSET ?";
+  const [rows] = await db.execute(query, [limit, offset]);
   return rows;
 }
 
