@@ -7,21 +7,24 @@ import { PlusIcon } from '@heroicons/react/24/solid';
 import debounce from 'lodash/debounce';
 
 function FechamentoVenda() {
-  const [valores, setValores] = useState(Array(9).fill('R$00,00'));
-  const [codigos, setCodigos] = useState(Array(9).fill(''));
-  const [codigoEncontrado, setCodigoEncontrado] = useState(Array(9).fill(true));
-  const [carregando, setCarregando] = useState(Array(9).fill(false));
-  const [desconto, setDesconto] = useState('');
-  const [cashback, setCashback] = useState('');
-  const [valorTotal, setValorTotal] = useState('R$00,00');
-  const [metodoPagamento, setMetodoPagamento] = useState('');
-  const navigate = useNavigate();
+  // Declaração de estados para armazenar os valores e códigos dos produtos, status de carregamento, etc.
+  const [valores, setValores] = useState(Array(9).fill('R$00,00')); // Valores de cada produto (preenchidos inicialmente com R$00,00)
+  const [codigos, setCodigos] = useState(Array(9).fill('')); // Códigos dos produtos
+  const [codigoEncontrado, setCodigoEncontrado] = useState(Array(9).fill(true)); // Flag para indicar se o código foi encontrado no servidor
+  const [carregando, setCarregando] = useState(Array(9).fill(false)); // Status de carregamento por produto
+  const [desconto, setDesconto] = useState(''); // Desconto aplicado
+  const [cashback, setCashback] = useState(''); // Cashback a ser aplicado
+  const [valorTotal, setValorTotal] = useState('R$00,00'); // Valor total da venda
+  const [metodoPagamento, setMetodoPagamento] = useState(''); // Método de pagamento selecionado
+  const navigate = useNavigate(); // Hook para navegação entre rotas
 
+  // Atualiza os valores dos produtos ao carregar códigos ou ao alterar desconto/cashback
   useEffect(() => {
     const fetchProductValues = async () => {
+      // Verifica se cada código de produto é válido e busca seu valor
       const fetchPromises = codigos
         .map((codigo, index) => {
-          if (codigo && codigo !== '0') { // Verifique se o código não é vazio ou zero
+          if (codigo && codigo !== '0') { // Ignora códigos vazios ou zero
             return fetch(`http://localhost:3000/api/products/name/${codigo}`)
               .then((response) => {
                 if (!response.ok) {
@@ -33,7 +36,7 @@ function FechamentoVenda() {
                 // Atualiza o valor correspondente ao código no estado
                 setValores((prevValores) => {
                   const newValores = [...prevValores];
-                  newValores[index] = formatCurrency(product.price * 100); // Formate conforme necessário
+                  newValores[index] = formatCurrency(product.price * 100); // Formata o valor conforme necessário
                   return newValores;
                 });
               })
@@ -45,12 +48,13 @@ function FechamentoVenda() {
         })
         .filter(Boolean); // Remove os valores nulos
 
-      await Promise.all(fetchPromises);
+      await Promise.all(fetchPromises); // Aguarda todas as promessas serem resolvidas
     };
 
     fetchProductValues();
-}, [valores, desconto, cashback]);
-  
+}, [valores, desconto, cashback]); // Dependências que disparam a execução do efeito
+
+  // Calcula o valor total quando os valores, desconto ou cashback mudam
   useEffect(() => {
     calcularValorTotal();
   }, [valores, desconto, cashback]);
@@ -58,12 +62,13 @@ function FechamentoVenda() {
   // Função para verificar o código do produto
   const verificarCodigo = async (index, codigo) => {
     if (codigo === "") {
-      updateValue(index, 'R$00,00');
-      updateCodigoEncontrado(index, true);
+      updateValue(index, 'R$00,00'); // Define o valor padrão se o código estiver vazio
+      updateCodigoEncontrado(index, true); // Marca como encontrado para não mostrar o ícone de "+", etc.
       return;
     }
 
     try {
+      // Busca o código do produto na API
       const response = await fetch(`http://localhost:3000/api/products/name/${encodeURIComponent(codigo)}`);
 
       if (response.ok) {
@@ -93,6 +98,7 @@ function FechamentoVenda() {
   // Função de debounce para evitar chamadas excessivas ao backend
   const debouncedVerificarCodigo = useCallback(debounce(verificarCodigo, 500), [carregando]);
 
+  // Manipula a mudança de código e chama a função de debounce
   const handleCodigoChange = (index, value) => {
     const trimmedValue = value.trim();
     const newCodigos = [...codigos];
@@ -114,6 +120,7 @@ function FechamentoVenda() {
     debouncedVerificarCodigo(index, trimmedValue);
   };
 
+  // Manipula a entrada de valores, formatando como moeda
   const handleInputChange = (index, value) => {
     const numericValue = value.replace(/[^0-9]/g, '');
 
@@ -125,6 +132,7 @@ function FechamentoVenda() {
     }
   };
 
+  // Manipula a entrada de desconto, limitando a 100%
   const handleDescontoChange = (value) => {
     const numericValue = value.replace(/[^0-9]/g, '');
     if (numericValue === '' || parseInt(numericValue) > 100) {
@@ -134,23 +142,27 @@ function FechamentoVenda() {
     }
   };
 
+  // Manipula a entrada de cashback
   const handleCashbackChange = (value) => {
     const numericValue = value.replace(/[^0-9]/g, '');
     setCashback(numericValue);
   };
 
+  // Atualiza o valor do produto em um índice específico
   const updateValue = (index, newValue) => {
     const newValores = [...valores];
     newValores[index] = newValue;
     setValores(newValores);
   };
 
+  // Atualiza o status de código encontrado
   const updateCodigoEncontrado = (index, encontrado) => {
     const newCodigoEncontrado = [...codigoEncontrado];
     newCodigoEncontrado[index] = encontrado;
     setCodigoEncontrado(newCodigoEncontrado);
   };
 
+  // Formata um valor para a moeda brasileira
   const formatCurrency = (value) => {
     const number = parseFloat(value) / 100;
     return number.toLocaleString('pt-BR', {
@@ -161,6 +173,7 @@ function FechamentoVenda() {
     });
   };
 
+  // Calcula o valor total considerando desconto e cashback
   const calcularValorTotal = () => {
     const somaPecas = valores.reduce((acc, valor) => {
       const numero = parseFloat(valor.replace(/[^\d,-]/g, '').replace(',', '.')) || 0;
@@ -174,10 +187,12 @@ function FechamentoVenda() {
     setValorTotal(formatCurrency(total * 100));
   };
 
+  // Função para cancelar e voltar para a página inicial
   const handleCancel = () => {
     navigate('/home');
   };
 
+  // Finaliza a compra, verificando pré-condições e enviando dados para a API
   const handleFinalizarCompra = async () => {
     if (!metodoPagamento) {
       alert('Por favor, selecione um método de pagamento.');
@@ -278,7 +293,7 @@ function FechamentoVenda() {
       alert('Erro ao conectar com o servidor.');
     }
   };
-
+  
   return (
     <div className='flex h-screen'>
       <SideDrawer isOpen={true} />
