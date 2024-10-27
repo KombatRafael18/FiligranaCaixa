@@ -14,7 +14,8 @@ function Venda() {
     const navigate = useNavigate();
 
     const handleClientTypeClick = (type) => {
-         navigate('/fechamento-venda', { state: { clientData } });
+        console.log('Tipo de venda:', type); 
+        navigate('/fechamento-venda', { state: { clientData, sellType: type } }); 
     };
 
     const handleClienteCadastradoClick = () => {

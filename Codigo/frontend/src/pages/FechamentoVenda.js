@@ -19,6 +19,7 @@ function FechamentoVenda() {
   const navigate = useNavigate(); // Hook para navegação entre rotas
   const location = useLocation();
   const clientData = location.state?.clientData;
+  const sellType = location.state?.sellType;
 
   // Atualiza os valores dos produtos ao carregar códigos ou ao alterar desconto/cashback
   useEffect(() => {
@@ -315,6 +316,7 @@ function FechamentoVenda() {
   useEffect(() => {
     if (clientData) {
       console.log('Dados do cliente:', clientData.NAME);
+      console.log('Tipo de venda:', sellType);
 
     }
   }, [clientData]);
@@ -323,7 +325,7 @@ function FechamentoVenda() {
     <div className='flex h-screen'>
       <SideDrawer isOpen={true} />
       <div className='flex flex-col ml-[250px] p-10 flex-grow'>
-        <h1 className='text-2xl mb-4'>FECHAMENTO DE VENDA {clientData ? ' - ' + clientData.NAME : ''}</h1>
+        <h1 className='text-2xl mb-4'>FECHAMENTO DE VENDA {sellType ? ' - ' + sellType.toUpperCase() : ''} {clientData ? ' - ' + clientData.NAME : ''}</h1>
         <div className='flex'>
           <div className='flex-grow'>
             <h2>PEÇAS:</h2>
