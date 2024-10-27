@@ -1,14 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import SideDrawer from '../components/SideDrawer'; 
-import './Clientes.css'; 
+import { format } from 'date-fns';
 
-const API_URL = "http://localhost:3000/api/clients"; 
+import { useNavigate } from 'react-router-dom';
+import SideDrawer from '../components/SideDrawer';
+import './Clientes.css';
+
+const API_URL = "http://localhost:3000/api/clients";
 
 function Clientes() {
   const [clients, setClients] = useState([]);
   const [editingClientId, setEditingClientId] = useState(null);
   const [editedClient, setEditedClient] = useState({});
+  const [sales, setSales] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedClientSales, setSelectedClientSales] = useState([]);
 
+
+  const navigate = useNavigate();
   const fetchClients = async () => {
     try {
       const response = await fetch(API_URL);
@@ -32,19 +40,19 @@ function Clientes() {
   };
 
   const startEditing = (client) => {
-    setEditingClientId(client.ID); 
-    setEditedClient(client); 
+    setEditingClientId(client.ID);
+    setEditedClient(client);
   };
 
   const saveClient = async (id) => {
     try {
       const editedClientToSave = {
-        cpf: editedClient.CPF,         
+        cpf: editedClient.CPF,
         name: editedClient.NAME,
         email: editedClient.EMAIL,
         address: editedClient.ADDRESS,
         phone: editedClient.PHONE,
-        cashback: parseFloat(editedClient.CASHBACK) || 0,  
+        cashback: parseFloat(editedClient.CASHBACK) || 0,
       };
 
       console.log("Dados enviados ao backend:", editedClientToSave);
@@ -56,9 +64,9 @@ function Clientes() {
       });
 
       if (response.ok) {
-        await fetchClients();  
+        await fetchClients();
         setEditingClientId(null);
-        setEditedClient({}); 
+        setEditedClient({});
       } else {
         console.error("Erro ao salvar cliente:", response.statusText);
       }
@@ -81,6 +89,24 @@ function Clientes() {
     } catch (error) {
       console.error("Erro ao deletar cliente:", error);
     }
+  };
+
+
+  const showSales = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/sales/cliente/${id}`);
+      const data = await response.json();
+      console.log(data);
+      setSelectedClientSales(data);
+      setIsModalOpen(true); // Abre o modal
+    } catch (error) {
+      console.error("Erro ao buscar compras:", error);
+    }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedClientSales([]);
   };
 
   return (
@@ -215,6 +241,12 @@ function Clientes() {
                         >
                           Deletar
                         </button>
+                        <button
+                          className="bg-blue-500 text-white px-2 py-1 rounded"
+                          onClick={() => showSales(client.ID)}
+                        >
+                          Ver compras
+                        </button>
                       </>
                     )}
                   </td>
@@ -229,6 +261,53 @@ function Clientes() {
             )}
           </tbody>
         </table>
+        {isModalOpen && (
+          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white p-6 rounded shadow-lg w-1/2">
+              <button
+                className="bg-red-500 text-white px-2 py-1 rounded float-right"
+                onClick={closeModal}
+              >
+                Fechar
+              </button>
+              <h2 className="text-2xl font-bold mb-4">Compras do Cliente</h2>
+              <table className="sales-table w-full border-collapse">
+                <thead>
+                  <tr>
+                    <th className="border p-2">ID</th>
+                    <th className="border p-2">Produtos</th>
+                    <th className="border p-2">Tipo</th>
+                    <th className="border p-2">Método de pagamento</th>
+                    <th className="border p-2">Valor total</th>
+                    <th className="border p-2">Data</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedClientSales.length > 0 ? (
+                    selectedClientSales.map((sale) => (
+                      <tr key={sale.ID}>
+                        <td className="border p-2">{sale.ID}</td>
+                        <td className="border p-2">
+                          {Array.isArray(sale.PRODUCTS) ? sale.PRODUCTS.join(', ') : ''}
+                        </td>
+                        <td className="border p-2">{sale.SALE_TYPE}</td>
+                        <td className="border p-2">{sale.PAYMENT_METHOD}</td>
+                        <td className="border p-2">{sale.TOTAL_AMOUNT}</td>
+                        <td className="border p-2">{format(new Date(sale.SALE_DATE), 'dd-MM-yyyy')}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="5" className="text-center p-4">
+                        Nenhuma compra encontrada.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -83,4 +83,23 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+router.get("/cliente/:clientId", async (req, res) => {
+  const { clientId } = req.params;
+  try {
+    const sales = await salesRepo.getSalesByClientId(clientId);
+    if (sales.length === 0) {
+      return res.status(404).json({ error: "No sales found for this client" });
+    }
+
+    for (const sale of sales) {
+      const products = await salesRepo.getProductsBySaleId(sale.ID);
+      sale.PRODUCTS = products || []; 
+    }
+
+    res.status(200).json(sales);
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred while retrieving sales" });
+  }
+});
+
 module.exports = router;

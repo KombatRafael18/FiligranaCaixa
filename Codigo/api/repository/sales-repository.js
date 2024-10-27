@@ -98,11 +98,24 @@ async function deleteSale(id) {
   }
 }
 
+async function getSalesByClientId(clientId) {
+  const query = "SELECT * FROM SALES WHERE CLIENT_ID = ?";
+  const [rows] = await db.execute(query, [clientId]);
+  return rows;
+}
+
+async function getProductsBySaleId(saleId) {
+  const query = "SELECT PRODUCT_CODE FROM SALE_PRODUCTS WHERE SALE_ID = ?";
+  const [rows] = await db.execute(query, [saleId]);
+  return rows.map(row => row.PRODUCT_CODE);
+}
 
 module.exports = {
   createSale,
   getSales,
   getSaleById,
   updateSale,
-  deleteSale
+  deleteSale,
+  getSalesByClientId,
+  getProductsBySaleId
 };
