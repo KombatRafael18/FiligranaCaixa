@@ -7,10 +7,30 @@ function Login() {
     const [usuario, setUsuario] = useState('');
     const [senha, setSenha] = useState('');
     const navigate = useNavigate();
+    const [showErrorModal, setShowErrorModal] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleLogin = () => {
-       
-        navigate('/home');
+    const handleLogin = (usuario, senha) => {
+        setIsLoading(true);
+        fetch('http://localhost:3000/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ usuario, senha }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                setIsLoading(false);
+                if (data.token) {
+                    localStorage.setItem('token', data.token);
+                    navigate('/home');
+                } else {
+                    alert('Usuário ou senha inválida!');
+                }
+            })
+            .catch(() => {
+                setIsLoading(false); 
+                setShowErrorModal(true);
+            });
     };
 
     return (
@@ -20,25 +40,35 @@ function Login() {
                     <h1 className='text-white text-2xl font-bold'>FILIGRANA</h1>
                 </div>
                 <div className='bg-[#f6b9b6] p-4 flex flex-col items-center '>
-                    <Input 
-                        label="USUÁRIO:" 
-                        name="usuario" 
-                        value={usuario} 
-                        onChange={(e) => setUsuario(e.target.value)} 
+                    <Input
+                        label="USUÁRIO:"
+                        name="usuario"
+                        value={usuario}
+                        onChange={(e) => setUsuario(e.target.value)}
                         fullWidth={true}
                     />
-                    <Input 
-                        label="SENHA:" 
-                        name="senha" 
-                        type="password" 
-                        value={senha} 
-                        onChange={(e) => setSenha(e.target.value)} 
+                    <Input
+                        label="SENHA:"
+                        name="senha"
+                        type="password"
+                        value={senha}
+                        onChange={(e) => setSenha(e.target.value)}
                         fullWidth={true}
                     />
-                  
-                    <Button className="mt-4" fullWidth={true} onClick={handleLogin}>Logar</Button>
+
+                    <Button className="mt-4" fullWidth={true} onClick={() => handleLogin(usuario, senha)}>
+                        {isLoading ? 'Entrando...' : 'Logar'}
+                    </Button>
                 </div>
             </div>
+            {showErrorModal && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-6 rounded shadow-lg">
+                        <span className="close cursor-pointer" onClick={() => setShowErrorModal(false)}>&times;</span>
+                        <p>Houve um erro na comunicação com o servidor. Por favor, tente novamente mais tarde.</p>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

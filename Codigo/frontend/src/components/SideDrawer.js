@@ -1,7 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios'; // Adicione esta importação
 
 const SideDrawer = ({ isOpen }) => {
+  const handleLogout = async () => {
+    try {
+      await axios.get('http://localhost:3000/api/login/logout');
+      localStorage.removeItem('token');
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error);
+    }
+  };
+  
+
   return (
     <>
       <div className={`fixed top-0 left-0 h-full w-64 bg-[#f6b9b6] transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out z-50`}>
@@ -22,7 +33,7 @@ const SideDrawer = ({ isOpen }) => {
           </div>
           <div>
             <ul className="space-y-4 py-12">
-              <li><Link to="/" className="block hover:text-gray-700">SAIR</Link></li>
+              <li><Link to="/" className="block hover:text-gray-700" onClick={handleLogout}>SAIR</Link></li>
               <li><Link to="/ajuda" className="block hover:text-gray-700">AJUDA</Link></li>
             </ul>
           </div>

@@ -6,13 +6,14 @@ const productsRouter = require("./router/products");
 const clientsRouter = require("./router/clients");
 const salesRouter = require("./router/sales");
 const cashClosureRouter = require("./router/cash-closure");
-
+const loginRouter = require("./router/login");
 const app = express();
 
 // Middleware to parse JSON
 app.use(bodyParser.json());
 app.use(cors());
 
+app.use("/api/login", loginRouter);
 app.use("/api/docs", docsRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/clients", clientsRouter);
