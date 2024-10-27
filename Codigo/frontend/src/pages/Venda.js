@@ -3,20 +3,64 @@ import { useNavigate } from 'react-router-dom';
 import SideDrawer from '../components/SideDrawer';
 import Button from '../components/Button';
 import { SVenda } from '../assets/strings';
+import Input from '../components/Input';
 
 function Venda() {
     const [isRegistered, setIsRegistered] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false); 
+    const [clientData, setClientData] = useState(null);
+    const [cpf, setCpf] = useState('');
+    const [searchFailed, setSearchFailed] = useState(false);
     const navigate = useNavigate();
 
     const handleClientTypeClick = (type) => {
-        navigate('/fechamento-venda');
+         navigate('/fechamento-venda', { state: { clientData } });
+    };
+
+    const handleClienteCadastradoClick = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleModalCloseAndReset = () => {
+        setIsModalOpen(false);
+        setClientData(null);
+    };
+
+    const handleModalClose = () => {
+        setIsModalOpen(false);
+    };
+
+    function searchClient(cpf) {
+        console.log('buscar cliente');
+        fetch(`http://localhost:3000/api/clients/cpf/${cpf}`)
+            .then(response => {
+                if (response.status === 400) {
+                    setSearchFailed(true);
+                    throw new Error('Cliente não encontrado');
+                }
+                return response.json();
+            })
+            .then(data => {
+                setClientData(data);
+                setSearchFailed(false); 
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    const confirmClient = () => {
+        setIsRegistered('true');
+        handleModalClose();
+        console.log(clientData);
+       
     };
 
     return (
         <div className='flex h-screen'>
             <SideDrawer isOpen={true} />
             <div className='flex flex-col items-center ml-[250px] mt-20 flex-grow'>
-                <h1 className='text-center mb-40'>{SVenda.Tipo_Venda_Titulo}</h1>   
+                <h1 className='text-center mb-40'>{SVenda.Tipo_Venda_Titulo}</h1>
                 {isRegistered === '' ? (
                     <div className='flex flex-row gap-60'>
                         <div className='flex flex-col items-center'>
@@ -31,7 +75,7 @@ function Venda() {
                             <Button
                                 size="giant"
                                 image={require('../assets/images/comCadastro.png')}
-                                onClick={() => setIsRegistered('true')}
+                                onClick={handleClienteCadastradoClick}
                             />
                             <h2 className="max-w-[250px] mt-4 text-center text-[33px]">{SVenda.Cliente_Cadastrado}</h2>
                         </div>
@@ -57,7 +101,48 @@ function Venda() {
                     </div>
                 )}
             </div>
+
+            {isModalOpen && (
+                <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center'>
+                    <div className='bg-white p-8 rounded shadow-lg w-[500px]'>
+                        <div className='flex items-center justify-between'>
+                            <h3>Buscar cliente</h3>
+                            <span className='close cursor-pointer text-3xl' onClick={handleModalCloseAndReset}>&times;</span>
+                        </div>
+
+                        <div className='flex flex-col mt-2'>
+                            <Input
+                                type='text'
+                                value={cpf}
+                                onChange={(e) => setCpf(e.target.value)}
+                                placeholder='CPF'
+                                className='max-w-full'
+                            />
+                             {clientData && !searchFailed ? (
+                            <div className='mb-4'>
+                                <p>CPF: {clientData.CPF}</p>
+                                <p>Nome: {clientData.NAME}</p>
+                                <p>Email: {clientData.EMAIL}</p>
+                                <p>Endereço: {clientData.ADDRESS}</p>
+                                <p>Telefone: {clientData.PHONE}</p>
+                                <p>Cashback: {clientData.CASHBACK}</p>
+                            </div>
+                        ) : searchFailed && (
+                            <p className='mb-4'>Cliente não encontrado</p>
+                        )}
+                            <Button
+                                size="default"
+                                onClick={clientData ? confirmClient : () => searchClient(cpf)}
+                                children={clientData ? "Confirmar" : "Buscar"} 
+                                className='w-[404px]'
+                            />
+                        </div>
+                       
+                    </div>
+                </div>
+            )}
         </div>
+        
     );
 }
 

@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import SideDrawer from '../components/SideDrawer';
 import Button from '../components/Button';
 import Input from '../components/Input';
-import { PlusIcon } from '@heroicons/react/24/solid';
+import { PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
 import debounce from 'lodash/debounce';
 
 function FechamentoVenda() {
   // Declaração de estados para armazenar os valores e códigos dos produtos, status de carregamento, etc.
-  const [valores, setValores] = useState(Array(9).fill('R$00,00')); // Valores de cada produto (preenchidos inicialmente com R$00,00)
-  const [codigos, setCodigos] = useState(Array(9).fill('')); // Códigos dos produtos
+  const [valores, setValores] = useState(Array(1).fill('R$00,00')); // Valores de cada produto (preenchidos inicialmente com R$00,00)
+  const [codigos, setCodigos] = useState(Array(1).fill('')); // Códigos dos produtos
   const [codigoEncontrado, setCodigoEncontrado] = useState(Array(9).fill(true)); // Flag para indicar se o código foi encontrado no servidor
   const [carregando, setCarregando] = useState(Array(9).fill(false)); // Status de carregamento por produto
   const [desconto, setDesconto] = useState(''); // Desconto aplicado
@@ -17,6 +17,8 @@ function FechamentoVenda() {
   const [valorTotal, setValorTotal] = useState('R$00,00'); // Valor total da venda
   const [metodoPagamento, setMetodoPagamento] = useState(''); // Método de pagamento selecionado
   const navigate = useNavigate(); // Hook para navegação entre rotas
+  const location = useLocation();
+  const clientData = location.state?.clientData;
 
   // Atualiza os valores dos produtos ao carregar códigos ou ao alterar desconto/cashback
   useEffect(() => {
@@ -52,7 +54,7 @@ function FechamentoVenda() {
     };
 
     fetchProductValues();
-}, [valores, desconto, cashback]); // Dependências que disparam a execução do efeito
+  }, [valores, desconto, cashback]); // Dependências que disparam a execução do efeito
 
   // Calcula o valor total quando os valores, desconto ou cashback mudam
   useEffect(() => {
@@ -248,19 +250,19 @@ function FechamentoVenda() {
 
   const handleAdicionarProduto = async (index) => {
     const codigo = codigos[index];
-    const valorString = valores[index].replace(/[^\d,]/g, '').replace(',', '.'); 
+    const valorString = valores[index].replace(/[^\d,]/g, '').replace(',', '.');
     const valor = parseFloat(valorString);
-    
+
     if (!codigo || isNaN(valor) || valor <= 0) {
       alert('Por favor, insira um código válido e um preço positivo.');
       return;
     }
-    
+
     const produto = {
       name: codigo,
       price: valor,
     };
-  
+
     try {
       const response = await fetch('http://localhost:3000/api/products', {
         method: 'POST',
@@ -269,19 +271,19 @@ function FechamentoVenda() {
         },
         body: JSON.stringify(produto),
       });
-  
+
       if (response.ok) {
         alert('Produto adicionado com sucesso!');
-  
+
         // Atualizar o valor e manter os produtos existentes
         const newValores = [...valores]; // Crie uma nova cópia do estado valores
         newValores[index] = formatCurrency(valor * 100); // Atualiza o valor do produto adicionado
         setValores(newValores); // Atualiza o estado com os novos valores
-  
+
         const newCodigos = [...codigos]; // Crie uma nova cópia do estado codigos
         newCodigos[index] = codigo; // Assegura que o código seja mantido
         setCodigos(newCodigos); // Atualiza o estado com os novos códigos
-  
+
         // Você pode querer chamar outras funções para atualizar o estado, se necessário
         updateCodigoEncontrado(index, true); // Atualiza o status de encontrado
       } else {
@@ -293,12 +295,35 @@ function FechamentoVenda() {
       alert('Erro ao conectar com o servidor.');
     }
   };
-  
+
+  const handleAdicionarCampo = () => {
+    setValores([...valores, 'R$00,00']);
+    setCodigos([...codigos, '']);
+    setCodigoEncontrado([...codigoEncontrado, true]);
+    setCarregando([...carregando, false]);
+  };
+
+  const handleDeletarCampo = (index) => {
+    if (valores.length > 1) {
+      setValores(valores.filter((_, i) => i !== index));
+      setCodigos(codigos.filter((_, i) => i !== index));
+      setCodigoEncontrado(codigoEncontrado.filter((_, i) => i !== index));
+      setCarregando(carregando.filter((_, i) => i !== index));
+    }
+  };
+
+  useEffect(() => {
+    if (clientData) {
+      console.log('Dados do cliente:', clientData.NAME);
+
+    }
+  }, [clientData]);
+
   return (
     <div className='flex h-screen'>
       <SideDrawer isOpen={true} />
       <div className='flex flex-col ml-[250px] p-10 flex-grow'>
-        <h1 className='text-2xl mb-4'>FECHAMENTO DE VENDA</h1>
+        <h1 className='text-2xl mb-4'>FECHAMENTO DE VENDA {clientData ? ' - ' + clientData.NAME : ''}</h1>
         <div className='flex'>
           <div className='flex-grow'>
             <h2>PEÇAS:</h2>
@@ -321,12 +346,19 @@ function FechamentoVenda() {
                     variant='custom'
                     readOnly
                   />
+                  <button
+                    onClick={handleAdicionarCampo}
+                    className='ml-6 text-blue-500 hover:text-blue-700 '
+                    title="Adicionar Campo"
+                  >
+                    <PlusIcon className='h-5 w-5 text-[#9b5c6f]' />
+                  </button>
                   {!codigoEncontrado[index] && (
                     <button
                       onClick={() => handleAdicionarProduto(index)}
                       className='ml-2 text-green-500 hover:text-green-700'
                       title="Adicionar Produto"
-                      disabled={carregando[index]} 
+                      disabled={carregando[index]}
                     >
                       {carregando[index] ? (
                         <svg className="animate-spin h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -334,13 +366,21 @@ function FechamentoVenda() {
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
                         </svg>
                       ) : (
-                        <PlusIcon className='h-5 w-5' />
+                        <PlusIcon className='h-5 w-5 text-[#9b5c6f]' />
                       )}
                     </button>
                   )}
+                  <button
+                    onClick={() => handleDeletarCampo(index)}
+                    className='ml-2 text-red-500 hover:text-red-700'
+                    title="Deletar Campo"
+                  >
+                    <TrashIcon className='h-5 w-5 text-[#9b5c6f]' />
+                  </button>
                 </div>
               </div>
             ))}
+
           </div>
           <div className='ml-10'>
             <div className='mb-4 flex items-center'>
