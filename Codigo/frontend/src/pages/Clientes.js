@@ -274,8 +274,8 @@ function Clientes() {
               <table className="sales-table w-full border-collapse">
                 <thead>
                   <tr>
-                    <th className="border p-2">ID</th>
-                    <th className="border p-2">Produtos</th>
+                    <th className="border p-2">ID da compra</th>
+                    <th className="border p-2">ID dos produtos</th>
                     <th className="border p-2">Tipo</th>
                     <th className="border p-2">Método de pagamento</th>
                     <th className="border p-2">Valor total</th>
