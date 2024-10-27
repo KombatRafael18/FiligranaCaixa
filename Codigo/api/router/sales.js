@@ -17,6 +17,20 @@ router.post("/", async (req, res) => {
   res.header("Location", req.originalUrl + "/" + result.id).status(201).json(result);
 });
 
+router.post("/finalizar-compra", async (req, res) => {
+  const { client_id, total_amount, sale_type, payment_method, sale_date, products } = req.body;
+  const { error } = salesValidator.CreateSale(req.body);
+  if (error) {
+    console.log('erro no validator');
+    return res.status(400).json({ error: error.details[0].message });
+  }
+  console.log('passou sem erro');
+  
+  const result = await salesRepo.createSale(client_id, total_amount, sale_type, payment_method, sale_date, products);
+  console.log('chamei o create sale');
+  res.header("Location", req.originalUrl + "/" + result.id).status(201).json(result);
+});
+
 //Lista todas as vendas com filtros opcionais de Tipo de venda e/ou tipo de pagamento 
 router.get("/", async (req, res) => {
   const { saleType, paymentMethod } = req.query;

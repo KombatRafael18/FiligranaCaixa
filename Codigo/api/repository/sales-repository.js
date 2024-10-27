@@ -1,10 +1,43 @@
 const mysqlClient = require("./mysql-client");
 const db = mysqlClient.pool;
 
-async function createSale(sale) {
-  const query = "INSERT INTO SALES (CLIENT_ID, TOTAL_AMOUNT, SALE_TYPE, PAYMENT_METHOD) VALUES (?, ?, ?, ?)";
-  const [result] = await db.execute(query, [sale.clientId, sale.totalAmount, sale.saleType, sale.paymentMethod]);
-  return { id: result.insertId, ...sale };
+async function createSale(clientId, totalAmount, saleType, paymentMethod, saleDate, products) {
+  const connection = await db.getConnection();
+  try {
+    await connection.beginTransaction();
+
+    const formattedSaleDate = new Date(saleDate).toISOString().slice(0, 19).replace('T', ' ');
+
+    console.log('clientId:', clientId);
+    console.log('totalAmount:', totalAmount);
+    console.log('saleType:', saleType);
+    console.log('paymentMethod:', paymentMethod);
+    console.log('saleDate:', formattedSaleDate);  
+    console.log('products:', products);
+
+
+    const saleQuery = "INSERT INTO SALES (CLIENT_ID, TOTAL_AMOUNT, SALE_TYPE, PAYMENT_METHOD, SALE_DATE) VALUES (?, ?, ?, ?, ?)";
+    const [saleResult] = await connection.execute(saleQuery, [clientId, totalAmount, saleType, paymentMethod, formattedSaleDate]);
+    const saleId = saleResult.insertId;
+
+    const productQuery = "INSERT INTO SALE_PRODUCTS (SALE_ID, PRODUCT_CODE, PRODUCT_VALUE) VALUES (?, ?, ?)";
+    for (const product of products) {
+    
+      const productValue = typeof product.valor === 'string' 
+        ? parseFloat(product.valor.replace('R$', '').replace(',', '.').trim())
+        : parseFloat(product.valor);
+
+      await connection.execute(productQuery, [saleId, product.codigo, productValue]);
+    }
+
+    await connection.commit();
+    return { id: saleId, clientId, totalAmount, saleType, paymentMethod, saleDate: formattedSaleDate };
+  } catch (error) {
+    await connection.rollback();
+    throw error;
+  } finally {
+    connection.release();
+  }
 }
 
 async function getSales(saleType, paymentMethod) {
@@ -64,6 +97,7 @@ async function deleteSale(id) {
     throw error;
   }
 }
+
 
 module.exports = {
   createSale,

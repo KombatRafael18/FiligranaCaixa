@@ -5,6 +5,7 @@ import Button from '../components/Button';
 import Input from '../components/Input';
 import { PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
 import debounce from 'lodash/debounce';
+import { ArrowUpTrayIcon } from '@heroicons/react/24/outline';
 
 function FechamentoVenda() {
   // Declaração de estados para armazenar os valores e códigos dos produtos, status de carregamento, etc.
@@ -24,10 +25,9 @@ function FechamentoVenda() {
   // Atualiza os valores dos produtos ao carregar códigos ou ao alterar desconto/cashback
   useEffect(() => {
     const fetchProductValues = async () => {
-      // Verifica se cada código de produto é válido e busca seu valor
       const fetchPromises = codigos
         .map((codigo, index) => {
-          if (codigo && codigo !== '0') { // Ignora códigos vazios ou zero
+          if (codigo && codigo !== '0') {
             return fetch(`http://localhost:3000/api/products/name/${codigo}`)
               .then((response) => {
                 if (!response.ok) {
@@ -36,10 +36,9 @@ function FechamentoVenda() {
                 return response.json();
               })
               .then((product) => {
-                // Atualiza o valor correspondente ao código no estado
                 setValores((prevValores) => {
                   const newValores = [...prevValores];
-                  newValores[index] = formatCurrency(product.price * 100); // Formata o valor conforme necessário
+                  newValores[index] = formatCurrency(product.price * 100);
                   return newValores;
                 });
               })
@@ -47,15 +46,15 @@ function FechamentoVenda() {
                 console.error(error);
               });
           }
-          return null; // Para códigos vazios ou zero, não faz nada
+          return null;
         })
-        .filter(Boolean); // Remove os valores nulos
+        .filter(Boolean);
 
-      await Promise.all(fetchPromises); // Aguarda todas as promessas serem resolvidas
+      await Promise.all(fetchPromises);
     };
 
     fetchProductValues();
-  }, [valores, desconto, cashback]); // Dependências que disparam a execução do efeito
+  }, [codigos]);
 
   // Calcula o valor total quando os valores, desconto ou cashback mudam
   useEffect(() => {
@@ -202,10 +201,16 @@ function FechamentoVenda() {
       return;
     }
 
-    const produtos = codigos.map((codigo, index) => ({
-      codigo,
-      valor: valores[index],
-    })).filter(produto => produto.codigo && produto.valor !== 'R$00,00');
+    const produtos = codigos.map((codigo, index) => {
+      const valorString = valores[index].replace(/[^\d,]/g, '').replace(',', '.');
+      const valorDouble = parseFloat(valorString);
+      return {
+        codigo,
+        valor: valorDouble,
+      };
+    }).filter(produto => produto.codigo && produto.valor > 0);
+
+    // console.log(produtos);
 
     if (produtos.length === 0) {
       alert('Por favor, adicione pelo menos um produto.');
@@ -219,16 +224,21 @@ function FechamentoVenda() {
       return;
     }
 
+    const valorTotalDouble = parseFloat(valorTotal.replace(/[^\d,-]/g, '').replace(',', '.'));
+
     try {
-      const response = await fetch('http://localhost:3000/api/finalizar-compra', {
+      const response = await fetch('http://localhost:3000/api/sales/finalizar-compra', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          total: valorTotal,
-          metodoPagamento,
-          valores: produtos,
+          client_id: clientData.ID,
+          total_amount: valorTotalDouble,
+          sale_type: sellType,
+          payment_method: metodoPagamento,
+          sale_date: new Date(),
+          products: produtos,
         }),
       });
 
@@ -355,6 +365,15 @@ function FechamentoVenda() {
                   >
                     <PlusIcon className='h-5 w-5 text-[#9b5c6f]' />
                   </button>
+                 
+                  <button
+                    onClick={() => handleDeletarCampo(index)}
+                    className='ml-2 text-red-500 hover:text-red-700'
+                    title="Deletar Campo"
+                  >
+                    <TrashIcon className='h-5 w-5 text-[#9b5c6f]' />
+                  </button>
+
                   {!codigoEncontrado[index] && (
                     <button
                       onClick={() => handleAdicionarProduto(index)}
@@ -368,17 +387,10 @@ function FechamentoVenda() {
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
                         </svg>
                       ) : (
-                        <PlusIcon className='h-5 w-5 text-[#9b5c6f]' />
+                        <ArrowUpTrayIcon className='h-5 w-5 text-[#9b5c6f]' />
                       )}
                     </button>
                   )}
-                  <button
-                    onClick={() => handleDeletarCampo(index)}
-                    className='ml-2 text-red-500 hover:text-red-700'
-                    title="Deletar Campo"
-                  >
-                    <TrashIcon className='h-5 w-5 text-[#9b5c6f]' />
-                  </button>
                 </div>
               </div>
             ))}
