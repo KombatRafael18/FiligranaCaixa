@@ -233,7 +233,7 @@ function FechamentoVenda() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          client_id: clientData.ID,
+          client_id: clientData ? clientData.ID : null, 
           total_amount: valorTotalDouble,
           sale_type: sellType,
           payment_method: metodoPagamento,

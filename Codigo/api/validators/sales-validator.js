@@ -2,7 +2,7 @@ const joi = require("joi");
 
 function CreateSale(sale) {
   const schema = joi.object().keys({
-    client_id: joi.number().integer().required(),
+    client_id: joi.number().integer().allow(null).required(),
     total_amount: joi.number().positive().required(),
     sale_type: joi.string().valid('varejo', 'atacado').required(),
     payment_method: joi.string().valid('Cartão de Crédito', 'Cartão de Débito', 'Dinheiro', 'PIX', 'Boleto', 'CARTÃO', 'DINHEIRO').required(),

@@ -15,9 +15,9 @@ async function createSale(clientId, totalAmount, saleType, paymentMethod, saleDa
     console.log('saleDate:', formattedSaleDate);  
     console.log('products:', products);
 
-
+    // Permitir que clientId seja null
     const saleQuery = "INSERT INTO SALES (CLIENT_ID, TOTAL_AMOUNT, SALE_TYPE, PAYMENT_METHOD, SALE_DATE) VALUES (?, ?, ?, ?, ?)";
-    const [saleResult] = await connection.execute(saleQuery, [clientId, totalAmount, saleType, paymentMethod, formattedSaleDate]);
+    const [saleResult] = await connection.execute(saleQuery, [clientId || null, totalAmount, saleType, paymentMethod, formattedSaleDate]);
     const saleId = saleResult.insertId;
 
     const productQuery = "INSERT INTO SALE_PRODUCTS (SALE_ID, PRODUCT_CODE, PRODUCT_VALUE) VALUES (?, ?, ?)";
