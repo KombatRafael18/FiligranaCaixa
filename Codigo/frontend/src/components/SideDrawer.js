@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios'; // Adicione esta importação
+import axios from 'axios';
 
 const SideDrawer = ({ isOpen }) => {
   const handleLogout = async () => {
