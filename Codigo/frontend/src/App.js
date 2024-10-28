@@ -13,9 +13,9 @@ import Login from "./pages/Login";
 import Venda from "./pages/Venda";
 import CadastrarCliente from "./pages/CadastrarCliente";
 import FechamentoDeCaixa from "./pages/FechamentoDeCaixa";
-import FechamentoVenda from "./pages/FechamentoVenda";
+import FechamentoVenda from "./pages/FechamentoVenda/FechamentoVenda";
 import NotFound from "./pages/NotFound";
-import Clientes from "./pages/Clientes"; 
+import Clientes from "./pages/Clientes/Clientes"; 
 
 function PrivateRoute({ element, ...rest }) {
   const [isValid, setIsValid] = useState(false);
