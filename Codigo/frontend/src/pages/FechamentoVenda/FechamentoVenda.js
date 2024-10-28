@@ -6,6 +6,7 @@ import Input from '../../components/Input';
 import { PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
 import debounce from 'lodash/debounce';
 import { ArrowUpTrayIcon } from '@heroicons/react/24/outline';
+import './FechamentoVenda.css';
 
 function FechamentoVenda() {
   // Declaração de estados para armazenar os valores e códigos dos produtos, status de carregamento, etc.
@@ -332,22 +333,23 @@ function FechamentoVenda() {
   }, [clientData]);
 
   return (
-    <div className='flex h-screen'>
+    <div className='container-fechamento-venda'>
       <SideDrawer isOpen={true} />
-      <div className='flex flex-col ml-[250px] p-10 flex-grow'>
-        <h1 className='text-2xl mb-4'>FECHAMENTO DE VENDA {sellType ? ' - ' + sellType.toUpperCase() : ''} {clientData ? ' - ' + clientData.NAME : ''}</h1>
-        <div className='flex'>
-          <div className='flex-grow'>
+      <div className='container-content'>
+        <h1 className='title-page'>FECHAMENTO DE VENDA  {sellType ? ' - ' + sellType.toUpperCase() : ''} {clientData ? ' - ' + clientData.NAME : ''}</h1>
+        <div className='section-produtos'>
+          <div className='lista-produtos'>
             <h2>PEÇAS:</h2>
             {valores.map((valor, index) => (
-              <div key={index} className='flex items-center mb-2 gap-4'>
-                <span className='text-lg'>{index + 1}</span>
+              <div key={index} className='produto-item'>
+                <span>{index + 1}</span>
                 <Input
                   type="text"
                   value={codigos[index]}
                   onChange={(e) => handleCodigoChange(index, e.target.value)}
                   placeholder={`Código`}
                   variant='custom'
+                  className="codigo-input"
                 />
                 <div className='flex items-center'>
                   <Input
@@ -357,6 +359,7 @@ function FechamentoVenda() {
                     placeholder={`R$00,00`}
                     variant='custom'
                     readOnly
+                    className="valor-input"
                   />
                   <button
                     onClick={handleAdicionarCampo}
@@ -377,12 +380,12 @@ function FechamentoVenda() {
                   {!codigoEncontrado[index] && (
                     <button
                       onClick={() => handleAdicionarProduto(index)}
-                      className='ml-2 text-green-500 hover:text-green-700'
+                      className='add-produto-btn'
                       title="Adicionar Produto"
-                      disabled={carregando[index]}
+                      disabled={carregando[index]} 
                     >
                       {carregando[index] ? (
-                        <svg className="animate-spin h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <svg className="spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
                         </svg>
@@ -396,25 +399,27 @@ function FechamentoVenda() {
             ))}
 
           </div>
-          <div className='ml-10'>
-            <div className='mb-4 flex items-center'>
-              <label className='w-24'>CASHBACK</label>
+          <div className='section-pagamento'>
+            <div className='input-group'>
+              <label>CASHBACK</label>
               <Input
                 type="text"
                 value={cashback}
                 onChange={(e) => handleCashbackChange(e.target.value)}
                 placeholder={`R$00,00`}
                 variant='custom'
+                className="cashback-input"
               />
             </div>
-            <div className='mb-4 flex items-center'>
-              <label className='w-24'>DESCONTO (%)</label>
+            <div className='input-group'>
+              <label>DESCONTO (%)</label>
               <Input
                 type="text"
                 value={desconto}
                 onChange={(e) => handleDescontoChange(e.target.value)}
                 placeholder={`0%`}
                 variant='custom'
+                className="desconto-input"
               />
             </div>
           </div>
@@ -422,33 +427,34 @@ function FechamentoVenda() {
         <div>
           <div className='flex mt-4'>
             <Button
-              className={`mr-2 ${metodoPagamento === 'DINHEIRO' ? 'bg-blue-500' : ''}`}
+              className={`metodo-pagamento-btn ${metodoPagamento === 'DINHEIRO' ? 'selected' : ''}`}
               onClick={() => handleMetodoPagamento('DINHEIRO')}
             >
               DINHEIRO
             </Button>
             <Button
-              className={`mr-2 ${metodoPagamento === 'PIX' ? 'bg-blue-500' : ''}`}
+              className={`metodo-pagamento-btn ${metodoPagamento === 'PIX' ? 'selected' : ''}`}
               onClick={() => handleMetodoPagamento('PIX')}
             >
               PIX
             </Button>
             <Button
-              className={`${metodoPagamento === 'CARTÃO' ? 'bg-blue-500' : ''}`}
+              className={`metodo-pagamento-btn ${metodoPagamento === 'CARTÃO' ? 'selected' : ''}`}
               onClick={() => handleMetodoPagamento('CARTÃO')}
             >
               CARTÃO
             </Button>
           </div>
-          <h2 className='mt-4'>VALOR TOTAL: {valorTotal}</h2>
-          <div className='flex mt-4 pb-8'>
-            <Button className='mr-2' onClick={handleCancel}>CANCELAR</Button>
-            <Button onClick={handleFinalizarCompra} className='bg-green-500 text-white'>FINALIZAR COMPRA</Button>
+          <h2 className='valor-total'>VALOR TOTAL: {valorTotal}</h2>
+          <div className='acao-botoes'>
+            <Button className='cancelar-btn' onClick={handleCancel}>CANCELAR</Button>
+            <Button className='finalizar-btn' onClick={handleFinalizarCompra}>FINALIZAR COMPRA</Button>
           </div>
         </div>
       </div>
     </div>
   );
+  
 }
 
 export default FechamentoVenda;
