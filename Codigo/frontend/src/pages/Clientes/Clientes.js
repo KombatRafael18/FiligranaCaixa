@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 
 import { useNavigate } from 'react-router-dom';
-import SideDrawer from '../components/SideDrawer';
+import SideDrawer from '../../components/SideDrawer';
 import './Clientes.css';
 
 const API_URL = "http://localhost:3000/api/clients";
