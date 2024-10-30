@@ -148,4 +148,56 @@
   .finalizar-btn:hover {
     background-color: #059669;
   }
+
+  @media (max-width: 768px) {
+    .container-content {
+      padding: 1rem;
+      margin-left: 0; /* Ajustar a margem esquerda para dispositivos menores */
+      flex-direction: column;
+    }
+  
+    .title-page {
+      font-size: 1.5rem;
+    }
+  
+    .section-produtos,
+    .lista-produtos {
+      flex-direction: column;
+      align-items: center; /* Centralizar os produtos */
+    }
+  
+    .produto-item {
+      flex-direction: column; /* Empilhar os elementos do produto verticalmente */
+      align-items: center;
+      width: 100%; /* Utilizar a largura completa */
+    }
+  
+    .codigo-input,
+    .valor-input,
+    .cashback-input,
+    .desconto-input {
+      width: 100%; /* Fazer com que os inputs ocupem a largura total */
+    }
+  
+    .input-group {
+      flex-direction: column;
+      align-items: center; /* Centralizar labels e inputs */
+    }
+  
+    .metodo-pagamento-btn {
+      width: 100%; /* Botões de pagamento ocupam a largura total */
+      margin-bottom: 0.5rem; /* Adicionar espaço entre os botões */
+    }
+  
+    .acao-botoes {
+      flex-direction: column;
+      width: 100%;
+    }
+  
+    .cancelar-btn,
+    .finalizar-btn {
+      width: 100%; /* Fazer com que os botões de ação ocupem a largura total */
+      margin-bottom: 0.5rem;
+    }
+  }
   

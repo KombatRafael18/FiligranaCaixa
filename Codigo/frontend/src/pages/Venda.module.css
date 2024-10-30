@@ -1,0 +1,79 @@
+/* Estilos básicos para flexibilidade e alinhamento */
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Altura total da tela */
+    align-items: center;
+}
+
+.margin-left-custom {
+    margin-left: 250px;
+}
+
+.mt-20 {
+    margin-top: 20px;
+}
+
+.mb-40 {
+    margin-bottom: 40px;
+}
+
+.flex-grow {
+    flex-grow: 1;
+}
+
+@media (max-width: 800px) {
+    /* Esconder o SideDrawer para liberar espaço */
+    .side-drawer {
+      width: 0;
+      overflow-x: hidden;
+      visibility: hidden;
+      transition: width 0.3s ease-in-out;
+    }
+  
+    .side-drawer:hover {
+      width: 250px;
+      visibility: visible;
+    }
+  
+    /* Conteúdo principal ajustado para usar o espaço disponível */
+    .container-fechamento-venda {
+      margin-left: 0; /* Remove qualquer margem esquerda */
+      padding: 10px; /* Espaço interno para não colar no viewport */
+      width: 100%; /* Usa toda a largura disponível */
+    }
+  
+    /* Ajustar elementos internos para evitar sobreposição e melhorar a leitura */
+    .section-produtos {
+      display: flex;
+      flex-direction: column; /* Organiza produtos verticalmente */
+    }
+  
+    .produto-item {
+      display: flex;
+      flex-direction: column; /* Empilha inputs e botões */
+      align-items: center; /* Centraliza elementos */
+      margin-bottom: 15px; /* Espaço entre itens */
+    }
+  
+    .codigo-input, .valor-input, .cashback-input, .desconto-input {
+      width: 100%; /* Inputs ocupam toda a largura disponível */
+      margin-bottom: 5px; /* Espaço entre os inputs */
+    }
+  
+    .button {
+      width: auto; /* Ajusta botões para o conteúdo */
+      margin-top: 5px; /* Espaço acima dos botões */
+    }
+  
+    .metodo-pagamento-btn, .cancelar-btn, .finalizar-btn {
+      width: 100%; /* Botões de ação ocupam a largura total */
+      margin-bottom: 0.5rem; /* Espaço entre os botões */
+    }
+  
+    .acao-botoes {
+      flex-direction: column; /* Botões de ação em coluna */
+      width: 100%; /* Ocupa a largura total */
+    }
+  }
+  

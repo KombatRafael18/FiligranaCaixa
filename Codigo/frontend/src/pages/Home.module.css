@@ -1,0 +1,63 @@
+/* Estilos básicos */
+.flex {
+    display: flex;
+    flex-direction: column;
+}
+
+.h-screen {
+    height: 100vh; /* Altura total da tela */
+}
+
+/* Ajuste para margem esquerda, troque o valor conforme necessário */
+.margin-left-custom {
+    margin-left: 250px;
+}
+
+.flex-grow {
+    flex-grow: 1;
+}
+
+/* Padronizando os paddings */
+.padding-general {
+    padding: 1rem; /* Aplica um padding padrão */
+}
+
+.padding-x-large {
+    padding-left: 3rem;
+    padding-right: 3rem;
+}
+
+.padding-y-large {
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+}
+
+/* Media queries para telas menores */
+@media (max-width: 768px) {
+    .margin-left-custom {
+        margin-left: 0; /* Remove a margem esquerda em dispositivos menores */
+    }
+
+    .flex {
+        flex-direction: column; /* Torna o flex direction como coluna para todos os elementos */
+    }
+
+    .h-screen, .flex-grow {
+        height: auto; /* Altura auto para evitar a rolagem vertical forçada */
+    }
+
+    .padding-general, .padding-x-large, .padding-y-large {
+        padding: 0.5rem; /* Reduz o padding em dispositivos menores */
+    }
+}
+
+/* Estilos para botões grandes */
+.button-big {
+    padding: 1rem 2rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.button-big:hover {
+    background-color: #ccc; /* Cor de fundo ao passar o mouse */
+}

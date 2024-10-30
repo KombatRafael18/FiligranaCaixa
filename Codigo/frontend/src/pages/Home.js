@@ -2,6 +2,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import SideDrawer from '../components/SideDrawer';
 import Button from '../components/Button';
+import styles from './Home.module.css';
+
 
 function Home() {
     const navigate = useNavigate();

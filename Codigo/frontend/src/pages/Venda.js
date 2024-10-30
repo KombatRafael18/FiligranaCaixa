@@ -4,7 +4,7 @@ import SideDrawer from '../components/SideDrawer';
 import Button from '../components/Button';
 import { SVenda } from '../assets/strings';
 import Input from '../components/Input';
-
+import styles from './Venda.module.css';
 function Venda() {
     const [isRegistered, setIsRegistered] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false); 
