@@ -263,7 +263,7 @@ function Clientes() {
         </table>
         {isModalOpen && (
           <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white p-6 rounded shadow-lg w-1/2">
+            <div className="bg-white p-6 rounded shadow-lg w-3/5">
               <button
                 className="bg-red-500 text-white px-2 py-1 rounded float-right"
                 onClick={closeModal}
@@ -278,8 +278,8 @@ function Clientes() {
                     <th className="border p-2">ID dos produtos</th>
                     <th className="border p-2">Tipo</th>
                     <th className="border p-2">Método de pagamento</th>
-                    <th className="border p-2">Valor total</th>
-                    <th className="border p-2">Data</th>
+                    <th className="border p-2 w-[100px]">Valor total</th>
+                    <th className="border p-2 w-[110px]">Data</th>
                   </tr>
                 </thead>
                 <tbody>
