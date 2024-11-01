@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import SideDrawer from "../../components/SideDrawer";
 import { useLoading } from "../../hooks/loading-hook";
 import { formatBrazilianCurrency } from "../../utils/currencyFormatter";
+import { BarChartCard } from "./subcomponents/BarChartCard";
 import { StatCard } from "./subcomponents/StatCard";
 
 const VIEWS = Object.freeze({
@@ -123,9 +124,10 @@ function PainelDeDados() {
           </div>
 
           <div>
-            <div>
-              <h2 className="text-sm font-bold">Vendas por dia do mês</h2>
-            </div>
+            <BarChartCard
+              title="Vendas por dia do mês"
+              yAxisLabelFormatter={(v) => formatBrazilianCurrency(v)}
+            />
           </div>
 
           <div className="flex gap-4">
