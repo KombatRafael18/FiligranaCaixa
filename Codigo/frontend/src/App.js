@@ -16,6 +16,7 @@ import FechamentoDeCaixa from "./pages/FechamentoDeCaixa";
 import FechamentoVenda from "./pages/FechamentoVenda/FechamentoVenda";
 import NotFound from "./pages/NotFound";
 import Clientes from "./pages/Clientes/Clientes"; 
+import PainelDeDados from "./pages/PainelDeDados/PainelDeDados";
 
 function PrivateRoute({ element, ...rest }) {
   const [isValid, setIsValid] = useState(false);
@@ -68,6 +69,7 @@ function App() {
           <Route path="/cadastrar-cliente" element={<PrivateRoute element={<CadastrarCliente />} />} />
           <Route path="/fechamento-de-caixa" element={<PrivateRoute element={<FechamentoDeCaixa />} />} />
           <Route path="/fechamento-venda" element={<PrivateRoute element={<FechamentoVenda />} />} />
+          <Route path="/painel-de-dados" element={<PrivateRoute element={<PainelDeDados />} />} />
           <Route path="*" element={<NotFound />} />
           <Route path="/clientes" element={<PrivateRoute element={<Clientes />} />} />
         </Routes>
