@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import SideDrawer from "../../components/SideDrawer";
 import { useLoading } from "../../hooks/loading-hook";
+import { formatBrazilianCurrency } from "../../utils/currencyFormatter";
+import { StatCard } from "./subcomponents/StatCard";
 
 const VIEWS = Object.freeze({
   ANUAL: "ANUAL",
@@ -35,6 +37,13 @@ function PainelDeDados() {
   const { isLoading, startLoading, stopLoading } = useLoading();
 
   const isReferenceDateToday = referenceDate === currentMonthISOFormat();
+
+  const [monthlySummary, setMonthlySummary] = useState({
+    totalSales: 120,
+    totalSalesAmount: 93,
+    averageTicket: 50.12,
+    comparisonLastMonth: -1.2,
+  });
 
   useEffect(() => {
     console.debug("Referência de data alterada", referenceDate);
@@ -93,20 +102,24 @@ function PainelDeDados() {
 
         <div className="mt-6 flex flex-col gap-6">
           <div className="flex gap-4">
-            <div>
-              <h2 className="text-sm font-bold">Total de Vendas do Mês</h2>
-            </div>
-            <div>
-              <h2 className="text-sm font-bold">Vendas do Mês</h2>
-            </div>
-            <div>
-              <h2 className="text-sm font-bold">Ticket Médio Mensal</h2>
-            </div>
-            <div>
-              <h2 className="text-sm font-bold">
-                Comparação com o Mês Anterior
-              </h2>
-            </div>
+            <StatCard
+              title="Total de Vendas do Mês"
+              value={formatBrazilianCurrency(monthlySummary.totalSales)}
+            />
+            <StatCard
+              title="Vendas do Mês"
+              value={formatBrazilianCurrency(monthlySummary.totalSalesAmount)}
+            />
+            <StatCard
+              title="Ticket Médio Mensal"
+              value={formatBrazilianCurrency(monthlySummary.averageTicket)}
+            />
+            <StatCard
+              title="Comparação com o Mês Anterior"
+              value={formatBrazilianCurrency(
+                monthlySummary.comparisonLastMonth
+              )}
+            />
           </div>
 
           <div>
