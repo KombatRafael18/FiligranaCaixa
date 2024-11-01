@@ -3,6 +3,7 @@ import SideDrawer from "../../components/SideDrawer";
 import { useLoading } from "../../hooks/loading-hook";
 import { formatBrazilianCurrency } from "../../utils/currencyFormatter";
 import { BarChartCard } from "./subcomponents/BarChartCard";
+import { PieChartCard } from "./subcomponents/PieChartCard";
 import { StatCard } from "./subcomponents/StatCard";
 
 const VIEWS = Object.freeze({
@@ -20,6 +21,48 @@ const VIEW_OPTIONS = [
     label: "Mensal",
   },
 ];
+
+function generateFakeSaleTypeData() {
+  return [
+    {
+      saleType: "Varejo",
+      count: Math.floor(Math.random() * 1000),
+    },
+    {
+      saleType: "Atacado",
+      count: Math.floor(Math.random() * 1000),
+    },
+  ];
+}
+
+function generateFakePaymentMethodData() {
+  return [
+    {
+      paymentMethod: "Crédito",
+      count: Math.floor(Math.random() * 1000),
+    },
+    {
+      paymentMethod: "Débito",
+      count: Math.floor(Math.random() * 1000),
+    },
+    {
+      paymentMethod: "Dinheiro",
+      count: Math.floor(Math.random() * 1000),
+    },
+    {
+      paymentMethod: "Pix",
+      count: Math.floor(Math.random() * 1000),
+    },
+    {
+      paymentMethod: "Promissoria",
+      count: Math.floor(Math.random() * 1000),
+    },
+    {
+      paymentMethod: "QR Pix",
+      count: Math.floor(Math.random() * 1000),
+    },
+  ];
+}
 
 /**
  * Retorna o mês atual no formato ISO (YYYY-MM).
@@ -44,6 +87,9 @@ function PainelDeDados() {
     totalSalesAmount: 93,
     averageTicket: 50.12,
     comparisonLastMonth: -1.2,
+
+    salesByType: generateFakeSaleTypeData(),
+    salesByPaymentMethod: generateFakePaymentMethodData(),
   });
 
   useEffect(() => {
@@ -105,7 +151,7 @@ function PainelDeDados() {
           <div className="flex gap-4">
             <StatCard
               title="Total de Vendas do Mês"
-              value={formatBrazilianCurrency(monthlySummary.totalSales)}
+              value={monthlySummary.totalSales}
             />
             <StatCard
               title="Vendas do Mês"
@@ -123,24 +169,26 @@ function PainelDeDados() {
             />
           </div>
 
-          <div>
-            <BarChartCard
-              title="Vendas por dia do mês"
-              yAxisLabelFormatter={(v) => formatBrazilianCurrency(v)}
-            />
-          </div>
+          <BarChartCard
+            title="Vendas por dia do mês"
+            yAxisLabelFormatter={(v) => formatBrazilianCurrency(v)}
+          />
 
           <div className="flex gap-4">
-            <div>
-              <h2 className="text-sm font-bold">
-                Distribuição de Vendas por Categoria
-              </h2>
-            </div>
-            <div>
-              <h2 className="text-sm font-bold">
-                Distribuição de Vendas por Forma de Pagamento
-              </h2>
-            </div>
+            <PieChartCard
+              title="Distribuição de Vendas por Categoria"
+              pieData={monthlySummary.salesByType.map((data) => ({
+                name: data.saleType,
+                value: data.count,
+              }))}
+            />
+            <PieChartCard
+              title="Distribuição de Vendas por Forma de Pagamento"
+              pieData={monthlySummary.salesByPaymentMethod.map((data) => ({
+                name: data.paymentMethod,
+                value: data.count,
+              }))}
+            />
           </div>
         </div>
       </section>

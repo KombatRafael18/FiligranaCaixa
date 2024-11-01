@@ -1,5 +1,6 @@
 import * as echarts from "echarts";
 import { useEffect, useRef } from "react";
+import { chartOptions } from "../chart-options";
 
 function generateFakeData() {
   // Gera todos os dias do mês atual
@@ -79,11 +80,9 @@ export function BarChartCard({ title, yAxisLabelFormatter = undefined }) {
       series: [
         {
           type: "bar",
+          color: chartOptions.color,
           name: "Vendas no dia",
           data: sd,
-          itemStyle: {
-            color: "#7d4b5f",
-          },
         },
       ],
     });
