@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SideDrawer from '../components/SideDrawer';
 import Button from '../components/Button';
-import { SVenda } from '../assets/strings';
+import { SVenda, SCadastro } from '../assets/Strings/stringsVenda';
 import Input from '../components/Input';
 import styles from './Venda.module.css';
+
 function Venda() {
     const [isRegistered, setIsRegistered] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false); 
@@ -107,7 +108,7 @@ function Venda() {
                 <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center'>
                     <div className='bg-white p-8 rounded shadow-lg w-[500px]'>
                         <div className='flex items-center justify-between'>
-                            <h3>Buscar cliente</h3>
+                            <h3>{SVenda.Buscar_Cliente}</h3>
                             <span className='close cursor-pointer text-3xl' onClick={handleModalCloseAndReset}>&times;</span>
                         </div>
 
@@ -121,15 +122,15 @@ function Venda() {
                             />
                              {clientData && !searchFailed ? (
                             <div className='mb-4'>
-                                <p>CPF: {clientData.CPF}</p>
-                                <p>Nome: {clientData.NAME}</p>
-                                <p>Email: {clientData.EMAIL}</p>
-                                <p>Endereço: {clientData.ADDRESS}</p>
-                                <p>Telefone: {clientData.PHONE}</p>
-                                <p>Cashback: {clientData.CASHBACK}</p>
+                                <p>{SCadastro.CPF}{clientData.CPF}</p>
+                                <p>{SCadastro.Nome}{clientData.NAME}</p>
+                                <p>{SCadastro.Email}{clientData.EMAIL}</p>
+                                <p>{SCadastro.Endereço}{clientData.ADDRESS}</p>
+                                <p>{SCadastro.Telefone}{clientData.PHONE}</p>
+                                <p>{SCadastro.Cashback}{clientData.CASHBACK}</p>
                             </div>
                         ) : searchFailed && (
-                            <p className='mb-4'>Cliente não encontrado</p>
+                            <p className='mb-4'>{SVenda.Cliente_Nao_Encontrado}</p>
                         )}
                             <Button
                                 size="default"
