@@ -3,5 +3,5 @@ export const SVenda = {
     Cliente_Sem_Cadastrado: "SEM CADASTRO",
     Cliente_Cadastrado: "CLIENTE CADASTRADO",
     Atacado: "ATACADO",
-    Varejo: "VAREJO"
+    Varejo: "VAREJOo"
 };
