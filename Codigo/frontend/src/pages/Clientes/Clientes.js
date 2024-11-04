@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-
 import { useNavigate } from 'react-router-dom';
+import Button from '../../components/Button';
 import SideDrawer from '../../components/SideDrawer';
 import './Clientes.css';
 
@@ -11,9 +11,9 @@ function Clientes() {
   const [clients, setClients] = useState([]);
   const [editingClientId, setEditingClientId] = useState(null);
   const [editedClient, setEditedClient] = useState({});
-  const [sales, setSales] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedClientSales, setSelectedClientSales] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
 
   const navigate = useNavigate();
@@ -30,6 +30,22 @@ function Clientes() {
   useEffect(() => {
     fetchClients();
   }, []);
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const normalizeText = (text) => {
+    return text.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+  };
+
+  const filteredClients = clients.filter(client =>
+    normalizeText(client.NAME.toLowerCase()).includes(normalizeText(searchTerm.toLowerCase()))
+  );
+
+  const handleNavigateToCadastro = () => {
+    navigate('/cadastrar-cliente');
+  };
 
   const handleEditChange = (e) => {
     const { name, value } = e.target;
@@ -115,6 +131,33 @@ function Clientes() {
       <div className="content ml-[250px] p-10">
         <h1 className="text-3xl font-bold mb-4">Clientes</h1>
 
+        <div className="flex items-center mb-5 mt-7" style={{ marginLeft: '6.5vh' }}>
+          <style>{`
+            .custom-placeholder::placeholder {
+                color: #9b5c6f;
+                opacity: 1;
+            }
+          `}</style>
+
+          <input
+            type="text"
+            placeholder="Buscar por nome"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className="border rounded p-2 mr-4 w-1/3"
+            style={{
+              width: '40rem',
+              padding: '0.5rem',
+              border: '2px solid #9b5c6f',
+              borderRadius: '0.375rem',
+              backgroundColor: '#f8fafc',
+            }}
+          />
+          <Button size="default" onClick={handleNavigateToCadastro}>
+            Cadastrar Cliente
+          </Button>
+        </div>
+
         <table className="client-table w-full border-collapse">
           <thead>
             <tr>
@@ -129,8 +172,8 @@ function Clientes() {
             </tr>
           </thead>
           <tbody>
-            {clients.length > 0 ? (
-              clients.map((client) => (
+            {filteredClients.length > 0 ? (
+              filteredClients.map((client) => (
                 <tr key={client.ID}>
                   <td className="border p-2">{client.ID}</td>
                   <td className="border p-2">

@@ -30,4 +30,9 @@
   button:hover {
     opacity: 0.8;
   }
+
+  input::placeholder {
+    color: #9b5c6f;
+    opacity: 1;
+  }
   

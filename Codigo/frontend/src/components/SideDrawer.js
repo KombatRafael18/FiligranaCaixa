@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { FaShoppingCart, FaUser, FaChartBar, FaCashRegister, FaQuestionCircle, FaUsers } from 'react-icons/fa';
+import { FaShoppingCart, FaChartBar, FaCashRegister, FaQuestionCircle, FaUsers } from 'react-icons/fa';
 
 const SideDrawer = ({ isOpen }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -38,12 +38,6 @@ const SideDrawer = ({ isOpen }) => {
                   <Link to="/venda" className="flex items-center gap-3 hover:text-[#9b5c6f]">
                     <FaShoppingCart />
                     {(isHovering || !isCollapsed) && <span>NOVA VENDA</span>}
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/cadastrar-cliente" className="flex items-center gap-3 hover:text-[#9b5c6f]">
-                    <FaUser />
-                    {(isHovering || !isCollapsed) && <span>CADASTRAR CLIENTE</span>}
                   </Link>
                 </li>
                 <li>

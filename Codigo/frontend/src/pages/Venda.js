@@ -32,19 +32,28 @@ function Venda() {
         setIsModalOpen(false);
     };
 
+    const handleNavigateToCadastro = () => {
+        navigate('/cadastrar-cliente');
+      };
+
     function searchClient(cpf) {
         console.log('buscar cliente');
         fetch(`http://localhost:3000/api/clients/cpf/${cpf}`)
             .then(response => {
-                if (response.status === 400) {
+                if (!response.ok) {
                     setSearchFailed(true);
                     throw new Error('Cliente não encontrado');
                 }
                 return response.json();
             })
             .then(data => {
-                setClientData(data);
-                setSearchFailed(false); 
+                if (!data || Object.keys(data).length === 0) {
+                    setSearchFailed(true);
+                    setClientData(null);
+                } else {
+                    setClientData(data);
+                    setSearchFailed(false);
+                }
             })
             .catch(error => {
                 console.error('Error:', error);
