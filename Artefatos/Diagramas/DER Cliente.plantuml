@@ -36,7 +36,7 @@ entity "Pagamento" {
     + Venda_ID : int [FK]
     + Data : timestamp
     + Valor : decimal(10,2)
-    + Forma de Pagamento : enum('Dinheiro', 'Cartão', 'Pix')
+    + Forma de Pagamento : enum('Dinheiro', 'QR Pix', 'Pix', 'Promissoria', 'Crédito', 'Débito')
 }
 
 ' Relacionamentos

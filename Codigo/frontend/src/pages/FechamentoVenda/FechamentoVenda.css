@@ -122,15 +122,22 @@
 /* Valor total */
 .valor-total {
   margin: 1rem 0;
-  font-size: 1.6rem;
+  font-size: 2.4rem;
   font-weight: bold;
   text-align: center;
+}
+
+.container-botoes {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* Alinha os elementos à direita */
 }
 
 /* Botões de ação */
 .acao-botoes {
   display: flex;
   gap: 0.5rem;
+  align-items: flex-end;
 }
 
 .cancelar-btn,
@@ -164,7 +171,6 @@
 .align-container {
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Alinha os elementos à esquerda */
   margin-right: 20px; /* Ajuste a margem conforme necessário */
 }
 

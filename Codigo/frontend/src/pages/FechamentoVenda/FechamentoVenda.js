@@ -486,21 +486,50 @@ function FechamentoVenda() {
               </Button>
               <Button
                 className={`metodo-pagamento-btn ${
-                  metodoPagamento === "CARTÃO" ? "selected" : ""
+                  metodoPagamento === "CRÉDITO" ? "selected" : ""
                 }`}
-                onClick={() => handleMetodoPagamento("CARTÃO")}
+                onClick={() => handleMetodoPagamento("CRÉDITO")}
               >
-                CARTÃO
+                CRÉDITO
+              </Button>
+              <Button
+                className={`metodo-pagamento-btn ${
+                  metodoPagamento === "DÉBITO" ? "selected" : ""
+                }`}
+                onClick={() => handleMetodoPagamento("DÉBITO")}
+              >
+                DÉBITO
+              </Button>
+              <Button
+                className={`metodo-pagamento-btn ${
+                  metodoPagamento === "QR PIX" ? "selected" : ""
+                }`}
+                onClick={() => handleMetodoPagamento("QR PIX")}
+              >
+                QR PIX
+              </Button>
+              <Button
+                className={`metodo-pagamento-btn ${
+                  metodoPagamento === "PROMISSORIA" ? "selected" : ""
+                }`}
+                onClick={() => handleMetodoPagamento("PROMISSORIA")}
+              >
+                PROMISSORIA
               </Button>
             </div>
             <h2 className="valor-total">VALOR TOTAL: {valorTotal}</h2>
-            <div className="acao-botoes">
-              <Button className="cancelar-btn" onClick={handleCancel}>
-                CANCELAR
-              </Button>
-              <Button className="finalizar-btn" onClick={handleFinalizarCompra}>
-                FINALIZAR COMPRA
-              </Button>
+            <div className="container-botoes">
+              <div className="acao-botoes">
+                <Button className="cancelar-btn" onClick={handleCancel}>
+                  CANCELAR
+                </Button>
+                <Button
+                  className="finalizar-btn"
+                  onClick={handleFinalizarCompra}
+                >
+                  FINALIZAR COMPRA
+                </Button>
+              </div>
             </div>
           </div>
         </div>

@@ -25,7 +25,7 @@ router.get("/daily-summary/:date", async (req, res) => {
     { paymentMethod: "Pix", amount: 180.0 },
     { paymentMethod: "Qr pix", amount: 330.0 },
     { paymentMethod: "Débito", amount: 210.0 },
-    { paymentMethod: "Credito", amount: 2200.0 },
+    { paymentMethod: "Crédito", amount: 2200.0 },
     { paymentMethod: "Promissoria", amount: 720.0 },
   ];
 
