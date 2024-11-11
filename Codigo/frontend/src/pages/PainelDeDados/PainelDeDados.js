@@ -92,6 +92,11 @@ function PainelDeDados() {
     salesByPaymentMethod: generateFakePaymentMethodData(),
   });
 
+  const [yearlySummary, setYearlySummary] = useState({
+    totalSales: 728,
+    totalSalesAmount: 67193.2,
+  });
+
   useEffect(() => {
     console.debug("Referência de data alterada", referenceDate);
     // getDailySummary();
