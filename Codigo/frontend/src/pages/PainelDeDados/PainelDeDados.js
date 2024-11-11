@@ -149,6 +149,7 @@ function PainelDeDados() {
 
         <div className="mt-6 flex flex-col gap-6">
           <div className="flex gap-4">
+            {/* Estatísticas do mês */}
             <StatCard
               title="Total de Vendas do Mês"
               value={monthlySummary.totalSales}
@@ -167,11 +168,42 @@ function PainelDeDados() {
                 monthlySummary.comparisonLastMonth
               )}
             />
+
+            {/* Estatísticas do ano */}
+            <StatCard
+              title="Total de Vendas do Ano"
+              value={yearlySummary.totalSales}
+            />
+            <StatCard
+              title="Vendas do Ano"
+              value={formatBrazilianCurrency(yearlySummary.totalSalesAmount)}
+            />
           </div>
 
+          {/* Gráfico de vendas do mês */}
           <BarChartCard
             title="Vendas por dia do mês"
             yAxisLabelFormatter={(v) => formatBrazilianCurrency(v)}
+          />
+
+          {/* Gráfico de vendas do ano */}
+          <BarChartCard
+            title="Vendas por mês do ano"
+            yAxisLabelFormatter={(v) => formatBrazilianCurrency(v)}
+            data={[
+              { month: "Jan", sales: Math.floor(Math.random() * 1000) },
+              { month: "Feb", sales: Math.floor(Math.random() * 1000) },
+              { month: "Mar", sales: Math.floor(Math.random() * 1000) },
+              { month: "Apr", sales: Math.floor(Math.random() * 1000) },
+              { month: "May", sales: Math.floor(Math.random() * 1000) },
+              { month: "Jun", sales: Math.floor(Math.random() * 1000) },
+              { month: "Jul", sales: Math.floor(Math.random() * 1000) },
+              { month: "Aug", sales: Math.floor(Math.random() * 1000) },
+              { month: "Sep", sales: Math.floor(Math.random() * 1000) },
+              { month: "Oct", sales: Math.floor(Math.random() * 1000) },
+              { month: "Nov", sales: Math.floor(Math.random() * 1000) },
+              { month: "Dec", sales: Math.floor(Math.random() * 1000) },
+            ]}
           />
 
           <div className="flex gap-4">
