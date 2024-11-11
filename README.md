@@ -93,3 +93,60 @@ Após clonar o repositório navegue até o diretório Codigo\frontend\src e exec
 Isso vai executar o projeto localmente em modo de desenvolvimento.\
 Abra [http://localhost:3000](http://localhost:3000) para acessar pelo browser.
 
+## Deploy
+
+O projeto está hospedado em uma instância EC2 da AWS. A implantação foi feita utilizando o Docker e Docker Compose. O arquivo de configuração do Docker Compose utilizado foi o `compose.deploy.yaml` localizado na pasta `Codigo/`.
+
+Para atualizar a versão do projeto no servidor, siga os passos abaixo:
+
+### Passo 1
+
+Faça o build da imagem Docker do projeto e publique no GitHub Container Registry. Para isso, crie uma tag no projeto no formato `X.Y.Z` e o CI do GitHub Actions será acionado automaticamente e irá fazer o build e publicar a imagem no GitHub Container Registry.
+
+```sh
+# Use a interface gráfica do GitHub para criar a tag
+
+# ou crie uma tag no terminal e faça o push
+git tag 0.0.1 -m "Versão com funcionalidade X, Y e Z"
+git push origin 0.0.1
+
+# ou crie uma tag de teste de build no terminal e faça o push
+git tag 0.0.1-alpha.1-build -m "Teste de build"
+git push origin 0.0.1-alpha.1-build
+```
+
+### Passo 2
+
+Acesse o servidor EC2 via SSH e navegue até a pasta `deploy/`.
+
+### Passo 3
+
+Edite o arquivo `compose.yaml` e altere as tags das imagens Docker para a nova versão criada anteriormente. Por exemplo:
+
+```yaml
+# Antes - versão 1.0.0
+services:
+  frontend:
+    image: <nome_imagem>:1.0.0
+
+# Depois - versão 1.0.1
+services:
+  frontend:
+    image: <nome_imagem>:1.0.1
+```
+
+### Passo 4
+
+Execute o comando abaixo para baixar a nova versão da imagem Docker:
+
+```bash
+docker-compose pull
+```
+
+### Passo 5
+
+Execute o comando abaixo para subir os containers com a nova versão do projeto:
+
+```bash
+docker-compose up -d
+```
