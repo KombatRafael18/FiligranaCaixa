@@ -1,0 +1,26 @@
+services:
+  frontend:
+    image: ghcr.io/icei-puc-minas-pples-ti/plf-es-2024-2-ti4-1254100-filigrana/frontend:0.0.1-alpha.3-build
+    ports:
+      - "80:80"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "0.10"
+          memory: 50M
+
+  api:
+    image: ghcr.io/icei-puc-minas-pples-ti/plf-es-2024-2-ti4-1254100-filigrana/api:0.0.1-alpha.3-build
+    ports:
+      - "8030:3000"
+    restart: unless-stopped
+    environment:
+      - MYSQL_CONNECTION_URI=mysql://filigranadev:my-secret-pw-dev@host.docker.internal:13306/filigrana
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 100M

@@ -6,6 +6,7 @@ services:
       - "13306:3306"
     volumes:
       - mysqldata:/var/lib/mysql
+    command: ["mysqld", "--skip-performance-schema"]
     environment:
       - MYSQL_ROOT_PASSWORD=my-secret-pw-root
       - MYSQL_DATABASE=filigrana
@@ -14,8 +15,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.75'
-          memory: 512M
+          cpus: "0.55"
+          memory: 280M
 
 volumes:
   mysqldata:
