@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import SideDrawer from '../components/SideDrawer'; 
+import { getApiOrigin } from '../services/filigranaapi/config';
 
 function CadastrarCliente() {
   const [cpf, setCpf] = useState('');
@@ -25,7 +26,7 @@ function CadastrarCliente() {
 
     console.log("Dados enviados:", client);
 
-    fetch('http://localhost:3000/api/clients', {
+    fetch(`${getApiOrigin()}/api/clients`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(client),

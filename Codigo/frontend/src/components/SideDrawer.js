@@ -8,6 +8,7 @@ import {
   FaQuestionCircle,
   FaUsers,
 } from "react-icons/fa";
+import { getApiOrigin } from "../services/filigranaapi/config";
 
 const SideDrawer = ({ isOpen }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -16,7 +17,7 @@ const SideDrawer = ({ isOpen }) => {
 
   const handleLogout = async () => {
     try {
-      await axios.get("http://localhost:3000/api/login/logout");
+      await axios.get(`${getApiOrigin()}/api/login/logout`);
       localStorage.removeItem("token");
     } catch (error) {
       console.error("Erro ao fazer logout:", error);

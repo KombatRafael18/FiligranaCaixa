@@ -7,6 +7,7 @@ import { PlusIcon, TrashIcon } from "@heroicons/react/24/solid";
 import debounce from "lodash/debounce";
 import { ArrowUpTrayIcon } from "@heroicons/react/24/outline";
 import "./FechamentoVenda.css";
+import { getApiOrigin } from "../../services/filigranaapi/config";
 
 function FechamentoVenda() {
   // Declaração de estados para armazenar os valores e códigos dos produtos, status de carregamento, etc.
@@ -29,7 +30,7 @@ function FechamentoVenda() {
       const fetchPromises = codigos
         .map((codigo, index) => {
           if (codigo && codigo !== "0") {
-            return fetch(`http://localhost:3000/api/products/name/${codigo}`)
+            return fetch(`${getApiOrigin()}/api/products/name/${codigo}`)
               .then((response) => {
                 if (!response.ok) {
                   throw new Error(
@@ -75,7 +76,7 @@ function FechamentoVenda() {
     try {
       // Busca o código do produto na API
       const response = await fetch(
-        `http://localhost:3000/api/products/name/${encodeURIComponent(codigo)}`
+        `${getApiOrigin()}/api/products/name/${encodeURIComponent(codigo)}`
       );
 
       if (response.ok) {
@@ -246,7 +247,7 @@ function FechamentoVenda() {
 
     try {
       const response = await fetch(
-        "http://localhost:3000/api/sales/finalizar-compra",
+        `${getApiOrigin()}/api/sales/finalizar-compra`,
         {
           method: "POST",
           headers: {
@@ -296,7 +297,7 @@ function FechamentoVenda() {
     };
 
     try {
-      const response = await fetch("http://localhost:3000/api/products", {
+      const response = await fetch(`${getApiOrigin()}/api/products`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

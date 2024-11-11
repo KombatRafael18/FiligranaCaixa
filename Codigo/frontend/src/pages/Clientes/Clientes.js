@@ -4,8 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import Button from '../../components/Button';
 import SideDrawer from '../../components/SideDrawer';
 import './Clientes.css';
+import { getApiOrigin } from '../../services/filigranaapi/config';
 
-const API_URL = "http://localhost:3000/api/clients";
+const API_URL = `${getApiOrigin()}/api/clients`;
 
 function Clientes() {
   const [clients, setClients] = useState([]);
@@ -110,7 +111,7 @@ function Clientes() {
 
   const showSales = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/sales/cliente/${id}`);
+      const response = await fetch(`${getApiOrigin()}/api/sales/cliente/${id}`);
       const data = await response.json();
       console.log(data);
       setSelectedClientSales(data);

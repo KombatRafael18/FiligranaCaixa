@@ -17,6 +17,7 @@ import FechamentoVenda from "./pages/FechamentoVenda/FechamentoVenda";
 import NotFound from "./pages/NotFound";
 import Clientes from "./pages/Clientes/Clientes"; 
 import PainelDeDados from "./pages/PainelDeDados/PainelDeDados";
+import { getApiOrigin } from "./services/filigranaapi";
 
 function PrivateRoute({ element, ...rest }) {
   const [isValid, setIsValid] = useState(false);
@@ -25,7 +26,7 @@ function PrivateRoute({ element, ...rest }) {
 
   useEffect(() => {
     if (token) {
-      fetch('http://localhost:3000/api/login/verify', {
+      fetch(`${getApiOrigin()}/api/login/verify`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

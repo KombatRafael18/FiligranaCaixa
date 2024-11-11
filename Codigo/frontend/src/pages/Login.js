@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 import Input from '../components/Input';
+import { getApiOrigin } from '../services/filigranaapi/config';
 
 function Login() {
     const [usuario, setUsuario] = useState('');
@@ -12,7 +13,7 @@ function Login() {
 
     const handleLogin = (usuario, senha) => {
         setIsLoading(true);
-        fetch('http://localhost:3000/api/login', {
+        fetch(`${getApiOrigin()}/api/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ usuario, senha }),

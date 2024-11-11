@@ -5,6 +5,7 @@ import Button from '../components/Button';
 import { SVenda, SCadastro } from '../assets/Strings/stringsVenda';
 import Input from '../components/Input';
 import styles from './Venda.module.css';
+import { getApiOrigin } from '../services/filigranaapi/config';
 
 function Venda() {
     const [isRegistered, setIsRegistered] = useState('');
@@ -38,7 +39,7 @@ function Venda() {
 
     function searchClient(cpf) {
         console.log('buscar cliente');
-        fetch(`http://localhost:3000/api/clients/cpf/${cpf}`)
+        fetch(`${getApiOrigin()}/api/clients/cpf/${cpf}`)
             .then(response => {
                 if (!response.ok) {
                     setSearchFailed(true);
