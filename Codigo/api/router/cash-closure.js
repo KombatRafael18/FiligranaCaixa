@@ -19,15 +19,7 @@ function calculatePreviousDate(date) {
 router.get("/daily-summary/:date", async (req, res) => {
   const { date } = req.params;
 
-  // TODO: Ler do repositório de vendas quando estiver implementado
-  const payments = [
-    { paymentMethod: "Dinheiro", amount: 1439.5 },
-    { paymentMethod: "Pix", amount: 180.0 },
-    { paymentMethod: "Qr pix", amount: 330.0 },
-    { paymentMethod: "Débito", amount: 210.0 },
-    { paymentMethod: "Crédito", amount: 2200.0 },
-    { paymentMethod: "Promissoria", amount: 720.0 },
-  ];
+  const payments = await cashClosureRepo.getDailySalesByPaymentType(date);
 
   const previousDate = calculatePreviousDate(date);
   let previousDayCashBalance = await cashClosureRepo.getCashBalanceByDate(

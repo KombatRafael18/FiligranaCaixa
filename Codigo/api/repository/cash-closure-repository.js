@@ -2,6 +2,29 @@ const mysqlClient = require("./mysql-client");
 
 const db = mysqlClient.pool;
 
+/**
+ * Retorna as vendas diárias por forma de pagamento
+ * @param {string} date No formato 'YYYY-MM-DD'
+ */
+async function getDailySalesByPaymentType(date) {
+  const sql = `
+    SELECT
+      PAYMENT_METHOD,
+      SUM(TOTAL_AMOUNT) AS SUM_TOTAL_AMOUNT
+    FROM SALES
+    WHERE DATE(SALE_DATE) = ?
+    GROUP BY PAYMENT_METHOD`;
+
+  const [rows, fields] = await db.execute(sql, [date]);
+
+  const result = rows.map((row) => ({
+    paymentMethod: row.PAYMENT_METHOD,
+    amount: parseFloat(row.SUM_TOTAL_AMOUNT),
+  }));
+
+  return result;
+}
+
 async function createCashClosure(cashClosure) {
   const query = `
     INSERT INTO CASH_CLOSURE (
@@ -202,6 +225,7 @@ async function getCashClosureByDate(date) {
 }
 
 module.exports = {
+  getDailySalesByPaymentType,
   createCashClosure,
   getCashBalanceByDate,
   getCashClosureByDate,
