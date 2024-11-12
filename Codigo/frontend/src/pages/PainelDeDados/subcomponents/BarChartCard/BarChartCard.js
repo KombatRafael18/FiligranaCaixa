@@ -2,36 +2,11 @@ import * as echarts from "echarts";
 import { useEffect, useRef } from "react";
 import { chartOptions } from "../chart-options";
 
-function generateFakeData() {
-  // Gera todos os dias do mês atual
-  const now = new Date();
-  const y = now.getFullYear();
-  const m = now.getMonth();
-  const daysInMonth = new Date(y, m + 1, 0).getDate();
-  const days = Array.from(
-    { length: daysInMonth },
-    (_, i) => new Date(y, m, i + 1)
-  );
-
-  // Gera valores aleatórios para cada dia
-  return days.map((day) => {
-    const isWeekend = day.getDay() === 0 || day.getDay() === 6;
-
-    return {
-      // day: day.getDate(),
-      day: day.toLocaleDateString("pt-BR", {
-        day: "2-digit",
-        month: "2-digit",
-      }),
-      totalSales: isWeekend ? 0 : Math.floor(Math.random() * 100),
-      totalSalesAmount: isWeekend ? 0 : Math.floor(Math.random() * 1000),
-    };
-  });
-}
-
-const fakeData = generateFakeData();
-
-export function BarChartCard({ title, yAxisLabelFormatter = undefined }) {
+export function BarChartCard({
+  title,
+  barData,
+  yAxisLabelFormatter = undefined,
+}) {
   const chartElRef = useRef(null);
 
   useEffect(() => {
@@ -44,8 +19,8 @@ export function BarChartCard({ title, yAxisLabelFormatter = undefined }) {
     };
     window.addEventListener("resize", resizeListener);
 
-    const xd = fakeData.map((data) => data.day);
-    const sd = fakeData.map((data) => data.totalSalesAmount);
+    const xd = barData.map((data) => data.name);
+    const sd = barData.map((data) => data.value);
 
     chart.setOption({
       grid: {

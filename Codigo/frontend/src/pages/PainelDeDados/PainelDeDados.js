@@ -109,6 +109,14 @@ function PainelDeDadosMensal({ referenceDate }) {
 
         <BarChartCard
           title="Vendas por dia do mês"
+          barData={monthlySummary.salesByDays.map((data) => ({
+            name: new Date(data.date).toLocaleDateString(undefined, {
+              day: "2-digit",
+              month: "2-digit",
+              timeZone: "UTC",
+            }),
+            value: data.totalAmount,
+          }))}
           yAxisLabelFormatter={(v) => formatBrazilianCurrency(v)}
         />
 
