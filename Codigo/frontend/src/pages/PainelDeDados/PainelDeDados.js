@@ -164,7 +164,7 @@ function PainelDeDadosAnual({}) {
         <BarChartCard
           title="Vendas por mês do ano"
           yAxisLabelFormatter={(v) => formatBrazilianCurrency(v)}
-          data={[
+          barData={[
             { month: "Jan", sales: Math.floor(Math.random() * 1000) },
             { month: "Feb", sales: Math.floor(Math.random() * 1000) },
             { month: "Mar", sales: Math.floor(Math.random() * 1000) },
@@ -177,7 +177,10 @@ function PainelDeDadosAnual({}) {
             { month: "Oct", sales: Math.floor(Math.random() * 1000) },
             { month: "Nov", sales: Math.floor(Math.random() * 1000) },
             { month: "Dec", sales: Math.floor(Math.random() * 1000) },
-          ]}
+          ].map(({ month, sales }) => ({
+            name: month,
+            value: sales,
+          }))}
         />
       </div>
     </>
