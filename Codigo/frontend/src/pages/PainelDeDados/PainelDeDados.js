@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import SideDrawer from "../../components/SideDrawer";
 import { useLoading } from "../../hooks/loading-hook";
+import { getMonthlySummary } from "../../services/filigranaapi";
+import { fireError } from "../../utils/alerts";
 import { formatBrazilianCurrency } from "../../utils/currencyFormatter";
 import { BarChartCard } from "./subcomponents/BarChartCard";
 import { PieChartCard } from "./subcomponents/PieChartCard";
@@ -13,56 +15,14 @@ const VIEWS = Object.freeze({
 
 const VIEW_OPTIONS = [
   {
-    value: "ANUAL",
+    value: VIEWS.ANUAL,
     label: "Anual",
   },
   {
-    value: "MENSAL",
+    value: VIEWS.MENSAL,
     label: "Mensal",
   },
 ];
-
-function generateFakeSaleTypeData() {
-  return [
-    {
-      saleType: "Varejo",
-      count: Math.floor(Math.random() * 1000),
-    },
-    {
-      saleType: "Atacado",
-      count: Math.floor(Math.random() * 1000),
-    },
-  ];
-}
-
-function generateFakePaymentMethodData() {
-  return [
-    {
-      paymentMethod: "Crédito",
-      count: Math.floor(Math.random() * 1000),
-    },
-    {
-      paymentMethod: "Débito",
-      count: Math.floor(Math.random() * 1000),
-    },
-    {
-      paymentMethod: "Dinheiro",
-      count: Math.floor(Math.random() * 1000),
-    },
-    {
-      paymentMethod: "Pix",
-      count: Math.floor(Math.random() * 1000),
-    },
-    {
-      paymentMethod: "Promissoria",
-      count: Math.floor(Math.random() * 1000),
-    },
-    {
-      paymentMethod: "QR Pix",
-      count: Math.floor(Math.random() * 1000),
-    },
-  ];
-}
 
 /**
  * Retorna o mês atual no formato ISO (YYYY-MM).
@@ -74,37 +34,150 @@ function currentMonthISOFormat() {
   return `${y}-${m}`;
 }
 
-function PainelDeDados() {
-  const [selectedView, setSelectedView] = useState(VIEWS.MENSAL);
-  const [referenceDate, setReferenceDate] = useState(currentMonthISOFormat());
+/**
+ * Formata uma data ISO de mês (YYYY-MM) para uma string de mês local.
+ */
+function formatToLocalMonthString(monthISOFormat) {
+  const d = new Date(monthISOFormat);
+  return d.toLocaleDateString(undefined, {
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
 
+function PainelDeDadosMensal({ referenceDate }) {
   const { isLoading, startLoading, stopLoading } = useLoading();
 
-  const isReferenceDateToday = referenceDate === currentMonthISOFormat();
+  const [monthlySummary, setMonthlySummary] = useState(null);
 
-  const [monthlySummary, setMonthlySummary] = useState({
-    totalSales: 120,
-    totalSalesAmount: 93,
-    averageTicket: 50.12,
-    comparisonLastMonth: -1.2,
+  async function loadMonthlySummary() {
+    try {
+      startLoading();
+      const response = await getMonthlySummary(referenceDate);
+      setMonthlySummary(response);
+    } catch (error) {
+      setMonthlySummary(null);
+      console.error("Erro ao carregar resumo mensal", { error });
+      fireError(error.message, "Erro ao carregar Painel Mensal");
+    } finally {
+      stopLoading();
+    }
+  }
 
-    salesByType: generateFakeSaleTypeData(),
-    salesByPaymentMethod: generateFakePaymentMethodData(),
-  });
+  useEffect(() => {
+    console.debug("Referência de data alterada", referenceDate);
+    loadMonthlySummary();
+  }, [referenceDate]);
 
+  if (isLoading) {
+    return (
+      <p>
+        Carregando painel mensal de {formatToLocalMonthString(referenceDate)}...
+      </p>
+    );
+  }
+
+  if (!monthlySummary) {
+    return <p>Não foi possível carregar as informações do mês</p>;
+  }
+
+  return (
+    <>
+      <div className="mt-6 flex flex-col gap-6">
+        <div className="flex gap-4">
+          <StatCard
+            title="Total de Vendas do Mês"
+            value={monthlySummary.totalSales}
+          />
+          <StatCard
+            title="Vendas do Mês"
+            value={formatBrazilianCurrency(monthlySummary.totalSalesAmount)}
+          />
+          <StatCard
+            title="Ticket Médio Mensal"
+            value={formatBrazilianCurrency(monthlySummary.averageTicket)}
+          />
+          <StatCard
+            title="Comparação com o Mês Anterior"
+            value={formatBrazilianCurrency(monthlySummary.comparisonLastMonth)}
+          />
+        </div>
+
+        <BarChartCard
+          title="Vendas por dia do mês"
+          yAxisLabelFormatter={(v) => formatBrazilianCurrency(v)}
+        />
+
+        <div className="flex gap-4">
+          <PieChartCard
+            title="Distribuição de Vendas por Categoria"
+            pieData={monthlySummary.salesByType.map((data) => ({
+              name: data.saleType,
+              value: data.count,
+            }))}
+          />
+          <PieChartCard
+            title="Distribuição de Vendas por Forma de Pagamento"
+            pieData={monthlySummary.salesByPaymentMethod.map((data) => ({
+              name: data.paymentMethod,
+              value: data.count,
+            }))}
+          />
+        </div>
+      </div>
+    </>
+  );
+}
+
+function PainelDeDadosAnual({}) {
   const [yearlySummary, setYearlySummary] = useState({
     totalSales: 728,
     totalSalesAmount: 67193.2,
   });
 
-  useEffect(() => {
-    console.debug("Referência de data alterada", referenceDate);
-    // getDailySummary();
-  }, [referenceDate]);
+  return (
+    <>
+      <div className="mt-6 flex flex-col gap-6">
+        <div className="flex gap-4">
+          <StatCard
+            title="Total de Vendas do Ano"
+            value={yearlySummary.totalSales}
+          />
+          <StatCard
+            title="Vendas do Ano"
+            value={formatBrazilianCurrency(yearlySummary.totalSalesAmount)}
+          />
+        </div>
 
-  if (isLoading) {
-    return <p>Carregando informações do dia {referenceDate}...</p>;
-  }
+        <BarChartCard
+          title="Vendas por mês do ano"
+          yAxisLabelFormatter={(v) => formatBrazilianCurrency(v)}
+          data={[
+            { month: "Jan", sales: Math.floor(Math.random() * 1000) },
+            { month: "Feb", sales: Math.floor(Math.random() * 1000) },
+            { month: "Mar", sales: Math.floor(Math.random() * 1000) },
+            { month: "Apr", sales: Math.floor(Math.random() * 1000) },
+            { month: "May", sales: Math.floor(Math.random() * 1000) },
+            { month: "Jun", sales: Math.floor(Math.random() * 1000) },
+            { month: "Jul", sales: Math.floor(Math.random() * 1000) },
+            { month: "Aug", sales: Math.floor(Math.random() * 1000) },
+            { month: "Sep", sales: Math.floor(Math.random() * 1000) },
+            { month: "Oct", sales: Math.floor(Math.random() * 1000) },
+            { month: "Nov", sales: Math.floor(Math.random() * 1000) },
+            { month: "Dec", sales: Math.floor(Math.random() * 1000) },
+          ]}
+        />
+      </div>
+    </>
+  );
+}
+
+function PainelDeDados() {
+  const [selectedView, setSelectedView] = useState(VIEWS.MENSAL);
+  const [referenceDate, setReferenceDate] = useState(currentMonthISOFormat());
+
+  const isReferenceDateToday = referenceDate === currentMonthISOFormat();
 
   return (
     <>
@@ -152,82 +225,13 @@ function PainelDeDados() {
           )}
         </section>
 
-        <div className="mt-6 flex flex-col gap-6">
-          <div className="flex gap-4">
-            {/* Estatísticas do mês */}
-            <StatCard
-              title="Total de Vendas do Mês"
-              value={monthlySummary.totalSales}
-            />
-            <StatCard
-              title="Vendas do Mês"
-              value={formatBrazilianCurrency(monthlySummary.totalSalesAmount)}
-            />
-            <StatCard
-              title="Ticket Médio Mensal"
-              value={formatBrazilianCurrency(monthlySummary.averageTicket)}
-            />
-            <StatCard
-              title="Comparação com o Mês Anterior"
-              value={formatBrazilianCurrency(
-                monthlySummary.comparisonLastMonth
-              )}
-            />
-
-            {/* Estatísticas do ano */}
-            <StatCard
-              title="Total de Vendas do Ano"
-              value={yearlySummary.totalSales}
-            />
-            <StatCard
-              title="Vendas do Ano"
-              value={formatBrazilianCurrency(yearlySummary.totalSalesAmount)}
-            />
-          </div>
-
-          {/* Gráfico de vendas do mês */}
-          <BarChartCard
-            title="Vendas por dia do mês"
-            yAxisLabelFormatter={(v) => formatBrazilianCurrency(v)}
-          />
-
-          {/* Gráfico de vendas do ano */}
-          <BarChartCard
-            title="Vendas por mês do ano"
-            yAxisLabelFormatter={(v) => formatBrazilianCurrency(v)}
-            data={[
-              { month: "Jan", sales: Math.floor(Math.random() * 1000) },
-              { month: "Feb", sales: Math.floor(Math.random() * 1000) },
-              { month: "Mar", sales: Math.floor(Math.random() * 1000) },
-              { month: "Apr", sales: Math.floor(Math.random() * 1000) },
-              { month: "May", sales: Math.floor(Math.random() * 1000) },
-              { month: "Jun", sales: Math.floor(Math.random() * 1000) },
-              { month: "Jul", sales: Math.floor(Math.random() * 1000) },
-              { month: "Aug", sales: Math.floor(Math.random() * 1000) },
-              { month: "Sep", sales: Math.floor(Math.random() * 1000) },
-              { month: "Oct", sales: Math.floor(Math.random() * 1000) },
-              { month: "Nov", sales: Math.floor(Math.random() * 1000) },
-              { month: "Dec", sales: Math.floor(Math.random() * 1000) },
-            ]}
-          />
-
-          <div className="flex gap-4">
-            <PieChartCard
-              title="Distribuição de Vendas por Categoria"
-              pieData={monthlySummary.salesByType.map((data) => ({
-                name: data.saleType,
-                value: data.count,
-              }))}
-            />
-            <PieChartCard
-              title="Distribuição de Vendas por Forma de Pagamento"
-              pieData={monthlySummary.salesByPaymentMethod.map((data) => ({
-                name: data.paymentMethod,
-                value: data.count,
-              }))}
-            />
-          </div>
-        </div>
+        {selectedView === VIEWS.MENSAL ? (
+          <PainelDeDadosMensal referenceDate={referenceDate} />
+        ) : selectedView === VIEWS.ANUAL ? (
+          <PainelDeDadosAnual />
+        ) : (
+          <p>Selecione uma opção de visualização</p>
+        )}
       </section>
     </>
   );
