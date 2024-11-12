@@ -68,6 +68,29 @@ async function getMonthlySalesStatistics(yearAndMonth) {
   };
 }
 
+/**
+ * @param {*} yearAndMonth ano e mês no formato YYYY-MM
+ */
+async function getSumOfSalesByDaysOfTheMonth(yearAndMonth) {
+  const sql = `
+    SELECT
+      DATE(SALE_DATE) AS SALE_DATE_ONLY,
+      SUM(TOTAL_AMOUNT) AS SUM_TOTAL_AMOUNT
+    FROM SALES
+    WHERE DATE_FORMAT(SALE_DATE, '%Y-%m') = ?
+    GROUP BY SALE_DATE_ONLY`;
+
+  const [rows, fields] = await db.execute(sql, [yearAndMonth]);
+
+  const result = rows.map((row) => ({
+    date: row.SALE_DATE_ONLY.toISOString().slice(0, 10),
+    totalAmount: parseFloat(row.SUM_TOTAL_AMOUNT),
+  }));
+
+  return result;
+}
+
 module.exports = {
   getMonthlySalesStatistics,
+  getSumOfSalesByDaysOfTheMonth,
 };

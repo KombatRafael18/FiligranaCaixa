@@ -16,6 +16,38 @@ function calculatePreviousMonth(date) {
   return previousDateUTC.toISOString().slice(0, 7);
 }
 
+/**
+ * Constrói a lista de vendas por dia do mês preenchendo os dias sem vendas com 0
+ * @param {*} salesByDays Lista de vendas por dia
+ * @param {*} yearAndMonth Formato YYYY-MM
+ * @returns
+ */
+function buildSalesByDays(salesByDays, yearAndMonth) {
+  const lastDayOfMonth = new Date(
+    +yearAndMonth.slice(0, 4),
+    +yearAndMonth.slice(5, 7),
+    0
+  );
+  const daysInMonth = lastDayOfMonth.getDate();
+
+  const salesByDaysMap = new Map(
+    salesByDays.map((row) => [row.date, row.totalAmount])
+  );
+
+  const salesByDaysArray = Array.from({ length: daysInMonth }, (_, index) => {
+    const day = index + 1;
+    const date = `${yearAndMonth}-${day.toString().padStart(2, "0")}`;
+    const totalAmount = salesByDaysMap.get(date) || 0;
+
+    return {
+      date,
+      totalAmount,
+    };
+  });
+
+  return salesByDaysArray;
+}
+
 router.get("/monthly-summary/:month", async (req, res) => {
   const { month: yearAndMonth } = req.params;
 
@@ -24,12 +56,20 @@ router.get("/monthly-summary/:month", async (req, res) => {
   const monthlySalesStatistics =
     await cashClosureRepo.getMonthlySalesStatistics(yearAndMonth);
 
+  const sumOfSalesByDaysOfTheMonth =
+    await cashClosureRepo.getSumOfSalesByDaysOfTheMonth(yearAndMonth);
+
   const previousMonthlySalesStatistics =
     await cashClosureRepo.getMonthlySalesStatistics(previousYearAndMonth);
 
   const comparisonLastMonth =
     monthlySalesStatistics.totalSalesAmount -
     previousMonthlySalesStatistics.totalSalesAmount;
+
+  const salesByDays = buildSalesByDays(
+    sumOfSalesByDaysOfTheMonth,
+    yearAndMonth
+  );
 
   res.status(200).json({
     yearAndMonth,
@@ -40,6 +80,7 @@ router.get("/monthly-summary/:month", async (req, res) => {
     averageTicket: monthlySalesStatistics.averageTicket,
     comparisonLastMonth,
 
+    salesByDays,
     salesByType: monthlySalesStatistics.salesByType,
     salesByPaymentMethod: monthlySalesStatistics.salesByPaymentMethod,
   });
