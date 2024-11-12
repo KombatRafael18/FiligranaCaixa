@@ -100,7 +100,10 @@ function PainelDeDadosMensal({ referenceDate }) {
           />
           <StatCard
             title="Comparação com o Mês Anterior"
-            value={formatBrazilianCurrency(monthlySummary.comparisonLastMonth)}
+            value={
+              (monthlySummary.comparisonLastMonth > 0 ? "+" : "") +
+              formatBrazilianCurrency(monthlySummary.comparisonLastMonth)
+            }
           />
         </div>
 
