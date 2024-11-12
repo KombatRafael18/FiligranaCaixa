@@ -6,6 +6,7 @@ const productsRouter = require("./router/products");
 const clientsRouter = require("./router/clients");
 const salesRouter = require("./router/sales");
 const cashClosureRouter = require("./router/cash-closure");
+const dashboardRouter = require("./router/dashboard");
 const loginRouter = require("./router/login");
 const app = express();
 
@@ -19,6 +20,7 @@ app.use("/api/products", productsRouter);
 app.use("/api/clients", clientsRouter);
 app.use("/api/sales", salesRouter);
 app.use("/api/cash-closure", cashClosureRouter);
+app.use("/api/dashboard", dashboardRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
