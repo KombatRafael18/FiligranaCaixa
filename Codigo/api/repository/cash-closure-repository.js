@@ -80,7 +80,7 @@ async function createCashClosure(cashClosure) {
 async function getCashBalanceByDate(date) {
   const sql = `
     SELECT
-      ((BILL_2_COUNT * 2) +
+      SUM(((BILL_2_COUNT * 2) +
         (BILL_5_COUNT * 5) +
         (BILL_10_COUNT * 10) +
         (BILL_20_COUNT * 20) +
@@ -92,9 +92,9 @@ async function getCashBalanceByDate(date) {
         (COIN_10_COUNT * 0.10) +
         (COIN_25_COUNT * 0.25) +
         (COIN_50_COUNT * 0.50) +
-        (COIN_1_REAL_COUNT * 1)) - CASH_REGISTER_WITHDRAWAL AS CASH_BALANCE
+        (COIN_1_REAL_COUNT * 1)) - CASH_REGISTER_WITHDRAWAL) AS CASH_BALANCE
     FROM CASH_CLOSURE
-    WHERE DATE = ?`;
+    WHERE DATE <= ?`;
 
   const [rows, fields] = await db.execute(sql, [date]);
   const row = rows[0];
