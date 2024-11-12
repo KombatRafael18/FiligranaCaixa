@@ -1,7 +1,7 @@
 services:
   mysql:
     image: mysql:8.4.2-oraclelinux9
-    restart: "no"
+    restart: unless-stopped
     ports:
       - "13306:3306"
     volumes:
