@@ -91,10 +91,9 @@ function FechamentoDeCaixa() {
 
   const isReferenceDateToday = referenceDate === nowLocalISODateOnly();
 
-  const totalMoneyCounter = Object.values(moneyCounter).reduce(
-    (acc, { total }) => acc + total,
-    0
-  );
+  const totalMoneyCounter =
+    previousDayCashBalance +
+    Object.values(moneyCounter).reduce((acc, { total }) => acc + total, 0);
 
   const cashBalance = totalMoneyCounter - cashRegisterWithdrawal;
 
@@ -119,6 +118,11 @@ function FechamentoDeCaixa() {
   }
 
   async function handleCashRegisterWithdrawalChange(event) {
+    if (cashAlreadyClosed) {
+      fireWarningConfirm("Caixa já fechado. Não é possível retirar dinheiro");
+      return;
+    }
+
     if (totalMoneyCounter === 0) {
       fireWarningConfirm("Não há dinheiro no caixa para retirar");
       return;
