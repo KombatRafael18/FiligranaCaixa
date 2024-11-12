@@ -3,61 +3,45 @@ const cashClosureRepo = require("../repository/dashboard-repository");
 
 const router = express.Router();
 
-// FIXME: Apagar esses dados fake
-function generateFakeSaleTypeData() {
-  return [
-    {
-      saleType: "Varejo",
-      count: Math.floor(Math.random() * 1000),
-    },
-    {
-      saleType: "Atacado",
-      count: Math.floor(Math.random() * 1000),
-    },
-  ];
-}
+// TODO: Mover para um módulo de utilitários
+function calculatePreviousMonth(date) {
+  const dateParts = date.split("-");
+  const year = parseInt(dateParts[0]);
+  const month = parseInt(dateParts[1]);
 
-// FIXME: Apagar esses dados fake
-function generateFakePaymentMethodData() {
-  return [
-    {
-      paymentMethod: "Crédito",
-      count: Math.floor(Math.random() * 1000),
-    },
-    {
-      paymentMethod: "Débito",
-      count: Math.floor(Math.random() * 1000),
-    },
-    {
-      paymentMethod: "Dinheiro",
-      count: Math.floor(Math.random() * 1000),
-    },
-    {
-      paymentMethod: "Pix",
-      count: Math.floor(Math.random() * 1000),
-    },
-    {
-      paymentMethod: "Promissoria",
-      count: Math.floor(Math.random() * 1000),
-    },
-    {
-      paymentMethod: "QR Pix",
-      count: Math.floor(Math.random() * 1000),
-    },
-  ];
+  const previousDateUTC = new Date(Date.UTC(year, month - 1, 1));
+  previousDateUTC.setUTCDate(previousDateUTC.getUTCDate() - 1);
+
+  // Formato YYYY-MM
+  return previousDateUTC.toISOString().slice(0, 7);
 }
 
 router.get("/monthly-summary/:month", async (req, res) => {
-  const { month } = req.params;
+  const { month: yearAndMonth } = req.params;
+
+  const previousYearAndMonth = calculatePreviousMonth(yearAndMonth);
+
+  const monthlySalesStatistics =
+    await cashClosureRepo.getMonthlySalesStatistics(yearAndMonth);
+
+  const previousMonthlySalesStatistics =
+    await cashClosureRepo.getMonthlySalesStatistics(previousYearAndMonth);
+
+  const comparisonLastMonth =
+    monthlySalesStatistics.totalSalesAmount -
+    previousMonthlySalesStatistics.totalSalesAmount;
 
   res.status(200).json({
-    totalSales: 120,
-    totalSalesAmount: 93,
-    averageTicket: 50.12,
-    comparisonLastMonth: -1.2,
+    yearAndMonth,
+    previousYearAndMonth,
 
-    salesByType: generateFakeSaleTypeData(),
-    salesByPaymentMethod: generateFakePaymentMethodData(),
+    totalSales: monthlySalesStatistics.totalSales,
+    totalSalesAmount: monthlySalesStatistics.totalSalesAmount,
+    averageTicket: monthlySalesStatistics.averageTicket,
+    comparisonLastMonth,
+
+    salesByType: monthlySalesStatistics.salesByType,
+    salesByPaymentMethod: monthlySalesStatistics.salesByPaymentMethod,
   });
 });
 
