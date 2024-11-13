@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import SideDrawer from "../../components/SideDrawer";
 import { useLoading } from "../../hooks/loading-hook";
-import { getMonthlySummary } from "../../services/filigranaapi";
+import {
+  getAnnualSummary,
+  getMonthlySummary,
+} from "../../services/filigranaapi";
 import { fireError } from "../../utils/alerts";
 import { formatBrazilianCurrency } from "../../utils/currencyFormatter";
 import { BarChartCard } from "./subcomponents/BarChartCard";
@@ -35,6 +38,13 @@ function currentMonthISOFormat() {
 }
 
 /**
+ * Retorna o ano atual no formato ISO (YYYY).
+ */
+function currentYearISOFormat() {
+  return new Date().getFullYear().toString();
+}
+
+/**
  * Formata uma data ISO de mês (YYYY-MM) para uma string de mês local.
  */
 function formatToLocalMonthString(monthISOFormat) {
@@ -42,6 +52,18 @@ function formatToLocalMonthString(monthISOFormat) {
   return d.toLocaleDateString(undefined, {
     month: "long",
     year: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+/**
+ * Formata uma data ISO de mês (YYYY-MM) para uma string de mês local curta.
+ * Exemplo: "2024-01" => "jan."
+ */
+function formatToLocalMonthShortString(monthISOFormat) {
+  const d = new Date(monthISOFormat);
+  return d.toLocaleDateString(undefined, {
+    month: "short",
     timeZone: "UTC",
   });
 }
@@ -141,11 +163,37 @@ function PainelDeDadosMensal({ referenceDate }) {
   );
 }
 
-function PainelDeDadosAnual({}) {
-  const [yearlySummary, setYearlySummary] = useState({
-    totalSales: 728,
-    totalSalesAmount: 67193.2,
-  });
+function PainelDeDadosAnual({ referenceYear }) {
+  const { isLoading, startLoading, stopLoading } = useLoading();
+
+  const [yearlySummary, setYearlySummary] = useState(null);
+
+  async function loadAnnualSummary() {
+    try {
+      startLoading();
+      const response = await getAnnualSummary(referenceYear);
+      setYearlySummary(response);
+    } catch (error) {
+      setYearlySummary(null);
+      console.error("Erro ao carregar resumo anual", { error });
+      fireError(error.message, "Erro ao carregar Painel Anual");
+    } finally {
+      stopLoading();
+    }
+  }
+
+  useEffect(() => {
+    console.debug("Ano Referência alterado", referenceYear);
+    loadAnnualSummary();
+  }, [referenceYear]);
+
+  if (isLoading) {
+    return <p>Carregando painel anual de {referenceYear}...</p>;
+  }
+
+  if (!yearlySummary) {
+    return <p>Não foi possível carregar as informações do ano</p>;
+  }
 
   return (
     <>
@@ -164,23 +212,12 @@ function PainelDeDadosAnual({}) {
         <BarChartCard
           title="Vendas por mês do ano"
           yAxisLabelFormatter={(v) => formatBrazilianCurrency(v)}
-          barData={[
-            { month: "Jan", sales: Math.floor(Math.random() * 1000) },
-            { month: "Feb", sales: Math.floor(Math.random() * 1000) },
-            { month: "Mar", sales: Math.floor(Math.random() * 1000) },
-            { month: "Apr", sales: Math.floor(Math.random() * 1000) },
-            { month: "May", sales: Math.floor(Math.random() * 1000) },
-            { month: "Jun", sales: Math.floor(Math.random() * 1000) },
-            { month: "Jul", sales: Math.floor(Math.random() * 1000) },
-            { month: "Aug", sales: Math.floor(Math.random() * 1000) },
-            { month: "Sep", sales: Math.floor(Math.random() * 1000) },
-            { month: "Oct", sales: Math.floor(Math.random() * 1000) },
-            { month: "Nov", sales: Math.floor(Math.random() * 1000) },
-            { month: "Dec", sales: Math.floor(Math.random() * 1000) },
-          ].map(({ month, sales }) => ({
-            name: month,
-            value: sales,
-          }))}
+          barData={yearlySummary.salesByMonths.map(
+            ({ month, totalAmount }) => ({
+              name: formatToLocalMonthShortString(month),
+              value: totalAmount,
+            })
+          )}
         />
       </div>
     </>
@@ -189,8 +226,10 @@ function PainelDeDadosAnual({}) {
 
 function PainelDeDados() {
   const [selectedView, setSelectedView] = useState(VIEWS.MENSAL);
+  const [referenceYear, setReferenceYear] = useState(currentYearISOFormat());
   const [referenceDate, setReferenceDate] = useState(currentMonthISOFormat());
 
+  const isReferenceYearCurrent = referenceYear === currentYearISOFormat();
   const isReferenceDateToday = referenceDate === currentMonthISOFormat();
 
   return (
@@ -221,7 +260,7 @@ function PainelDeDados() {
             ))}
           </fieldset>
 
-          {selectedView === VIEWS.MENSAL && (
+          {selectedView === VIEWS.MENSAL ? (
             <label>
               Mês:{" "}
               <input
@@ -236,13 +275,28 @@ function PainelDeDados() {
                 <small className="text-cyan-500">&nbsp;(Este mês)</small>
               )}
             </label>
-          )}
+          ) : selectedView === VIEWS.ANUAL ? (
+            <label>
+              Ano:{" "}
+              <input
+                type="number"
+                value={referenceYear}
+                min="2024"
+                max={currentYearISOFormat()}
+                required="required"
+                onChange={(e) => setReferenceYear(e.target.value)}
+              />
+              {isReferenceYearCurrent && (
+                <small className="text-cyan-500">&nbsp;(Este ano)</small>
+              )}
+            </label>
+          ) : null}
         </section>
 
         {selectedView === VIEWS.MENSAL ? (
           <PainelDeDadosMensal referenceDate={referenceDate} />
         ) : selectedView === VIEWS.ANUAL ? (
-          <PainelDeDadosAnual />
+          <PainelDeDadosAnual referenceYear={referenceYear} />
         ) : (
           <p>Selecione uma opção de visualização</p>
         )}
