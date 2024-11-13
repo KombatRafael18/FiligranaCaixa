@@ -48,6 +48,31 @@ function buildSalesByDays(salesByDays, yearAndMonth) {
   return salesByDaysArray;
 }
 
+/**
+ * Constrói a lista de vendas por mês do ano preenchendo os meses sem vendas com 0
+ * @param {*} salesByMonths Lista de vendas por mês
+ * @param {*} year Formato YYYY
+ * @returns
+ */
+function buildSalesByMonths(salesByMonths, year) {
+  const salesByMonthsMap = new Map(
+    salesByMonths.map((row) => [row.month, row.totalAmount])
+  );
+
+  const salesByMonthsArray = Array.from({ length: 12 }, (_, index) => {
+    const monthNum = index + 1;
+    const month = `${year}-${monthNum.toString().padStart(2, "0")}`;
+    const totalAmount = salesByMonthsMap.get(month) || 0;
+
+    return {
+      month,
+      totalAmount,
+    };
+  });
+
+  return salesByMonthsArray;
+}
+
 router.get("/monthly-summary/:month", async (req, res) => {
   const { month: yearAndMonth } = req.params;
 
@@ -83,6 +108,26 @@ router.get("/monthly-summary/:month", async (req, res) => {
     salesByDays,
     salesByType: monthlySalesStatistics.salesByType,
     salesByPaymentMethod: monthlySalesStatistics.salesByPaymentMethod,
+  });
+});
+
+router.get("/annual-summary/:year", async (req, res) => {
+  const { year } = req.params;
+
+  const yearlySalesStatistics = await cashClosureRepo.getYearlySalesStatistics(
+    year
+  );
+
+  const sumOfSalesByMonthsOfTheYear =
+    await cashClosureRepo.getSumOfSalesByMonthsOfTheYear(year);
+
+  const salesByMonths = buildSalesByMonths(sumOfSalesByMonthsOfTheYear, year);
+
+  res.status(200).json({
+    year,
+    totalSales: yearlySalesStatistics.totalSales,
+    totalSalesAmount: yearlySalesStatistics.totalSalesAmount,
+    salesByMonths,
   });
 });
 

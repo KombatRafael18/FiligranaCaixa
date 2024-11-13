@@ -90,7 +90,60 @@ async function getSumOfSalesByDaysOfTheMonth(yearAndMonth) {
   return result;
 }
 
+/**
+ * @param {*} year ano e mês no formato YYYY
+ */
+async function getYearlySalesStatistics(year) {
+  const sql = `
+    SELECT
+      YEAR(SALE_DATE) AS SALE_YEAR,
+      COUNT(*) AS COUNT,
+      SUM(TOTAL_AMOUNT) AS SUM_TOTAL_AMOUNT
+    FROM SALES
+    WHERE YEAR(SALE_DATE) = ?
+    GROUP BY SALE_YEAR`;
+
+  const [rows, fields] = await db.execute(sql, [year]);
+
+  if (rows.length === 0) {
+    return {
+      totalSales: 0,
+      totalSalesAmount: 0,
+    };
+  }
+
+  const row = rows[0];
+  return {
+    totalSales: row.COUNT,
+    totalSalesAmount: parseFloat(row.SUM_TOTAL_AMOUNT),
+  };
+}
+
+/**
+ * @param {*} year ano e mês no formato YYYY
+ */
+async function getSumOfSalesByMonthsOfTheYear(year) {
+  const sql = `
+    SELECT
+      DATE_FORMAT(SALE_DATE, '%Y-%m') AS SALE_MONTH,
+      SUM(TOTAL_AMOUNT) AS SUM_TOTAL_AMOUNT
+    FROM SALES
+    WHERE YEAR(SALE_DATE) = ?
+    GROUP BY SALE_MONTH`;
+
+  const [rows, fields] = await db.execute(sql, [year]);
+
+  const result = rows.map((row) => ({
+    month: row.SALE_MONTH,
+    totalAmount: parseFloat(row.SUM_TOTAL_AMOUNT),
+  }));
+
+  return result;
+}
+
 module.exports = {
   getMonthlySalesStatistics,
   getSumOfSalesByDaysOfTheMonth,
+  getYearlySalesStatistics,
+  getSumOfSalesByMonthsOfTheYear,
 };
