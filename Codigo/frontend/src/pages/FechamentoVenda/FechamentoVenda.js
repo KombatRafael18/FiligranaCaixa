@@ -5,63 +5,25 @@ import Button from "../../components/Button";
 import Input from "../../components/Input";
 import "./FechamentoVenda.css";
 import { getApiOrigin } from "../../services/filigranaapi/config";
+import { formatBrazilianCurrency } from "../../utils/currencyFormatter";
 import { ProductList } from "./subcomponents/ProductList";
 
 function FechamentoVenda() {
   // Declaração de estados para armazenar os valores e códigos dos produtos, status de carregamento, etc.
-  const [valores, setValores] = useState(Array(1).fill("R$00,00")); // Valores de cada produto (preenchidos inicialmente com R$00,00)
-  const [codigos, setCodigos] = useState(Array(1).fill("")); // Códigos dos produtos
-  const [codigoEncontrado, setCodigoEncontrado] = useState(Array(9).fill(true)); // Flag para indicar se o código foi encontrado no servidor
   const [products, setProducts] = useState([]);
   const [desconto, setDesconto] = useState(""); // Desconto aplicado
   const [cashback, setCashback] = useState(""); // Cashback a ser aplicado
-  const [valorTotal, setValorTotal] = useState("R$00,00"); // Valor total da venda
   const [metodoPagamento, setMetodoPagamento] = useState(""); // Método de pagamento selecionado
   const navigate = useNavigate(); // Hook para navegação entre rotas
   const location = useLocation();
   const clientData = location.state?.clientData;
   const sellType = location.state?.sellType;
 
-  // Atualiza os valores dos produtos ao carregar códigos ou ao alterar desconto/cashback
-  useEffect(() => {
-    const fetchProductValues = async () => {
-      const fetchPromises = codigos
-        .map((codigo, index) => {
-          if (codigo && codigo !== "0") {
-            return fetch(`${getApiOrigin()}/api/products/name/${codigo}`)
-              .then((response) => {
-                if (!response.ok) {
-                  throw new Error(
-                    `Erro ao buscar produto com código ${codigo}`
-                  );
-                }
-                return response.json();
-              })
-              .then((product) => {
-                setValores((prevValores) => {
-                  const newValores = [...prevValores];
-                  newValores[index] = formatCurrency(product.price * 100);
-                  return newValores;
-                });
-              })
-              .catch((error) => {
-                console.error(error);
-              });
-          }
-          return null;
-        })
-        .filter(Boolean);
-
-      await Promise.all(fetchPromises);
-    };
-
-    fetchProductValues();
-  }, [codigos]);
-
+  // Valor total da venda
   // Calcula o valor total quando os valores, desconto ou cashback mudam
-  useEffect(() => {
-    calcularValorTotal();
-  }, [valores, desconto, cashback]);
+  const valorTotalDouble = calcularValorTotal();
+  const valorTotal = formatBrazilianCurrency(valorTotalDouble);
+  console.debug("Valor total:", valorTotalDouble, valorTotal);
 
   // Manipula a entrada de desconto, limitando a 100%
   const handleDescontoChange = (value) => {
@@ -79,31 +41,22 @@ function FechamentoVenda() {
     setCashback(numericValue);
   };
 
-  // Formata um valor para a moeda brasileira
-  const formatCurrency = (value) => {
-    const number = parseFloat(value) / 100;
-    return number.toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-  };
-
   // Calcula o valor total considerando desconto e cashback
-  const calcularValorTotal = () => {
-    const somaPecas = valores.reduce((acc, valor) => {
-      const numero =
-        parseFloat(valor.replace(/[^\d,-]/g, "").replace(",", ".")) || 0;
-      return acc + numero;
-    }, 0);
+  function calcularValorTotal() {
+    const somaPecas = products
+      .map((p) => p.price)
+      .reduce((acc, valor) => {
+        const numero =
+          parseFloat(valor.replace(/[^\d,-]/g, "").replace(",", ".")) || 0;
+        return acc + numero;
+      }, 0);
 
     const descontoValor = (somaPecas * (parseFloat(desconto) || 0)) / 100;
     const cashbackValor = parseFloat(cashback) || 0;
 
     const total = somaPecas - descontoValor - cashbackValor;
-    setValorTotal(formatCurrency(total * 100));
-  };
+    return total;
+  }
 
   // Função para cancelar e voltar para a página inicial
   const handleCancel = () => {
@@ -117,14 +70,12 @@ function FechamentoVenda() {
       return;
     }
 
-    const produtos = codigos
-      .map((codigo, index) => {
-        const valorString = valores[index]
-          .replace(/[^\d,]/g, "")
-          .replace(",", ".");
+    const produtos = products
+      .map((p) => {
+        const valorString = p.price.replace(/[^\d,]/g, "").replace(",", ".");
         const valorDouble = parseFloat(valorString);
         return {
-          codigo,
+          codigo: p.code,
           valor: valorDouble,
         };
       })
@@ -138,19 +89,13 @@ function FechamentoVenda() {
     }
 
     // Verificar se existem códigos inválidos
-    const invalidCodes = codigos.filter(
-      (codigo, index) => codigo && !codigoEncontrado[index]
-    );
+    const invalidCodes = products.filter((product) => !product.id);
     if (invalidCodes.length > 0) {
       alert(
         "Existem códigos de produtos inválidos. Por favor, adicione os produtos ou remova os códigos inválidos."
       );
       return;
     }
-
-    const valorTotalDouble = parseFloat(
-      valorTotal.replace(/[^\d,-]/g, "").replace(",", ".")
-    );
 
     try {
       const response = await fetch(
