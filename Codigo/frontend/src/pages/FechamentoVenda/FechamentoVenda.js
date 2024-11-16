@@ -12,6 +12,7 @@ function FechamentoVenda() {
   const [valores, setValores] = useState(Array(1).fill("R$00,00")); // Valores de cada produto (preenchidos inicialmente com R$00,00)
   const [codigos, setCodigos] = useState(Array(1).fill("")); // Códigos dos produtos
   const [codigoEncontrado, setCodigoEncontrado] = useState(Array(9).fill(true)); // Flag para indicar se o código foi encontrado no servidor
+  const [products, setProducts] = useState([]);
   const [desconto, setDesconto] = useState(""); // Desconto aplicado
   const [cashback, setCashback] = useState(""); // Cashback a ser aplicado
   const [valorTotal, setValorTotal] = useState("R$00,00"); // Valor total da venda
@@ -76,20 +77,6 @@ function FechamentoVenda() {
   const handleCashbackChange = (value) => {
     const numericValue = value.replace(/[^0-9]/g, "");
     setCashback(numericValue);
-  };
-
-  // Atualiza o valor do produto em um índice específico
-  const updateValue = (index, newValue) => {
-    const newValores = [...valores];
-    newValores[index] = newValue;
-    setValores(newValores);
-  };
-
-  // Atualiza o status de código encontrado
-  const updateCodigoEncontrado = (index, encontrado) => {
-    const newCodigoEncontrado = [...codigoEncontrado];
-    newCodigoEncontrado[index] = encontrado;
-    setCodigoEncontrado(newCodigoEncontrado);
   };
 
   // Formata um valor para a moeda brasileira
@@ -219,7 +206,7 @@ function FechamentoVenda() {
         <div className="section-produtos">
           <div className="lista-produtos">
             <h2>PEÇAS:</h2>
-            <ProductList />
+            <ProductList products={products} setProducts={setProducts} />
           </div>
           <div className="section-pagamento">
             <div className="input-group">

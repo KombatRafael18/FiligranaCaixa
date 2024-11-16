@@ -1,6 +1,5 @@
 import { ArrowUpTrayIcon } from "@heroicons/react/24/outline";
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/solid";
-import { useState } from "react";
 import Input from "../../../components/Input";
 import { useLoading } from "../../../hooks/loading-hook";
 import {
@@ -13,31 +12,53 @@ import { SpinnerIcon } from "./SpinnerIcon";
 
 const zeroCurrency = formatBrazilianCurrency(0);
 
-export function ProductItem({ handleAddItem, handleDeleteItem }) {
-  const [productId, setProductId] = useState(null);
-  const [productCode, setProductCode] = useState("");
-  const [productPrice, setProductPrice] = useState(zeroCurrency);
-  const [productAmount, setProductAmount] = useState(0);
-
+export function ProductItem({
+  product: {
+    id: productId,
+    code: productCode,
+    price: productPrice,
+    amount: productAmount,
+  },
+  setProduct,
+  handleAddItem,
+  handleDeleteItem,
+}) {
   const { isLoading, startLoading, stopLoading } = useLoading();
 
   const found = productCode !== "" && productId !== null;
 
+  function mergeProductUpdates(partialProduct) {
+    setProduct((prev) => ({
+      ...prev,
+      ...partialProduct,
+    }));
+  }
+
   async function handleCodigoChange(val) {
     const v = val.trim();
-    setProductCode(v);
+
+    mergeProductUpdates({
+      code: v,
+    });
 
     try {
       startLoading();
       const res = await getProductByCode(v);
       console.debug("Produto encontrado:", res);
-      setProductId(res.id);
-      setProductPrice(formatBrazilianCurrency(res.price));
+
+      mergeProductUpdates({
+        id: res.id,
+        price: formatBrazilianCurrency(res.price),
+      });
     } catch (error) {
       if (error instanceof ApiError && error.isNotFoundError()) {
         console.debug("Produto não encontrado");
-        setProductId(null);
-        setProductPrice(zeroCurrency);
+
+        mergeProductUpdates({
+          id: null,
+          price: zeroCurrency,
+        });
+
         return;
       }
       console.error("Erro getProductByCode:", { error });
@@ -50,13 +71,16 @@ export function ProductItem({ handleAddItem, handleDeleteItem }) {
   function handlePriceChange(v) {
     const numericValue = v.replace(/[^0-9]/g, "");
 
+    let value = numericValue;
     if (numericValue === "") {
-      setProductPrice(zeroCurrency);
-      return;
+      value = "0";
     }
 
     const formattedValue = formatBrazilianCurrency(numericValue / 100);
-    setProductPrice(formattedValue);
+
+    mergeProductUpdates({
+      price: formattedValue,
+    });
   }
 
   async function handleCreateProduct() {
@@ -78,7 +102,10 @@ export function ProductItem({ handleAddItem, handleDeleteItem }) {
       const res = await postProduct(produto);
       console.debug("Produto adicionado:", res);
       alert("Produto adicionado com sucesso!");
-      setProductId(res.id);
+
+      mergeProductUpdates({
+        id: res.id,
+      });
     } catch (error) {
       console.error("Erro postProduct:", { error });
       alert(`Erro ao adicionar produto: ${error.message}`);
