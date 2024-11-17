@@ -217,8 +217,6 @@ export function ProductItem({
             )}
           </button>
         )}
-
-        {isLoading && <SpinnerIcon />}
       </div>
     </li>
   );
