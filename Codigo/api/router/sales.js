@@ -1,6 +1,7 @@
 const express = require("express");
 const salesRepo = require("../repository/sales-repository");
 const salesValidator = require("../validators/sales-validator");
+const { calcularValorTotal } = require("../helpers/sales-helper");
 
 const router = express.Router();
 
@@ -32,6 +33,13 @@ router.post("/finalizar-compra", async (req, res) => {
   if (error) {
     console.log('erro no validator');
     return res.status(400).json({ error: error.details[0].message });
+  }
+
+  const realTotalAmount = calcularValorTotal(products, discount, cashback);
+  if (realTotalAmount !== total_amount) {
+    return res.status(400).json({
+      error: `Valor total da compra não confere com o valor calculado: ${total_amount} ≠ ${realTotalAmount}`,
+    });
   }
 
   const result = await salesRepo.createSale(
