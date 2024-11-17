@@ -18,16 +18,33 @@ router.post("/", async (req, res) => {
 });
 
 router.post("/finalizar-compra", async (req, res) => {
-  const { client_id, total_amount, sale_type, payment_method, sale_date, products } = req.body;
+  const {
+    client_id,
+    total_amount,
+    discount,
+    cashback,
+    sale_type,
+    payment_method,
+    sale_date,
+    products,
+  } = req.body;
   const { error } = salesValidator.CreateSale(req.body);
   if (error) {
     console.log('erro no validator');
     return res.status(400).json({ error: error.details[0].message });
   }
-  console.log('passou sem erro');
-  
-  const result = await salesRepo.createSale(client_id, total_amount, sale_type, payment_method, sale_date, products);
-  console.log('chamei o create sale');
+
+  const result = await salesRepo.createSale(
+    client_id,
+    total_amount,
+    discount,
+    cashback,
+    sale_type,
+    payment_method,
+    sale_date,
+    products
+  );
+
   res.header("Location", req.originalUrl + "/" + result.id).status(201).json(result);
 });
 

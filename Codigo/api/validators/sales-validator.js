@@ -4,6 +4,8 @@ function CreateSale(sale) {
   const schema = joi.object().keys({
     client_id: joi.number().integer().allow(null).required(),
     total_amount: joi.number().positive().required(),
+    discount: joi.number().min(0).required(),
+    cashback: joi.number().min(0).required(),
     sale_type: joi.string().valid("varejo", "atacado").required(),
     payment_method: joi
       .string()
@@ -16,6 +18,7 @@ function CreateSale(sale) {
         joi.object({
           codigo: joi.string().required(),
           valor: joi.number().positive().required(),
+          quantity: joi.number().positive().required(),
         })
       )
       .required(),
