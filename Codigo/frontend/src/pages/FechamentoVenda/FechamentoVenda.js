@@ -7,6 +7,7 @@ import "./FechamentoVenda.css";
 import { getApiOrigin } from "../../services/filigranaapi/config";
 import { formatBrazilianCurrency } from "../../utils/currencyFormatter";
 import { ProductList } from "./subcomponents/ProductList";
+import { roundToTwoDecimals } from "../../utils/number";
 
 function FechamentoVenda() {
   // Declaração de estados para armazenar os valores e códigos dos produtos, status de carregamento, etc.
@@ -43,19 +44,18 @@ function FechamentoVenda() {
 
   // Calcula o valor total considerando desconto e cashback
   function calcularValorTotal() {
-    const somaPecas = products
-      .map((p) => p.price)
-      .reduce((acc, valor) => {
-        const numero =
-          parseFloat(valor.replace(/[^\d,-]/g, "").replace(",", ".")) || 0;
-        return acc + numero;
-      }, 0);
+    const somaPecas = products.reduce((acc, p) => {
+      const numero =
+        parseFloat(p.price.replace(/[^\d,-]/g, "").replace(",", ".")) || 0;
+      return acc + numero * p.quantity;
+    }, 0);
 
     const descontoValor = (somaPecas * (parseFloat(desconto) || 0)) / 100;
     const cashbackValor = parseFloat(cashback) || 0;
 
     const total = somaPecas - descontoValor - cashbackValor;
-    return total;
+    const totalRounded = roundToTwoDecimals(total);
+    return totalRounded;
   }
 
   // Função para cancelar e voltar para a página inicial
