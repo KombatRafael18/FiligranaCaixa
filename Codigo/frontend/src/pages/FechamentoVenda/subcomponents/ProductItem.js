@@ -105,6 +105,17 @@ export function ProductItem({
     });
   }
 
+  function handleQuantityChange(e) {
+    let newValue = Number(e.target.value);
+    if (isNaN(newValue) || newValue < 1) {
+      newValue = 1;
+    }
+
+    mergeProductUpdates({
+      quantity: newValue,
+    });
+  }
+
   async function handleCreateProduct() {
     const valorString = productPrice.replace(/[^\d,]/g, "").replace(",", ".");
     const valor = parseFloat(valorString);
@@ -143,22 +154,42 @@ export function ProductItem({
         value={productCode}
         onChange={(e) => handleCodigoChange(e.target.value)}
         placeholder="Código"
+        fullWidth={false}
         variant="custom"
         className="codigo-input"
       />
-      <div className="flex items-center">
-        <Input
-          type="text"
-          value={productPrice}
-          onChange={(e) => handlePriceChange(e.target.value)}
-          placeholder={zeroCurrency}
-          variant="custom"
-          disabled={found}
-          className="valor-input"
-        />
+      <div className="flex items-center gap-2">
+        <div className="w-40">
+          <Input
+            type="text"
+            value={productPrice}
+            onChange={(e) => handlePriceChange(e.target.value)}
+            placeholder={zeroCurrency}
+            fullWidth
+            variant="custom"
+            disabled={found}
+            className="valor-input"
+          />
+        </div>
+
+        {" × "}
+
+        <div className="w-20">
+          <Input
+            title="Quantidade"
+            type="number"
+            min="1"
+            inputMode="numeric"
+            value={productQuantity?.toString()}
+            onChange={handleQuantityChange}
+            fullWidth
+            variant="custom"
+          />
+        </div>
+
         <button
           onClick={handleAddItem}
-          className="ml-6 text-blue-500 hover:text-blue-700 "
+          className="p-1 text-blue-500 hover:text-blue-700 "
           title="Adicionar nova peça"
         >
           <PlusIcon className="h-5 w-5 text-[#9b5c6f]" />
@@ -166,7 +197,7 @@ export function ProductItem({
 
         <button
           onClick={() => handleDeleteItem()}
-          className="ml-2 text-red-500 hover:text-red-700"
+          className="p-1 text-red-500 hover:text-red-700"
           title="Remover esta peça"
         >
           <TrashIcon className="h-5 w-5 text-[#9b5c6f]" />
@@ -175,7 +206,7 @@ export function ProductItem({
         {!found && (
           <button
             onClick={() => handleCreateProduct()}
-            className="add-produto-btn"
+            className="p-1 add-produto-btn"
             title="Criar Produto"
             disabled={isLoading}
           >

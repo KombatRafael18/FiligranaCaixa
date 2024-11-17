@@ -19,8 +19,8 @@ const Input = ({ label, type = 'text', name, value, onChange, placeholder, fullW
         readOnly={readOnly}
         disabled={disabled}
         className={`px-3 py-2 text-[#9f5f6e] bg-white border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9f5f6e] focus:border-transparent ${
-          variant === 'custom' ? 'border-[#9f5f6e] w-[190px]' : 'border-gray-300 w-full'
-        }`}
+          variant === "custom" ? "border-[#9f5f6e]" : "border-gray-300"
+        } ${fullWidth ? "w-full" : "w-[190px]"}`}
       />
     </div>
   );
