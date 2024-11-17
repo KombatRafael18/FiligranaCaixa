@@ -75,7 +75,7 @@ export function ProductItem({
   }
 
   const debounceSearchProductByCode = useCallback(
-    debounce(searchProductByCode, 1),
+    debounce(searchProductByCode, 250),
     [setProduct]
   );
 
