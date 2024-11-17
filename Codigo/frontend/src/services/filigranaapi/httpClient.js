@@ -1,4 +1,5 @@
 import { API_BASE_URL, defaultHeaders } from "./config";
+import { ApiError } from "./errors";
 
 function buildUrl(endpoint) {
   const apiBaseUrl = new URL(API_BASE_URL);
@@ -29,8 +30,12 @@ export async function httpClient(
   const response = await fetch(url, config);
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || "Erro na requisição");
+    const errorBody = await response.json();
+    throw new ApiError(
+      errorBody?.error || errorBody?.message || "Erro desconhecido",
+      errorBody,
+      response
+    );
   }
 
   return await response.json();
