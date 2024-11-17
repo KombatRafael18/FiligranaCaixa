@@ -1,4 +1,4 @@
-const { roundToTwoDecimals } = require("../../frontend/src/utils/number");
+const { roundToTwoDecimals } = require("../utils/number");
 
 /**
  * Calcula o valor total considerando desconto e cashback
