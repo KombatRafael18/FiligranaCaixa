@@ -40,7 +40,7 @@ export function ProductList({ products, setProducts }) {
       tempKey: genTempKey(),
       code: "",
       price: "",
-      amount: 0,
+      quantity: 1,
     };
   }
 

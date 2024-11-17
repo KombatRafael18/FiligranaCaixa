@@ -19,7 +19,7 @@ export function ProductItem({
     id: productId,
     code: productCode,
     price: productPrice,
-    amount: productAmount,
+    quantity: productQuantity,
   },
   setProduct,
   handleAddItem,

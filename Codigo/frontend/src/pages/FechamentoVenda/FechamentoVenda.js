@@ -77,6 +77,7 @@ function FechamentoVenda() {
         return {
           codigo: p.code,
           valor: valorDouble,
+          quantity: p.quantity,
         };
       })
       .filter((produto) => produto.codigo && produto.valor > 0);
@@ -97,6 +98,9 @@ function FechamentoVenda() {
       return;
     }
 
+    const discountNumber = (parseFloat(desconto) || 0) / 100;
+    const cashbackNumber = parseFloat(cashback) || 0;
+
     try {
       const response = await fetch(
         `${getApiOrigin()}/api/sales/finalizar-compra`,
@@ -108,6 +112,8 @@ function FechamentoVenda() {
           body: JSON.stringify({
             client_id: clientData ? clientData.ID : null,
             total_amount: valorTotalDouble,
+            discount: discountNumber,
+            cashback: cashbackNumber,
             sale_type: sellType,
             payment_method: metodoPagamento,
             sale_date: new Date(),
