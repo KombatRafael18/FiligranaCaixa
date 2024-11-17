@@ -1,5 +1,33 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { ProductItem } from "./ProductItem";
+
+/**
+ * Componente que encapsula ProductItem com um índice para otimização de
+ * renderização.
+ */
+function ProductItemWithIdx({
+  idx,
+  product,
+  handleSetProductWithIdx,
+  handleAddItemWithIdx,
+  handleDeleteItemWithIdx,
+}) {
+  const handleSetProduct = useCallback(
+    (setProductAction) => {
+      handleSetProductWithIdx(setProductAction, idx);
+    },
+    [handleSetProductWithIdx, idx]
+  );
+
+  return (
+    <ProductItem
+      product={product}
+      setProduct={handleSetProduct}
+      handleAddItem={() => handleAddItemWithIdx(idx)}
+      handleDeleteItem={() => handleDeleteItemWithIdx(product, idx)}
+    />
+  );
+}
 
 export function ProductList({ products, setProducts }) {
   function genTempKey() {
@@ -16,13 +44,16 @@ export function ProductList({ products, setProducts }) {
     };
   }
 
-  function handleSetProduct(setProductAction, idx) {
-    setProducts((prev) => {
-      const newProducts = [...prev];
-      newProducts[idx] = setProductAction(newProducts[idx]);
-      return newProducts;
-    });
-  }
+  const handleSetProduct = useCallback(
+    (setProductAction, idx) => {
+      setProducts((prev) => {
+        const newProducts = [...prev];
+        newProducts[idx] = setProductAction(newProducts[idx]);
+        return newProducts;
+      });
+    },
+    [setProducts]
+  );
 
   function handleAddItem(idx) {
     setProducts((prev) => {
@@ -58,14 +89,13 @@ export function ProductList({ products, setProducts }) {
   return (
     <ol>
       {products.map((p, i) => (
-        <ProductItem
+        <ProductItemWithIdx
           key={p.tempKey}
+          idx={i}
           product={p}
-          setProduct={(setProductAction) =>
-            handleSetProduct(setProductAction, i)
-          }
-          handleAddItem={() => handleAddItem(i)}
-          handleDeleteItem={() => handleDeleteItem(p, i)}
+          handleSetProductWithIdx={handleSetProduct}
+          handleAddItemWithIdx={handleAddItem}
+          handleDeleteItemWithIdx={handleDeleteItem}
         />
       ))}
     </ol>

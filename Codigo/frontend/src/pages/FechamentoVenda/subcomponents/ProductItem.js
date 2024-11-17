@@ -1,5 +1,7 @@
 import { ArrowUpTrayIcon } from "@heroicons/react/24/outline";
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/solid";
+import debounce from "lodash/debounce";
+import { useCallback, useRef } from "react";
 import Input from "../../../components/Input";
 import { useLoading } from "../../../hooks/loading-hook";
 import {
@@ -23,6 +25,8 @@ export function ProductItem({
   handleAddItem,
   handleDeleteItem,
 }) {
+  const searchProductByCodeAbortRef = useRef(null);
+
   const { isLoading, startLoading, stopLoading } = useLoading();
 
   const found = productCode !== "" && productId !== null;
@@ -34,16 +38,14 @@ export function ProductItem({
     }));
   }
 
-  async function handleCodigoChange(val) {
-    const v = val.trim();
-
-    mergeProductUpdates({
-      code: v,
-    });
+  async function searchProductByCode(code) {
+    searchProductByCodeAbortRef.current?.abort();
+    const newAbortController = new AbortController();
+    searchProductByCodeAbortRef.current = newAbortController;
 
     try {
       startLoading();
-      const res = await getProductByCode(v);
+      const res = await getProductByCode(code, newAbortController.signal);
       console.debug("Produto encontrado:", res);
 
       mergeProductUpdates({
@@ -51,6 +53,11 @@ export function ProductItem({
         price: formatBrazilianCurrency(res.price),
       });
     } catch (error) {
+      if (error.name === "AbortError") {
+        console.debug("Busca por produto abortada", code, { error });
+        return;
+      }
+
       if (error instanceof ApiError && error.isNotFoundError()) {
         console.debug("Produto não encontrado");
 
@@ -65,6 +72,21 @@ export function ProductItem({
     } finally {
       stopLoading();
     }
+  }
+
+  const debounceSearchProductByCode = useCallback(
+    debounce(searchProductByCode, 1),
+    [setProduct]
+  );
+
+  async function handleCodigoChange(val) {
+    const v = val.trim();
+
+    mergeProductUpdates({
+      code: v,
+    });
+
+    debounceSearchProductByCode(v);
   }
 
   // Manipula a entrada de valores, formatando como moeda
