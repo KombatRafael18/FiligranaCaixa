@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { format } from 'date-fns';
-import { useNavigate } from 'react-router-dom';
-import Button from '../../components/Button';
-import SideDrawer from '../../components/SideDrawer';
-import './Clientes.css';
-import { getApiOrigin } from '../../services/filigranaapi/config';
+import React, { useState, useEffect } from "react";
+import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
+import Button from "../../components/Button";
+import SideDrawer from "../../components/SideDrawer";
+import "./Clientes.css";
+import { getApiOrigin } from "../../services/filigranaapi/config";
 
 const API_URL = `${getApiOrigin()}/api/clients`;
 
@@ -14,8 +14,7 @@ function Clientes() {
   const [editedClient, setEditedClient] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedClientSales, setSelectedClientSales] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-
+  const [searchTerm, setSearchTerm] = useState("");
 
   const navigate = useNavigate();
   const fetchClients = async () => {
@@ -37,15 +36,17 @@ function Clientes() {
   };
 
   const normalizeText = (text) => {
-    return text.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+    return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   };
 
-  const filteredClients = clients.filter(client =>
-    normalizeText(client.NAME.toLowerCase()).includes(normalizeText(searchTerm.toLowerCase()))
+  const filteredClients = clients.filter((client) =>
+    normalizeText(client.NAME.toLowerCase()).includes(
+      normalizeText(searchTerm.toLowerCase())
+    )
   );
 
   const handleNavigateToCadastro = () => {
-    navigate('/cadastrar-cliente');
+    navigate("/cadastrar-cliente");
   };
 
   const handleEditChange = (e) => {
@@ -75,8 +76,8 @@ function Clientes() {
       console.log("Dados enviados ao backend:", editedClientToSave);
 
       const response = await fetch(`${API_URL}/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(editedClientToSave),
       });
 
@@ -95,7 +96,7 @@ function Clientes() {
   const deleteClient = async (id) => {
     try {
       const response = await fetch(`${API_URL}/${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
 
       if (response.ok) {
@@ -107,7 +108,6 @@ function Clientes() {
       console.error("Erro ao deletar cliente:", error);
     }
   };
-
 
   const showSales = async (id) => {
     try {
@@ -132,7 +132,10 @@ function Clientes() {
       <div className="content ml-[250px] p-10">
         <h1 className="text-3xl font-bold mb-4">Clientes</h1>
 
-        <div className="flex items-center mb-5 mt-7" style={{ marginLeft: '6.5vh' }}>
+        <div
+          className="flex items-center mb-5 mt-7"
+          style={{ marginLeft: "6.5vh" }}
+        >
           <style>{`
             .custom-placeholder::placeholder {
                 color: #9b5c6f;
@@ -147,11 +150,11 @@ function Clientes() {
             onChange={handleSearchChange}
             className="border rounded p-2 mr-4 w-1/3"
             style={{
-              width: '40rem',
-              padding: '0.5rem',
-              border: '2px solid #9b5c6f',
-              borderRadius: '0.375rem',
-              backgroundColor: '#f8fafc',
+              width: "40rem",
+              padding: "0.5rem",
+              border: "2px solid #9b5c6f",
+              borderRadius: "0.375rem",
+              backgroundColor: "#f8fafc",
             }}
           />
           <Button size="default" onClick={handleNavigateToCadastro}>
@@ -182,7 +185,7 @@ function Clientes() {
                       <input
                         type="text"
                         name="CPF"
-                        value={editedClient.CPF || ''}
+                        value={editedClient.CPF || ""}
                         onChange={handleEditChange}
                         className="border p-1"
                       />
@@ -195,7 +198,7 @@ function Clientes() {
                       <input
                         type="text"
                         name="NAME"
-                        value={editedClient.NAME || ''}
+                        value={editedClient.NAME || ""}
                         onChange={handleEditChange}
                         className="border p-1"
                       />
@@ -208,7 +211,7 @@ function Clientes() {
                       <input
                         type="email"
                         name="EMAIL"
-                        value={editedClient.EMAIL || ''}
+                        value={editedClient.EMAIL || ""}
                         onChange={handleEditChange}
                         className="border p-1"
                       />
@@ -221,7 +224,7 @@ function Clientes() {
                       <input
                         type="text"
                         name="ADDRESS"
-                        value={editedClient.ADDRESS || ''}
+                        value={editedClient.ADDRESS || ""}
                         onChange={handleEditChange}
                         className="border p-1"
                       />
@@ -234,7 +237,7 @@ function Clientes() {
                       <input
                         type="text"
                         name="PHONE"
-                        value={editedClient.PHONE || ''}
+                        value={editedClient.PHONE || ""}
                         onChange={handleEditChange}
                         className="border p-1"
                       />
@@ -247,7 +250,7 @@ function Clientes() {
                       <input
                         type="text"
                         name="CASHBACK"
-                        value={editedClient.CASHBACK || ''}
+                        value={editedClient.CASHBACK || ""}
                         onChange={handleEditChange}
                         className="border p-1"
                       />
@@ -255,17 +258,17 @@ function Clientes() {
                       client.CASHBACK
                     )}
                   </td>
-                  <td className="border p-2">
+                  <td className="border p-2 action-cell ">
                     {editingClientId === client.ID ? (
                       <>
                         <button
-                          className="bg-blue-500 text-white px-2 py-1 rounded mr-2"
+                          className="button button-save"
                           onClick={() => saveClient(client.ID)}
                         >
                           Salvar
                         </button>
                         <button
-                          className="bg-red-500 text-white px-2 py-1 rounded"
+                          className="button button-cancel"
                           onClick={() => setEditingClientId(null)}
                         >
                           Cancelar
@@ -274,22 +277,22 @@ function Clientes() {
                     ) : (
                       <>
                         <button
-                          className="bg-green-500 text-white px-2 py-1 rounded mr-2"
+                          className="button button-view-sales"
+                          onClick={() => showSales(client.ID)}
+                        >
+                          Ver compras
+                        </button>
+                        <button
+                          className="button button-edit"
                           onClick={() => startEditing(client)}
                         >
                           Editar
                         </button>
                         <button
-                          className="bg-red-500 text-white px-2 py-1 rounded"
+                          className="button button-delete"
                           onClick={() => deleteClient(client.ID)}
                         >
                           Deletar
-                        </button>
-                        <button
-                          className="bg-blue-500 text-white px-2 py-1 rounded"
-                          onClick={() => showSales(client.ID)}
-                        >
-                          Ver compras
                         </button>
                       </>
                     )}
@@ -308,13 +311,12 @@ function Clientes() {
         {isModalOpen && (
           <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
             <div className="bg-white p-6 rounded shadow-lg w-3/5">
-              <button
-                className="bg-red-500 text-white px-2 py-1 rounded float-right"
-                onClick={closeModal}
-              >
-                Fechar
-              </button>
-              <h2 className="text-2xl font-bold mb-4">Compras do Cliente</h2>
+              <div className="modal-header">
+                <h2 className="text-2xl font-bold mb-4">Compras do Cliente</h2>
+                <button className="modal-close-button" onClick={closeModal}>
+                  Fechar
+                </button>
+              </div>
               <table className="sales-table w-full border-collapse">
                 <thead>
                   <tr>
@@ -332,12 +334,16 @@ function Clientes() {
                       <tr key={sale.ID}>
                         <td className="border p-2">{sale.ID}</td>
                         <td className="border p-2">
-                          {Array.isArray(sale.PRODUCTS) ? sale.PRODUCTS.join(', ') : ''}
+                          {Array.isArray(sale.PRODUCTS)
+                            ? sale.PRODUCTS.join(", ")
+                            : ""}
                         </td>
                         <td className="border p-2">{sale.SALE_TYPE}</td>
                         <td className="border p-2">{sale.PAYMENT_METHOD}</td>
                         <td className="border p-2">{sale.TOTAL_AMOUNT}</td>
-                        <td className="border p-2">{format(new Date(sale.SALE_DATE), 'dd-MM-yyyy')}</td>
+                        <td className="border p-2">
+                          {format(new Date(sale.SALE_DATE), "dd-MM-yyyy")}
+                        </td>
                       </tr>
                     ))
                   ) : (

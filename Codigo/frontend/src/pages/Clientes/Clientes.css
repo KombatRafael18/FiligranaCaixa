@@ -1,38 +1,104 @@
 /* Clientes.css */
 
 .client-table {
-    width: 90%; /* Diminui a largura da tabela */
-    margin: 0 auto; /* Centraliza a tabela */
-    border-collapse: collapse;
-  }
-  
-  .client-table th, .client-table td {
-    padding: 6px; /* Diminui o padding das células */
-    font-size: 0.9rem; /* Diminui o tamanho da fonte */
-  }
-  
-  .client-table th {
-    background-color: #7d4b5f; /* Cor de fundo dos headers */
-    color: white;
-    text-align: left;
-  }
-  
-  .client-table td {
-    border: 1px solid #ddd; /* Adiciona borda às células */
-  }
-  
-  button {
-    padding: 5px 10px;
-    margin-right: 5px;
-    border-radius: 3px;
-  }
-  
-  button:hover {
-    opacity: 0.8;
-  }
+  width: 90%; /* Diminui a largura da tabela */
+  margin: 0 auto; /* Centraliza a tabela */
+  border-collapse: collapse;
+}
 
-  input::placeholder {
-    color: #9b5c6f;
-    opacity: 1;
-  }
-  
+.client-table th,
+.client-table td {
+  padding: 6px; /* Diminui o padding das células */
+  font-size: 0.9rem; /* Diminui o tamanho da fonte */
+}
+
+.client-table th {
+  background-color: #7d4b5f; /* Cor de fundo dos headers */
+  color: white;
+  text-align: left;
+}
+
+.client-table td {
+  border: 1px solid #ddd; /* Adiciona borda às células */
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Alinha verticalmente o título e o botão */
+  margin-bottom: 1rem; /* Espaçamento inferior para separar do conteúdo */
+}
+
+.modal-close-button {
+  background-color: #903346;
+  color: rgb(249, 249, 249);
+  padding: 6px 12px; /* Espaçamento interno */
+  border-radius: 4px; /* Arredondamento dos cantos */
+  font-size: 0.9rem; /* Tamanho da fonte */
+}
+
+.modal-close-button:hover {
+  opacity: 0.8;
+}
+
+button {
+  padding: 5px 10px;
+  margin-right: 5px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+.button-save {
+  background-color: #617c56;
+  color: rgb(249, 249, 249);
+}
+
+.button-cancel {
+  background-color: #903346;
+  color: rgb(249, 249, 249);
+}
+
+.button-view-sales {
+  background-color: #554367;
+  color: rgb(249, 249, 249);
+}
+
+/* Botão Editar */
+.button-edit {
+  background-color: #617c56;
+  color: rgb(249, 249, 249);
+}
+
+/* Botão Deletar */
+.button-delete {
+  background-color: #903346;
+  color: rgb(249, 249, 249);
+}
+
+/* Classe para o bloco de ações */
+.action-cell {
+  display: flex;
+  gap: 2px; /* Espaçamento entre os botões */
+}
+
+.action-cell button {
+  padding: 5px 12px; /* Ajusta o espaçamento interno dos botões */
+  border-radius: 3px; /* Arredonda os cantos dos botões */
+  white-space: nowrap; /* Evita que o texto dos botões quebre para a próxima linha */
+  cursor: pointer; /* Mostra o cursor de pointer para os botões */
+  transition: opacity 0.3s; /* Adiciona uma animação suave */
+}
+
+.action-cell button:hover {
+  opacity: 0.8; /* Reduz a opacidade no hover */
+}
+
+input::placeholder {
+  color: #9b5c6f;
+  opacity: 1;
+}
