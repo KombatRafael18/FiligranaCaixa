@@ -8,6 +8,7 @@ import {
   FaQuestionCircle,
   FaUsers,
 } from "react-icons/fa";
+import { ImExit } from "react-icons/im";
 import { getApiOrigin } from "../services/filigranaapi/config";
 
 const SideDrawer = ({ isOpen }) => {
@@ -91,7 +92,7 @@ const SideDrawer = ({ isOpen }) => {
                   className="flex items-center gap-3 hover:text-gray-700"
                   onClick={handleLogout}
                 >
-                  <FaQuestionCircle />
+                  <ImExit />
                   {(isHovering || !isCollapsed) && <span>SAIR</span>}
                 </Link>
               </li>
