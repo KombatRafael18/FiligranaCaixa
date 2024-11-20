@@ -25,6 +25,7 @@
 .modal-header {
   display: flex;
   justify-content: space-between;
+  gap: 1rem; /* Espaçamento padrão entre os elementos */
   align-items: center; /* Alinha verticalmente o título e o botão */
   margin-bottom: 1rem; /* Espaçamento inferior para separar do conteúdo */
 }
