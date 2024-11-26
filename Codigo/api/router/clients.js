@@ -10,16 +10,23 @@ router.post("/", async (req, res) => {
     return res.status(400).json({ error: error.details[0].message });
   }
 
-  const clientCreate = req.body;
-  
+  const clientCreate = {
+    ...req.body,
+    email: req.body.email || null,
+  };
+
   try {
     const result = await clientsRepo.createClient(clientCreate);
-    res.header("Location", req.originalUrl + "/" + result.id).status(201).json(result);
+    res
+      .header("Location", `${req.originalUrl}/${result.id}`)
+      .status(201)
+      .json(result);
   } catch (error) {
     if (error.name === "DuplicateCPFError") {
       return res.status(409).json({ error: "CPF already exists" });
     }
-    throw error;
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -29,8 +36,13 @@ router.get("/", async (req, res) => {
     return res.status(400).json({ error: error.details[0].message });
   }
 
-  const clients = await clientsRepo.getClients();
-  res.status(200).json(clients);
+  try {
+    const clients = await clientsRepo.getClients();
+    res.status(200).json(clients);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 router.get("/:id", async (req, res) => {
@@ -39,15 +51,19 @@ router.get("/:id", async (req, res) => {
     return res.status(400).json({ error: error.details[0].message });
   }
 
-  const { id } = req.params;
-  const client = await clientsRepo.getClientById(id);
+  try {
+    const { id } = req.params;
+    const client = await clientsRepo.getClientById(id);
 
-  if (!client) {
-    res.status(404).json({ error: "Client not found" });
-    return;
+    if (!client) {
+      return res.status(404).json({ error: "Client not found" });
+    }
+
+    res.status(200).json(client);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
   }
-
-  res.status(200).json(client);
 });
 
 router.get("/cpf/:cpf", async (req, res) => {
@@ -56,15 +72,19 @@ router.get("/cpf/:cpf", async (req, res) => {
     return res.status(400).json({ error: error.details[0].message });
   }
 
-  const { cpf } = req.params;
-  const client = await clientsRepo.getClientByCpf(cpf);
+  try {
+    const { cpf } = req.params;
+    const client = await clientsRepo.getClientByCpf(cpf);
 
-  if (!client) {
-    res.status(404).json({ error: "Client not found" });
-    return;
+    if (!client) {
+      return res.status(404).json({ error: "Client not found" });
+    }
+
+    res.status(200).json(client);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
   }
-
-  res.status(200).json(client);
 });
 
 router.put("/:id", async (req, res) => {
@@ -74,17 +94,21 @@ router.put("/:id", async (req, res) => {
   }
 
   const { id } = req.params;
-  const clientUpdate = req.body;
+
+  const clientUpdate = {
+    ...req.body,
+    email: req.body.email || null,
+  };
 
   try {
     await clientsRepo.updateClient(id, clientUpdate);
     res.status(204).end();
   } catch (error) {
     if (error.name === "ClientNotFoundError") {
-      res.status(404).json({ error: "Client not found" });
-      return;
+      return res.status(404).json({ error: "Client not found" });
     }
-    throw error;
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -101,13 +125,11 @@ router.delete("/:id", async (req, res) => {
     res.status(204).end();
   } catch (error) {
     if (error.name === "ClientNotFoundError") {
-      res.status(404).json({ error: "Client not found" });
-      return;
+      return res.status(404).json({ error: "Client not found" });
     }
-    throw error;
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
   }
-
-  res.status(204).end();
 });
 
 module.exports = router;
