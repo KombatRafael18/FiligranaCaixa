@@ -1,7 +1,7 @@
 import { ArrowUpTrayIcon } from "@heroicons/react/24/outline";
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/solid";
 import debounce from "lodash/debounce";
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useEffect } from "react";
 import Input from "../../../components/Input";
 import { useLoading } from "../../../hooks/loading-hook";
 import {
@@ -28,6 +28,7 @@ export function ProductItem({
   idx,
 }) {
   const searchProductByCodeAbortRef = useRef(null);
+  const inputRef = useRef(null);
 
   const { isLoading, startLoading, stopLoading } = useLoading();
 
@@ -149,9 +150,16 @@ export function ProductItem({
     }
   }
 
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
+
   return (
     <li className="produto-item">
       <Input
+        ref={inputRef}
         type="text"
         value={productCode}
         onChange={(e) => handleCodigoChange(e.target.value)}
