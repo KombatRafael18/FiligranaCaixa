@@ -153,6 +153,11 @@ export function ProductItem({
         type="text"
         value={productCode}
         onChange={(e) => handleCodigoChange(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            handleAddItem();
+          }
+        }}
         placeholder="Código"
         fullWidth={false}
         variant="custom"

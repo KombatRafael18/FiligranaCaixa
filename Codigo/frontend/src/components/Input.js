@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Input = ({ label, type = 'text', name, value, onChange, placeholder, fullWidth = true, variant, readOnly = undefined, disabled=undefined }) => {
+const Input = ({ label, type = 'text', name, value, onChange, placeholder, fullWidth = true, variant, readOnly = undefined, disabled = undefined, onKeyDown }) => {
   return (
     <div className={`mb-4 ${fullWidth && variant !== 'custom' ? 'w-[calc(100%-32px)]' : ''}`}>
       <label
@@ -17,6 +17,7 @@ const Input = ({ label, type = 'text', name, value, onChange, placeholder, fullW
         name={name}
         value={value}
         onChange={onChange}
+        onKeyDown={onKeyDown}
         placeholder={placeholder}
         readOnly={readOnly}
         disabled={disabled}
