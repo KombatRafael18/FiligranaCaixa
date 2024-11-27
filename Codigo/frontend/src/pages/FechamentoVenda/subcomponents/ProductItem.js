@@ -24,6 +24,8 @@ export function ProductItem({
   setProduct,
   handleAddItem,
   handleDeleteItem,
+  isInputDisabled,
+  idx,
 }) {
   const searchProductByCodeAbortRef = useRef(null);
 
@@ -162,6 +164,8 @@ export function ProductItem({
         fullWidth={false}
         variant="custom"
         className="codigo-input"
+        disabled={isInputDisabled}
+        data-index={idx}
       />
       <div className="flex items-center gap-2">
         <div className="w-40">
