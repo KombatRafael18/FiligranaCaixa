@@ -14,7 +14,6 @@ function CadastrarCliente() {
     // Remove caracteres não numéricos
     const numericValue = value.replace(/\D/g, "");
 
-    // Formata o número progressivamente
     let formattedPhone = "";
     if (numericValue.length > 0) {
       formattedPhone += `(${numericValue.slice(0, 2)}`;
@@ -34,7 +33,7 @@ function CadastrarCliente() {
 
     // Limpa o CPF removendo caracteres especiais
     const cleanedCpf = cpf.replace(/[^\d]/g, "");
-    const cleanedPhone = phone.replace(/[^\d]/g, ""); // Limpa o telefone
+    const cleanedPhone = phone.replace(/[^\d]/g, "");
 
     const client = {
       cpf: cleanedCpf,
