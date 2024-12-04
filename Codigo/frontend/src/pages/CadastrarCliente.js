@@ -10,18 +10,37 @@ function CadastrarCliente() {
   const [phone, setPhone] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
+  const handlePhoneChange = (value) => {
+    // Remove caracteres não numéricos
+    const numericValue = value.replace(/\D/g, "");
+    // Formata o número progressivamente
+    let formattedPhone = "";
+    if (numericValue.length > 0) {
+      formattedPhone += `(${numericValue.slice(0, 2)}`;
+      if (numericValue.length > 2) {
+        formattedPhone += `) ${numericValue.slice(2, 7)}`;
+        if (numericValue.length > 7) {
+          formattedPhone += `-${numericValue.slice(7, 11)}`;
+        }
+      }
+    }
+    setPhone(formattedPhone);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Limpa o CPF removendo caracteres especiais
+    // Limpa o CPF e telefone removendo caracteres especiais
     const cleanedCpf = cpf.replace(/[^\d]/g, "");
+    const cleanedPhone = phone.replace(/[^\d]/g, "");
 
+    // Monta o objeto do cliente, omitindo e-mail se estiver vazio
     const client = {
       cpf: cleanedCpf,
       name,
-      email,
       address,
-      phone,
+      phone: cleanedPhone,
+      ...(email && { email }), // Adiciona o e-mail somente se ele não for vazio
     };
 
     console.log("Dados enviados:", client);
