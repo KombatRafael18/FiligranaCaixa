@@ -19,9 +19,9 @@ function CadastrarCliente() {
     const client = {
       cpf: cleanedCpf,
       name,
+      email,
       address,
       phone,
-      ...(email && { email }),
     };
 
     console.log("Dados enviados:", client);
@@ -118,7 +118,7 @@ function CadastrarCliente() {
             <input
               type="text"
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={(e) => handlePhoneChange(e.target.value)}
               className="border border-[#7d4b5f] p-2 w-full"
             />
           </div>
