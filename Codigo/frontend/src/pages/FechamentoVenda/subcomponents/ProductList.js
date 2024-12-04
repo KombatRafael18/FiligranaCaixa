@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ProductItem } from "./ProductItem";
 
 /**
@@ -11,6 +11,7 @@ function ProductItemWithIdx({
   handleSetProductWithIdx,
   handleAddItemWithIdx,
   handleDeleteItemWithIdx,
+  isInputDisabled,
 }) {
   const handleSetProduct = useCallback(
     (setProductAction) => {
@@ -25,11 +26,14 @@ function ProductItemWithIdx({
       setProduct={handleSetProduct}
       handleAddItem={() => handleAddItemWithIdx(idx)}
       handleDeleteItem={() => handleDeleteItemWithIdx(product, idx)}
+      isInputDisabled={isInputDisabled}
     />
   );
 }
 
 export function ProductList({ products, setProducts }) {
+  const [disabledInputs, setDisabledInputs] = useState([]);
+
   function genTempKey() {
     return Math.floor(Math.random() * Number.MAX_SAFE_INTEGER).toString(36);
   }
@@ -62,6 +66,12 @@ export function ProductList({ products, setProducts }) {
       newProducts.splice(idx + 1, 0, newProduct);
       return newProducts;
     });
+
+    setDisabledInputs((prev) => {
+      const newDisabledInputs = [...prev];
+      newDisabledInputs[idx] = true;
+      return newDisabledInputs;
+    });
   }
 
   function handleDeleteItem(p, idx) {
@@ -75,6 +85,12 @@ export function ProductList({ products, setProducts }) {
       }
 
       return newProducts;
+    });
+
+    setDisabledInputs((prev) => {
+      const newDisabledInputs = [...prev];
+      newDisabledInputs.splice(idx, 1);
+      return newDisabledInputs;
     });
   }
 
@@ -96,6 +112,7 @@ export function ProductList({ products, setProducts }) {
           handleSetProductWithIdx={handleSetProduct}
           handleAddItemWithIdx={handleAddItem}
           handleDeleteItemWithIdx={handleDeleteItem}
+          isInputDisabled={disabledInputs[i] || false}
         />
       ))}
     </ol>

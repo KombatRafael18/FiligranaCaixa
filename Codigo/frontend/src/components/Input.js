@@ -1,6 +1,7 @@
-import React from 'react';
-
-const Input = ({ label, type = 'text', name, value, onChange, placeholder, fullWidth = true, variant, readOnly = undefined, disabled=undefined }) => {
+import React, { forwardRef } from 'react';
+const Input = forwardRef(({
+  label, type = 'text', name, value, onChange, placeholder, fullWidth = true, variant, readOnly = undefined, disabled = undefined, onKeyDown
+}, ref) => {
   return (
     <div className={`mb-4 ${fullWidth && variant !== 'custom' ? 'w-[calc(100%-32px)]' : ''}`}>
       <label
@@ -12,11 +13,13 @@ const Input = ({ label, type = 'text', name, value, onChange, placeholder, fullW
         {label}
       </label>
       <input
+        ref={ref}
         type={type}
         id={name}
         name={name}
         value={value}
         onChange={onChange}
+        onKeyDown={onKeyDown}
         placeholder={placeholder}
         readOnly={readOnly}
         disabled={disabled}
@@ -28,6 +31,5 @@ const Input = ({ label, type = 'text', name, value, onChange, placeholder, fullW
       />
     </div>
   );
-};
-
+})
 export default Input;
