@@ -1,19 +1,19 @@
 cff-version: 1.0.1
 message: Please cite this software using these metadata.
-title: 
+title: Filigrana
 authors:
-  - family-names: 
-    given-names: 
+  - family-names: Ferraz Barra
+    given-names: Rafael
   - family-names: Rodrigues
     given-names: Guilherme Felipe Costa
-  - family-names: 
-    given-names: 
-  - family-names: 
-    given-names: 
-  - family-names: 
-    given-names: 
-  - family-names: 
-    given-names:
+  - family-names: Cantoni
+    given-names: Guilherme
+  - family-names: Barcelos
+    given-names: Pedro
+  - family-names: Lincoln
+    given-names: Samuel
+  - family-names: Costa
+    given-names: Isabelle Cristine
   - name-suffix: Professor
     affiliation: PUC Minas
     family-names: de Paiva Carvalho
