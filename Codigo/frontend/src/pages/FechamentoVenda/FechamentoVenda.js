@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import SideDrawer from "../../components/SideDrawer";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
+import CustomModal from "../../components/modal/CustomModal";
 import "./FechamentoVenda.css";
 import { getApiOrigin } from "../../services/filigranaapi/config";
 import { formatBrazilianCurrency } from "../../utils/currencyFormatter";
@@ -14,7 +15,9 @@ function FechamentoVenda() {
   const [products, setProducts] = useState([]);
   const [desconto, setDesconto] = useState(""); // Desconto aplicado
   const [cashback, setCashback] = useState(""); // Cashback a ser aplicado
+  const [dinRecebido, setDinRecebido] = useState(""); // dinheiro recebido
   const [metodoPagamento, setMetodoPagamento] = useState(""); // Método de pagamento selecionado
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate(); // Hook para navegação entre rotas
   const location = useLocation();
   const clientData = location.state?.clientData;
@@ -24,7 +27,6 @@ function FechamentoVenda() {
   // Calcula o valor total quando os valores, desconto ou cashback mudam
   const valorTotalDouble = calcularValorTotal();
   const valorTotal = formatBrazilianCurrency(valorTotalDouble);
-  console.debug("Valor total:", valorTotalDouble, valorTotal);
 
   // Manipula a entrada de desconto, limitando a 100%
   const handleDescontoChange = (value) => {
@@ -157,7 +159,9 @@ function FechamentoVenda() {
         <div className="section-produtos">
           <div className="lista-produtos">
             <h2>PEÇAS:</h2>
-            <ProductList products={products} setProducts={setProducts} />
+            <div className="product-list-container">
+              <ProductList products={products} setProducts={setProducts} />
+            </div>
           </div>
           <div className="section-pagamento">
             <div className="input-group">
@@ -243,6 +247,12 @@ function FechamentoVenda() {
                   CANCELAR
                 </Button>
                 <Button
+                  className="troco-btn"
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  CALCULAR TROCO
+                </Button>
+                <Button
                   className="finalizar-btn"
                   onClick={handleFinalizarCompra}
                 >
@@ -251,6 +261,18 @@ function FechamentoVenda() {
               </div>
             </div>
           </div>
+          <CustomModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            title="Calcular Troco"
+            message="Digite o valor recebido para calcular o troco:"
+            inputValue={dinRecebido}
+            setInputValue={setDinRecebido}
+            resultMessage={`Troco calculado: ${formatBrazilianCurrency(
+              parseFloat(dinRecebido) - (valorTotalDouble || 0) || 0
+            )}`}
+            onConfirm={() => setIsModalOpen(false)}
+          />
         </div>
       </div>
     </div>

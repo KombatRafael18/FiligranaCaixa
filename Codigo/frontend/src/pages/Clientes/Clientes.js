@@ -247,13 +247,7 @@ function Clientes() {
                   </td>
                   <td className="border p-2">
                     {editingClientId === client.ID ? (
-                      <input
-                        type="text"
-                        name="CASHBACK"
-                        value={editedClient.CASHBACK || ""}
-                        onChange={handleEditChange}
-                        className="border p-1"
-                      />
+                      <input />
                     ) : (
                       client.CASHBACK
                     )}

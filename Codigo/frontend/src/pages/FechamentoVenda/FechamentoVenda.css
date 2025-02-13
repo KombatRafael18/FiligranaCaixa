@@ -140,6 +140,7 @@
   align-items: flex-end;
 }
 
+.troco-btn,
 .cancelar-btn,
 .finalizar-btn {
   padding: 0.75rem 1.5rem;
@@ -152,13 +153,27 @@
   margin-right: 0.5rem;
 }
 
+.troco-btn {
+  background-color: #9b5c6f;
+  color: #f8fafc;
+  margin-right: 0.5rem;
+}
+
 .finalizar-btn {
   background-color: #9b5c6f;
   color: #f8fafc;
 }
 
+.cancelar-btn:hover {
+  background-color: #9a2727;
+}
+
+.troco-btn:hover {
+  background-color: #261b7d;
+}
+
 .finalizar-btn:hover {
-  background-color: #059669;
+  background-color: #115a43;
 }
 
 .container-right {
@@ -225,3 +240,28 @@
     margin-bottom: 0.5rem;
   }
 }
+
+.product-list-container {
+  max-height: 50vh; /* Defina a altura máxima */
+  max-width: max-content;
+  overflow-y: auto; /* Adiciona scroll vertical */
+  overflow-x: hidden; /* Esconde scroll horizontal */
+  padding: 10px;
+  scrollbar-width: thin; /* Ajusta a largura da barra (Firefox) */
+  scrollbar-color: #9b5c6f #f8ece7; /* Cor da barra de rolagem */
+}
+
+/* Para navegadores baseados em WebKit (Chrome, Edge, Safari)
+.product-list-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.product-list-container::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 4px;
+}
+
+.product-list-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+*/
