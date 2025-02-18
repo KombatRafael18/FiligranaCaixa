@@ -10,6 +10,7 @@ import { formatBrazilianCurrency } from "../../utils/currencyFormatter";
 import { BarChartCard } from "./subcomponents/BarChartCard";
 import { PieChartCard } from "./subcomponents/PieChartCard";
 import { StatCard } from "./subcomponents/StatCard";
+import PasswordModal from "../../components/modal/PasswordModal";
 
 const VIEWS = Object.freeze({
   ANUAL: "ANUAL",
@@ -225,12 +226,26 @@ function PainelDeDadosAnual({ referenceYear }) {
 }
 
 function PainelDeDados() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [selectedView, setSelectedView] = useState(VIEWS.MENSAL);
   const [referenceYear, setReferenceYear] = useState(currentYearISOFormat());
   const [referenceDate, setReferenceDate] = useState(currentMonthISOFormat());
 
   const isReferenceYearCurrent = referenceYear === currentYearISOFormat();
   const isReferenceDateToday = referenceDate === currentMonthISOFormat();
+
+  const handlePasswordSubmit = (password) => {
+    const correctPassword = "adm";
+    if (password === correctPassword) {
+      setIsAuthenticated(true);
+    } else {
+      alert("Senha incorreta!");
+    }
+  };
+
+  if (!isAuthenticated) {
+    return <PasswordModal onSubmit={handlePasswordSubmit} />;
+  }
 
   return (
     <>
