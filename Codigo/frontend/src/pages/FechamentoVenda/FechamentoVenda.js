@@ -164,17 +164,23 @@ function FechamentoVenda() {
             </div>
           </div>
           <div className="section-pagamento">
-            <div className="input-group">
-              <label>CASHBACK</label>
-              <Input
-                type="text"
-                value={cashback}
-                onChange={(e) => handleCashbackChange(e.target.value)}
-                placeholder={`R$00,00`}
-                variant="custom"
-                className="cashback-input"
-              />
-            </div>
+            {clientData ? (
+              <div className="input-group">
+                <label>
+                  CASHBACK: R${clientData ? clientData.CASHBACK : ""}
+                </label>
+                <Input
+                  type="text"
+                  value={cashback}
+                  onChange={(e) => handleCashbackChange(e.target.value)}
+                  placeholder={`R$00,00`}
+                  variant="custom"
+                  className="cashback-input"
+                />
+              </div>
+            ) : (
+              ""
+            )}
             <div className="input-group">
               <label>DESCONTO (%)</label>
               <Input
