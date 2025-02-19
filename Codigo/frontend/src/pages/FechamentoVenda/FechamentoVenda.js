@@ -27,6 +27,24 @@ function FechamentoVenda() {
   // Calcula o valor total quando os valores, desconto ou cashback mudam
   const valorTotalDouble = calcularValorTotal();
   const valorTotal = formatBrazilianCurrency(valorTotalDouble);
+  const [maxCashback, setMaxCashback] = useState(0);
+
+  useEffect(() => {
+    // Define o limite fixo antes do usuário inserir cashback
+    if (clientData && products.length > 0) {
+      const totalSemDesconto = products.reduce((acc, p) => {
+        const numero =
+          parseFloat(p.price.replace(/[^\d,-]/g, "").replace(",", ".")) || 0;
+        return acc + numero * p.quantity;
+      }, 0);
+
+      const limiteCashback = Math.min(
+        clientData.CASHBACK,
+        totalSemDesconto * 0.5
+      );
+      setMaxCashback(limiteCashback);
+    }
+  }, [clientData, products]);
 
   // Manipula a entrada de desconto, limitando a 100%
   const handleDescontoChange = (value) => {
@@ -41,7 +59,14 @@ function FechamentoVenda() {
   // Manipula a entrada de cashback
   const handleCashbackChange = (value) => {
     const numericValue = value.replace(/[^0-9]/g, "");
-    setCashback(numericValue);
+    let formattedValue = parseFloat(numericValue) || 0;
+
+    // O cashback agora tem um limite fixo e não é recalculado dinamicamente
+    if (formattedValue > maxCashback) {
+      formattedValue = maxCashback;
+    }
+
+    setCashback(formattedValue.toString());
   };
 
   // Calcula o valor total considerando desconto e cashback
@@ -52,12 +77,14 @@ function FechamentoVenda() {
       return acc + numero * p.quantity;
     }, 0);
 
-    const descontoValor = (somaPecas * (parseFloat(desconto) || 0)) / 100;
     const cashbackValor = parseFloat(cashback) || 0;
+    const valorAposCashback = somaPecas - cashbackValor;
 
-    const total = somaPecas - descontoValor - cashbackValor;
-    const totalRounded = roundToTwoDecimals(total);
-    return totalRounded;
+    const descontoValor =
+      (valorAposCashback * (parseFloat(desconto) || 0)) / 100;
+
+    const total = valorAposCashback - descontoValor;
+    return roundToTwoDecimals(total);
   }
 
   // Função para cancelar e voltar para a página inicial
@@ -166,9 +193,7 @@ function FechamentoVenda() {
           <div className="section-pagamento">
             {clientData ? (
               <div className="input-group">
-                <label>
-                  CASHBACK: R${clientData ? clientData.CASHBACK : ""}
-                </label>
+                <label>CASHBACK: R${clientData.CASHBACK}</label>
                 <Input
                   type="text"
                   value={cashback}
